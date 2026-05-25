@@ -1,0 +1,42 @@
+# Cloud-GPU dependencies (A10G / A100 / H100 required for most of these).
+# Local dev deps in requirements.txt
+
+# Structure prediction / affinity
+boltz>=2.0                  # primary oracle — predicts binding affinity (Passaro et al. 2025)
+# fair-esm                  # ESM-2 / ESMFold (optional, install if not using HF transformers wrapper)
+
+# Molecular dynamics / free energy
+openmm>=8.1                 # MD refinement
+mdtraj>=1.10                # trajectory analysis
+openfe                      # alchemical FEP (optional, for ABFE pipeline)
+
+# Apoptosis pathway simulation (Phase 4)
+pysb>=1.15                  # rule-based biological models
+# install EARM as a sub-package: pip install git+https://github.com/LoLab-VU/earm.git
+
+# ADMET / drug-like filters (Phase 4)
+admet-ai                    # 41-property predictor (Swanson 2024)
+rdkit>=2024.3
+
+# RL training (Phase 2)
+unsloth                     # 4-bit LoRA, fused Triton kernels (PharmaRL recipe)
+trl>=0.10                   # HF TRL for GRPO
+accelerate>=0.30
+peft>=0.10
+bitsandbytes>=0.43
+
+# Env serving (Phase 1 Step 6)
+fastapi>=0.110
+uvicorn[standard]>=0.30
+pydantic>=2.6
+
+# Cell-cell communication inference (Phase 0 Step 2)
+# CellChat is R-only; install via R:
+#   install.packages("BiocManager"); BiocManager::install("CellChat")
+# We call it from Python via rpy2 or write outputs as CSV.
+rpy2>=3.5                   # optional bridge to CellChat in R
+
+# Misc
+wandb                       # training logging
+omegaconf                   # config files
+hydra-core                  # config management

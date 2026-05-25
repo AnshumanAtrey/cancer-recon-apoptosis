@@ -1,0 +1,30 @@
+{
+  "model_id": "facebook/esm2_t6_8M_UR50D",
+  "device": "mps",
+  "sequences": {
+    "DR5_ECD": {
+      "len": 128,
+      "preview": "ITQQDLAPQQKAAPQQKRSSPSEGLCPPGH"
+    },
+    "TRAIL_loop_pos": {
+      "len": 20,
+      "preview": "VRERGPQRVAAHITGTRGRS"
+    },
+    "Scrambled_neg": {
+      "len": 20,
+      "preview": "GTRAVGQHRSRPRGITERVA"
+    },
+    "DR4_ECD_homolog": {
+      "len": 129,
+      "preview": "LDPGLLAPLAQSPQNLNTSTGGTVQRSLLQ"
+    }
+  },
+  "similarities": {
+    "TRAIL_loop_vs_DR5": 0.8099507689476013,
+    "Scrambled_vs_DR5": 0.7914101481437683,
+    "TRAIL_loop_vs_DR4": 0.8429139852523804,
+    "Scrambled_vs_DR4": 0.8200348615646362,
+    "margin_pos_minus_neg_on_DR5": 0.018540620803833008
+  },
+  "note": "ESM-2 sequence-embedding cosine is NOT a binding-affinity oracle. Used here only to verify the local pipeline runs end-to-end on M2."
+}
