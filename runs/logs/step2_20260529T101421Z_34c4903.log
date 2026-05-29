@@ -1,0 +1,196 @@
+# cancer-recon-apoptosis — run log
+# step          : step2
+# utc           : 20260529T101421Z
+# commit_short  : 34c4903
+# commit_full   : 34c4903ff13ecc62bc7c5c8844942383a1b04cf3
+# branch        : main
+# python        : 3.12.13
+# platform      : Linux-6.6.122+-x86_64-with-glibc2.35
+#================================================================
+
+$ pip install cellxgene-census scanpy liana
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 79.5/79.5 kB 3.2 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 91.2/91.2 kB 6.4 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 55.6/55.6 kB 2.7 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 43.5 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 563.9/563.9 kB 28.9 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 175.3/175.3 kB 8.6 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.4/12.4 MB 69.0 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 203.4/203.4 kB 12.1 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 22.3/22.3 MB 8.6 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.5/43.5 kB 2.1 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 89.5/89.5 kB 3.4 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 60.1/60.1 kB 2.6 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 319.6/319.6 kB 6.7 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.0/15.0 MB 6.6 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.2/9.2 MB 9.4 MB/s eta 0:00:00
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+google-colab 1.0.0 requires pandas==2.2.2, but you have pandas 2.3.3 which is incompatible.
+gcsfs 2025.3.0 requires fsspec==2025.3.0, but you have fsspec 2026.4.0 which is incompatible.
+datasets 4.0.0 requires fsspec[http]<=2025.3.0,>=2023.1.0, but you have fsspec 2026.4.0 which is incompatible.
+[exit 0]
+
+$ /usr/bin/python3 -u scripts/03_census_fetch.py explore
+10:15:11 [INFO] NumExpr defaulting to 2 threads.
+10:15:14 [INFO] cancer-recon-apoptosis — Step 2a — CELLxGENE Census data layer (mode=explore)
+10:15:17 [INFO] Census version=2024-07-01
+10:15:17 [INFO] ============================================================
+10:15:17 [INFO] [explore] tissue_general == 'lung'
+10:15:23 [INFO] [lung] total primary cells = 3677225
+10:15:23 [INFO] [lung] disease values (top 12):
+10:15:23 [INFO]        1512380  normal
+10:15:23 [INFO]         772120  lung adenocarcinoma
+10:15:23 [INFO]         470411  COVID-19
+10:15:23 [INFO]         268932  pulmonary fibrosis
+10:15:23 [INFO]         209675  squamous cell lung carcinoma
+10:15:23 [INFO]         120796  non-small cell lung carcinoma
+10:15:23 [INFO]          68456  interstitial lung disease
+10:15:23 [INFO]          67943  chronic obstructive pulmonary disease
+10:15:23 [INFO]          31923  pneumonia
+10:15:23 [INFO]          31792  pulmonary emphysema
+10:15:23 [INFO]          31540  small cell lung carcinoma
+10:15:23 [INFO]          21167  lung large cell carcinoma
+10:15:24 [INFO] [lung] cell_type values (top 12):
+10:15:24 [INFO]         500803  unknown
+10:15:24 [INFO]         396039  alveolar macrophage
+10:15:24 [INFO]         228795  CD4-positive, alpha-beta T cell
+10:15:24 [INFO]         214253  type II pneumocyte
+10:15:24 [INFO]         210578  CD8-positive, alpha-beta T cell
+10:15:24 [INFO]         139079  macrophage
+10:15:24 [INFO]         114070  natural killer cell
+10:15:24 [INFO]         110637  epithelial cell of lower respiratory tract
+10:15:24 [INFO]         103132  classical monocyte
+10:15:24 [INFO]          94047  T cell
+10:15:24 [INFO]          88292  B cell
+10:15:24 [INFO]          88159  stromal cell
+10:15:24 [INFO] [lung] cell_type 'malignant cell' annotated? True (75583 cells)
+10:15:24 [INFO] [lung] cell_type 'neoplastic cell' annotated? True (0 cells)
+10:15:24 [INFO] [lung] cell_type 'epithelial cell' annotated? True (59366 cells)
+10:15:24 [INFO] ============================================================
+10:15:24 [INFO] [explore] tissue_general == 'breast'
+10:15:25 [INFO] [breast] total primary cells = 2380941
+10:15:25 [INFO] [breast] disease values (top 12):
+10:15:25 [INFO]        2280877  normal
+10:15:25 [INFO]         100064  breast carcinoma
+10:15:25 [INFO]              0  B-cell acute lymphoblastic leukemia
+10:15:25 [INFO]              0  Barrett esophagus
+10:15:25 [INFO]              0  B-cell non-Hodgkin lymphoma
+10:15:25 [INFO]              0  Crohn disease
+10:15:25 [INFO]              0  Crohn ileitis
+10:15:25 [INFO]              0  Down syndrome
+10:15:25 [INFO]              0  Lewy body dementia
+10:15:25 [INFO]              0  Parkinson disease
+10:15:25 [INFO]              0  Plasmodium malariae malaria
+10:15:25 [INFO]              0  Wilms tumor
+10:15:25 [INFO] [breast] cell_type values (top 12):
+10:15:25 [INFO]         289758  luminal adaptive secretory precursor cell of mammary gland
+10:15:25 [INFO]         270739  fibroblast of mammary gland
+10:15:25 [INFO]         234335  fibroblast
+10:15:25 [INFO]         197952  luminal hormone-sensing cell of mammary gland
+10:15:25 [INFO]         176167  luminal epithelial cell of mammary gland
+10:15:25 [INFO]         140850  myoepithelial cell of mammary gland
+10:15:25 [INFO]         133608  blood vessel endothelial cell
+10:15:25 [INFO]         132707  basal cell
+10:15:25 [INFO]         131160  perivascular cell
+10:15:25 [INFO]          62276  vein endothelial cell
+10:15:25 [INFO]          53780  endothelial tip cell
+10:15:25 [INFO]          52047  mammary gland epithelial cell
+10:15:25 [INFO] [breast] cell_type 'malignant cell' annotated? True (0 cells)
+10:15:25 [INFO] [breast] cell_type 'neoplastic cell' annotated? True (0 cells)
+10:15:25 [INFO] [breast] cell_type 'epithelial cell' annotated? True (0 cells)
+10:15:25 [INFO] ============================================================
+10:15:25 [INFO] [explore] tissue_general == 'colon'
+10:15:27 [INFO] [colon] total primary cells = 537914
+10:15:27 [INFO] [colon] disease values (top 12):
+10:15:27 [INFO]         315975  normal
+10:15:27 [INFO]         164530  Crohn disease
+10:15:27 [INFO]          24720  tubular adenoma
+10:15:27 [INFO]          11213  colon sessile serrated adenoma/polyp
+10:15:27 [INFO]           5642  colorectal cancer
+10:15:27 [INFO]           5333  hyperplastic polyp
+10:15:27 [INFO]           4808  tubulovillous adenoma
+10:15:27 [INFO]           4329  adenocarcinoma
+10:15:27 [INFO]           1364  colorectal neoplasm
+10:15:27 [INFO]              0  COVID-19
+10:15:27 [INFO]              0  Crohn ileitis
+10:15:27 [INFO]              0  Down syndrome
+10:15:27 [INFO] [colon] cell_type values (top 12):
+10:15:27 [INFO]          59440  enterocyte
+10:15:27 [INFO]          53208  absorptive cell
+10:15:27 [INFO]          50031  plasma cell
+10:15:27 [INFO]          39259  fibroblast
+10:15:27 [INFO]          29795  goblet cell
+10:15:27 [INFO]          24500  IgA plasma cell
+10:15:27 [INFO]          19399  intestinal epithelial cell
+10:15:27 [INFO]          17406  transit amplifying cell of colon
+10:15:27 [INFO]          14527  CD4-positive, alpha-beta T cell
+10:15:27 [INFO]          13599  transit amplifying cell
+10:15:27 [INFO]          13232  stem cell
+10:15:27 [INFO]          12130  macrophage
+10:15:27 [INFO] [colon] cell_type 'malignant cell' annotated? True (0 cells)
+10:15:27 [INFO] [colon] cell_type 'neoplastic cell' annotated? True (9846 cells)
+10:15:27 [INFO] [colon] cell_type 'epithelial cell' annotated? True (10002 cells)
+10:15:27 [INFO] ✓ done (mode=explore)
+[exit 0]
+
+$ /usr/bin/python3 -u scripts/03_census_fetch.py fetch
+10:15:28 [INFO] NumExpr defaulting to 2 threads.
+10:15:31 [INFO] cancer-recon-apoptosis — Step 2a — CELLxGENE Census data layer (mode=fetch)
+10:15:32 [INFO] ============================================================
+10:15:32 [INFO] [fetch] target=lung tissue=lung cancer_disease='lung adenocarcinoma'
+10:15:39 [INFO] [lung/tumour] 772120 cells match; pulling 20000 (cap=20000)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+... storing 'condition' as categorical
+... storing 'target_label' as categorical
+10:23:25 [INFO] [lung/tumour] saved → data/cellxgene/lung__tumour.h5ad  shape=(20000, 60530)  cell_types=51
+10:23:26 [INFO] [lung/normal] 1512380 cells match; pulling 20000 (cap=20000)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+... storing 'condition' as categorical
+... storing 'target_label' as categorical
+10:33:23 [INFO] [lung/normal] saved → data/cellxgene/lung__normal.h5ad  shape=(20000, 60530)  cell_types=164
+10:33:23 [INFO] ============================================================
+10:33:23 [INFO] [fetch] target=breast tissue=breast cancer_disease='breast carcinoma'
+10:33:25 [INFO] [breast/tumour] 100064 cells match; pulling 20000 (cap=20000)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+... storing 'condition' as categorical
+... storing 'target_label' as categorical
+10:34:01 [INFO] [breast/tumour] saved → data/cellxgene/breast__tumour.h5ad  shape=(20000, 60530)  cell_types=18
+10:34:03 [INFO] [breast/normal] 2280877 cells match; pulling 20000 (cap=20000)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+... storing 'condition' as categorical
+... storing 'target_label' as categorical
+10:42:15 [INFO] [breast/normal] saved → data/cellxgene/breast__normal.h5ad  shape=(20000, 60530)  cell_types=62
+10:42:15 [INFO] ============================================================
+10:42:15 [INFO] [fetch] target=colon tissue=colon cancer_disease='colorectal cancer'
+10:42:17 [INFO] [colon/tumour] 5642 cells match; pulling 5642 (cap=20000)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+... storing 'condition' as categorical
+... storing 'target_label' as categorical
+10:42:25 [INFO] [colon/tumour] saved → data/cellxgene/colon__tumour.h5ad  shape=(5642, 60530)  cell_types=16
+10:42:26 [INFO] [colon/normal] 315975 cells match; pulling 20000 (cap=20000)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+... storing 'condition' as categorical
+... storing 'target_label' as categorical
+10:44:16 [INFO] [colon/normal] saved → data/cellxgene/colon__normal.h5ad  shape=(20000, 60530)  cell_types=102
+10:44:16 [INFO] ============================================================
+10:44:16 [INFO] [fetch] 3/3 targets fully fetched into data/cellxgene
+10:44:17 [INFO] ✓ done (mode=fetch)
+[exit 0]
