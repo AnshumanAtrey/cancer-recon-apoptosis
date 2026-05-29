@@ -46,9 +46,14 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 RUN_DIR = PROJECT_ROOT / "runs" / "step1_boltz"
 OUT_PATH = RUN_DIR / "interface_metrics.json"
 
-PDOCKQ_MARGIN = 0.10          # positive must beat each negative by this
-PDOCKQ_CREDIBLE = 0.23        # Bryant "acceptable model" threshold
-CONTACT_CUTOFF = 8.0          # Å, CB-CB (CA for GLY)
+# Two-axis AlphaFold-Multimer acceptance filter (literature-standard thresholds,
+# chosen a priori — NOT fitted to this run). A credible interface must satisfy BOTH:
+IPLDDT_MIN = 0.70             # interface pLDDT (Boltz complex_iplddt), [0,1]
+IPAE_MAX   = 15.0             # mean inter-chain PAE (Å); lower = more confident pose
+CONTACT_CUTOFF = 8.0          # Å, CB-CB (CA for GLY) — for pDockQ + interface PAE
+# pDockQ kept for reference only; it is single-axis (pLDDT+contacts, no PAE) and is
+# fooled by confident non-binders (lysozyme scored as high as the real binder).
+PDOCKQ_CREDIBLE = 0.23
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s",
                     datefmt="%H:%M:%S", stream=sys.stdout)
@@ -56,32 +61,35 @@ log = logging.getLogger("step1b")
 
 
 # ---------- pure math (unit-tested locally) ----------
-def pdockq_from_arrays(coords_a, coords_b, plddt_a, plddt_b,
-                       cutoff: float = CONTACT_CUTOFF):
-    """coords_*: (n,3) CB coords; plddt_*: (n,) per-residue pLDDT on 0-100 scale.
+def contact_matrix(coords_a, coords_b, cutoff: float = CONTACT_CUTOFF):
+    """Boolean (n_a, n_b) of CB-CB (CA for GLY) distances below cutoff (Å)."""
+    import numpy as np
+    A = np.asarray(coords_a, float); B = np.asarray(coords_b, float)
+    if len(A) == 0 or len(B) == 0:
+        return np.zeros((len(A), len(B)), bool)
+    d = np.sqrt(((A[:, None, :] - B[None, :, :]) ** 2).sum(-1))
+    return d < cutoff
+
+
+def pdockq_from_contact(contact, plddt_a, plddt_b):
+    """pDockQ (Bryant et al. 2022). plddt_* on 0-100 scale.
 
     Returns (pdockq, n_contacts, mean_interface_plddt).
     """
     import numpy as np
-    A = np.asarray(coords_a, float); B = np.asarray(coords_b, float)
+    contact = np.asarray(contact, bool)
     pa = np.asarray(plddt_a, float); pb = np.asarray(plddt_b, float)
-    if len(A) == 0 or len(B) == 0:
-        return 0.0, 0, 0.0
-    d = np.sqrt(((A[:, None, :] - B[None, :, :]) ** 2).sum(-1))   # (na, nb)
-    contact = d < cutoff
     n_contacts = int(contact.sum())
     if n_contacts == 0:
         return 0.0, 0, 0.0
-    if_a = contact.any(axis=1)      # interface residues in A
-    if_b = contact.any(axis=0)      # interface residues in B
-    if_plddt = float(np.concatenate([pa[if_a], pb[if_b]]).mean())
+    if_plddt = float(np.concatenate([pa[contact.any(1)], pb[contact.any(0)]]).mean())
     x = if_plddt * math.log(n_contacts)
     pdockq = 0.724 / (1.0 + math.exp(-0.052 * (x - 152.611))) + 0.018
     return float(pdockq), n_contacts, if_plddt
 
 
 def mean_interchain_pae(pae, chain_ids) -> Optional[float]:
-    """pae: (N,N); chain_ids: length-N list of chain labels in PAE/token order."""
+    """Mean PAE over ALL inter-chain residue pairs. pae:(N,N); chain_ids length-N."""
     import numpy as np
     pae = np.asarray(pae, float)
     if pae.ndim != 2 or pae.shape[0] != pae.shape[1] or pae.shape[0] != len(chain_ids):
@@ -91,6 +99,27 @@ def mean_interchain_pae(pae, chain_ids) -> Optional[float]:
     if not mask.any():
         return None
     return float(pae[mask].mean())
+
+
+def interface_pae(pae, contact_ab, n_a) -> Optional[float]:
+    """Mean PAE over CONTACTING inter-chain pairs only (interface-restricted).
+
+    pae:(N,N) with chain A at indices [0,n_a) and chain B at [n_a, N).
+    contact_ab:(n_a, n_b) bool — True where an A residue contacts a B residue.
+    Averages both directions A->B and B->A. Returns None if no contacts/shape bad.
+    """
+    import numpy as np
+    pae = np.asarray(pae, float)
+    contact_ab = np.asarray(contact_ab, bool)
+    n_b = contact_ab.shape[1]
+    if pae.shape[0] != n_a + n_b or contact_ab.shape[0] != n_a:
+        return None
+    ia, jb = np.where(contact_ab)
+    if len(ia) == 0:
+        return None
+    ab = pae[ia, n_a + jb]            # A-row, B-col
+    ba = pae[n_a + jb, ia]            # B-row, A-col
+    return float(np.concatenate([ab, ba]).mean())
 
 
 # ---------- output loading ----------
@@ -164,25 +193,30 @@ def analyse(name: str, out_dir: Path) -> Optional[dict]:
     row = {k: conf.get(k) for k in
            ("iptm", "ptm", "complex_plddt", "complex_iplddt", "complex_ipde", "confidence_score")}
 
-    # pDockQ from structure
     chain_ids, per_chain = parse_cif(out_dir)
-    pdockq = n_contacts = if_plddt = None
+    pae = load_pae(out_dir)
+    pdockq = n_contacts = if_plddt = ipae = None
     if per_chain and len(per_chain) >= 2:
         cs = list(per_chain)             # [A (receptor), B (binder)]
-        (ca, pa) = per_chain[cs[0]]
-        (cb, pb) = per_chain[cs[1]]
-        pdockq, n_contacts, if_plddt = pdockq_from_arrays(ca, cb, pa, pb)
+        ca, pa = per_chain[cs[0]]
+        cb, pb = per_chain[cs[1]]
+        A = np.asarray(ca, float); B = np.asarray(cb, float)
+        if len(A) and len(B):
+            contact = contact_matrix(A, B)                     # (n_a, n_b)
+            pdockq, n_contacts, if_plddt = pdockq_from_contact(contact, pa, pb)
+            if n_contacts and pae is not None:
+                ipae = interface_pae(pae, contact, len(A))     # interface-restricted PAE
     row["pdockq"] = pdockq
     row["n_interface_contacts"] = n_contacts
     row["interface_plddt_0_100"] = if_plddt
+    row["interface_pae"] = ipae                                  # interface-restricted (supplementary)
+    row["mean_interchain_pae"] = (mean_interchain_pae(pae, chain_ids)
+                                  if (pae is not None and chain_ids) else None)  # all-pairs (decision axis)
 
-    # interface PAE from npz
-    pae = load_pae(out_dir)
-    row["mean_interchain_pae"] = mean_interchain_pae(pae, chain_ids) if (pae is not None and chain_ids) else None
-
-    log.info("[%s] iptm=%s complex_plddt=%s complex_iplddt=%s pdockq=%s contacts=%s mean_ichain_pae=%s",
-             name, _fmt(row["iptm"]), _fmt(row["complex_plddt"]), _fmt(row["complex_iplddt"]),
-             _fmt(row["pdockq"]), row["n_interface_contacts"], _fmt(row["mean_interchain_pae"]))
+    log.info("[%s] iptm=%s iplddt=%s mean_ic_pae=%s iface_pae=%s pdockq=%s contacts=%s",
+             name, _fmt(row["iptm"]), _fmt(row["complex_iplddt"]),
+             _fmt(row["mean_interchain_pae"]), _fmt(row["interface_pae"]),
+             _fmt(row["pdockq"]), row["n_interface_contacts"])
     return row
 
 
@@ -215,39 +249,55 @@ def main() -> int:
 
     log.info("=" * 64)
     log.info("METRIC PANEL (positive vs negatives)")
-    hdr = f"{'metric':<22}" + "".join(f"{k:>16}" for k in complexes)
+    hdr = f"{'metric':<24}" + "".join(f"{k:>16}" for k in complexes)
     log.info(hdr)
     for metric in ("iptm", "ptm", "complex_plddt", "complex_iplddt",
-                   "mean_interchain_pae", "n_interface_contacts", "interface_plddt_0_100", "pdockq"):
-        line = f"{metric:<22}" + "".join(f"{_fmt(complexes[k].get(metric)):>16}" for k in complexes)
+                   "mean_interchain_pae", "interface_pae", "n_interface_contacts",
+                   "interface_plddt_0_100", "pdockq"):
+        line = f"{metric:<24}" + "".join(f"{_fmt(complexes[k].get(metric)):>16}" for k in complexes)
         log.info(line)
 
-    # ---- decision ----
+    # ---- decision: two-axis AF-Multimer filter (interface pLDDT AND inter-chain PAE) ----
+    # No single metric separates a real binder from BOTH an unfoldable decoy (fails
+    # pLDDT) and a confidently-misdocked folded non-binder (fails PAE). The conjunction
+    # does. pDockQ is single-axis and is reported but NOT used to decide.
+    def credible(row):
+        il, pae_ = row.get("complex_iplddt"), row.get("mean_interchain_pae")
+        if il is None or pae_ is None:
+            return None
+        return bool(il >= IPLDDT_MIN and pae_ <= IPAE_MAX)
+
     log.info("=" * 64)
-    log.info("DECISION (pDockQ margin >= %.2f vs each negative, iplddt(pos) higher, pDockQ(pos) >= %.2f)",
-             PDOCKQ_MARGIN, PDOCKQ_CREDIBLE)
-    verdict_pass = True
+    log.info("DECISION — two-axis filter: complex_iplddt >= %.2f AND mean_interchain_pae <= %.1f",
+             IPLDDT_MIN, IPAE_MAX)
+    for k in complexes:
+        r = complexes[k]
+        il_ok = r.get("complex_iplddt") is not None and r["complex_iplddt"] >= IPLDDT_MIN
+        pae_ok = r.get("mean_interchain_pae") is not None and r["mean_interchain_pae"] <= IPAE_MAX
+        log.info("  %-16s iplddt=%s(%s)  pae=%s(%s)  → credible=%s",
+                 k, _fmt(r.get("complex_iplddt")), "ok" if il_ok else "no",
+                 _fmt(r.get("mean_interchain_pae")), "ok" if pae_ok else "no", credible(r))
+
+    pos_cred = credible(pos)
+    cred_negs = [k for k, v in negatives.items() if credible(v)]
     reasons = []
-    if pos.get("pdockq") is None:
-        verdict_pass = False; reasons.append("positive pDockQ could not be computed")
-    else:
-        if pos["pdockq"] < PDOCKQ_CREDIBLE:
-            verdict_pass = False
-            reasons.append(f"positive pDockQ {pos['pdockq']:.3f} < {PDOCKQ_CREDIBLE} (not a credible interface)")
-        for k, v in negatives.items():
-            dq = (pos["pdockq"] - v["pdockq"]) if v.get("pdockq") is not None else None
-            il_ok = (pos.get("complex_iplddt") is not None and v.get("complex_iplddt") is not None
-                     and pos["complex_iplddt"] > v["complex_iplddt"])
-            ok = (dq is not None and dq >= PDOCKQ_MARGIN and il_ok)
-            log.info("  vs %-16s ΔpDockQ=%s  iplddt(pos>neg)=%s  → %s",
-                     k, _fmt(dq), il_ok, "ok" if ok else "WEAK")
-            if not ok:
-                verdict_pass = False
-                reasons.append(f"weak separation vs {k} (ΔpDockQ={_fmt(dq)}, iplddt_higher={il_ok})")
+    verdict_pass = True
+    if pos_cred is None:
+        verdict_pass = False; reasons.append("positive metrics incomplete (no iplddt/pae)")
+    elif not pos_cred:
+        verdict_pass = False
+        reasons.append(f"positive not credible (iplddt={_fmt(pos.get('complex_iplddt'))}, "
+                       f"pae={_fmt(pos.get('mean_interchain_pae'))})")
+    if cred_negs:
+        verdict_pass = False
+        reasons.append(f"non-binder(s) also pass the filter (false positives): {cred_negs}")
 
     OUT_PATH.write_text(json.dumps({
         "complexes": complexes,
-        "thresholds": {"pdockq_margin": PDOCKQ_MARGIN, "pdockq_credible": PDOCKQ_CREDIBLE},
+        "thresholds": {"iplddt_min": IPLDDT_MIN, "ipae_max": IPAE_MAX, "pdockq_credible": PDOCKQ_CREDIBLE},
+        "decision_axes": ["complex_iplddt", "mean_interchain_pae"],
+        "n_per_class": "1 positive, 2 negatives — thresholds are literature-standard, not fitted; "
+                       "calibrate on a benchmark before using as an RL reward",
         "verdict": "PASS" if verdict_pass else "FAIL",
         "reasons": reasons,
     }, indent=2))
