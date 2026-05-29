@@ -1,0 +1,21 @@
+# cancer-recon-apoptosis — run log
+# step          : grow_reverse
+# utc           : 20260529T202335Z
+# commit_short  : 591afba
+# commit_full   : 591afba060cedf1bb77e498d5c0e6b5c449eddb0
+# branch        : main
+# python        : 3.12.6
+# platform      : macOS-26.3-arm64-arm-64bit
+#================================================================
+
+$ /Library/Frameworks/Python.framework/Versions/3.12/bin/python3 -u scripts/09_grow_reverse.py
+01:53:35 [INFO] grow-then-reverse — tumour grows cell-to-cell, recognition-gated death reverses it
+01:53:35 [INFO] PHASE 1 GROW: 90 steps → tumour peak 8178 cancer cells (31.5% of tissue)
+01:53:35 [INFO] PHASE 2 REVERSE: death wave from origin → cleared 100.0% of the tumour, healthy killed 0.00%
+01:53:35 [INFO]   [✓] tumour grew (peak > 1500 cells)
+01:53:35 [INFO]   [✓] reverse cleared the connected tumour (>90%)
+01:53:35 [INFO]   [✓] healthy spared (<2% killed)
+01:53:36 [INFO] figures → runs/grow_reverse/grow_reverse_timeline.png + grow_reverse_curve.png
+01:53:36 [INFO] animation → runs/grow_reverse/grow_reverse.gif (27 frames)
+01:53:36 [INFO] results → runs/grow_reverse/grow_reverse_results.json
+[exit 0]
