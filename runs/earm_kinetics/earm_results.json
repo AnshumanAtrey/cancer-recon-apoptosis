@@ -1,0 +1,193 @@
+{
+  "default": {
+    "L_0": 3000.0,
+    "committed": true,
+    "Td_h": 3.65,
+    "Ts_min": 30.6,
+    "cparp_max": 999383.2578931012,
+    "PARP_0": 1000000.0
+  },
+  "dose_response": [
+    {
+      "L_0": 1.0,
+      "committed": false,
+      "Td_h": 9.69,
+      "cparp_frac": 0.001
+    },
+    {
+      "L_0": 2.0,
+      "committed": false,
+      "Td_h": 9.68,
+      "cparp_frac": 0.002
+    },
+    {
+      "L_0": 3.0,
+      "committed": false,
+      "Td_h": 9.69,
+      "cparp_frac": 0.003
+    },
+    {
+      "L_0": 4.0,
+      "committed": false,
+      "Td_h": 9.77,
+      "cparp_frac": 0.005
+    },
+    {
+      "L_0": 7.0,
+      "committed": false,
+      "Td_h": 11.01,
+      "cparp_frac": 0.26
+    },
+    {
+      "L_0": 12.0,
+      "committed": true,
+      "Td_h": 10.25,
+      "cparp_frac": 0.999
+    },
+    {
+      "L_0": 19.0,
+      "committed": true,
+      "Td_h": 9.42,
+      "cparp_frac": 1.0
+    },
+    {
+      "L_0": 32.0,
+      "committed": true,
+      "Td_h": 8.54,
+      "cparp_frac": 1.0
+    },
+    {
+      "L_0": 52.0,
+      "committed": true,
+      "Td_h": 7.77,
+      "cparp_frac": 1.0
+    },
+    {
+      "L_0": 85.0,
+      "committed": true,
+      "Td_h": 7.04,
+      "cparp_frac": 1.0
+    },
+    {
+      "L_0": 139.0,
+      "committed": true,
+      "Td_h": 6.38,
+      "cparp_frac": 1.0
+    },
+    {
+      "L_0": 228.0,
+      "committed": true,
+      "Td_h": 5.76,
+      "cparp_frac": 1.0
+    },
+    {
+      "L_0": 373.0,
+      "committed": true,
+      "Td_h": 5.22,
+      "cparp_frac": 1.0
+    },
+    {
+      "L_0": 611.0,
+      "committed": true,
+      "Td_h": 4.74,
+      "cparp_frac": 1.0
+    },
+    {
+      "L_0": 1000.0,
+      "committed": true,
+      "Td_h": 4.33,
+      "cparp_frac": 1.0
+    },
+    {
+      "L_0": 1638.0,
+      "committed": true,
+      "Td_h": 3.98,
+      "cparp_frac": 0.999
+    },
+    {
+      "L_0": 2683.0,
+      "committed": true,
+      "Td_h": 3.71,
+      "cparp_frac": 0.999
+    },
+    {
+      "L_0": 4394.0,
+      "committed": true,
+      "Td_h": 3.49,
+      "cparp_frac": 0.999
+    },
+    {
+      "L_0": 7197.0,
+      "committed": true,
+      "Td_h": 3.34,
+      "cparp_frac": 0.999
+    },
+    {
+      "L_0": 11788.0,
+      "committed": true,
+      "Td_h": 3.23,
+      "cparp_frac": 0.999
+    },
+    {
+      "L_0": 19307.0,
+      "committed": true,
+      "Td_h": 3.16,
+      "cparp_frac": 0.999
+    },
+    {
+      "L_0": 31623.0,
+      "committed": true,
+      "Td_h": 3.11,
+      "cparp_frac": 0.999
+    }
+  ],
+  "threshold_L0": 12.0,
+  "priming": [
+    {
+      "brake": "Bcl2_0",
+      "brake_mult": 0.25,
+      "threshold_L0": 2.0
+    },
+    {
+      "brake": "Bcl2_0",
+      "brake_mult": 0.5,
+      "threshold_L0": 4.0
+    },
+    {
+      "brake": "Bcl2_0",
+      "brake_mult": 1.0,
+      "threshold_L0": 12.0
+    },
+    {
+      "brake": "Bcl2_0",
+      "brake_mult": 2.0,
+      "threshold_L0": 19.0
+    },
+    {
+      "brake": "Bcl2_0",
+      "brake_mult": 4.0,
+      "threshold_L0": 52.0
+    },
+    {
+      "brake": "Bcl2_0",
+      "brake_mult": 8.0,
+      "threshold_L0": null
+    }
+  ],
+  "population": {
+    "n": 60,
+    "kill_fraction": 0.9833333333333333,
+    "Td_mean_h": 3.7741746496217035,
+    "Td_CV": 0.15523100604362614
+  },
+  "calibration_checks": {
+    "default cell commits to death (cleaved PARP -> full)": true,
+    "variable delay Td is hours-scale (0.5-8 h)": true,
+    "switch is snap-action (Ts < Td, i.e. < 60 min and < Td*60)": true,
+    "dose threshold exists (all-or-none, not graded)": true,
+    "priming raises threshold (more brake -> higher L_0*)": true,
+    "cell-to-cell timing variability present (Td CV > 0.05)": true
+  },
+  "calibration_passed": true,
+  "AGONISM_CAVEAT": "EARM takes activated caspase-8 as INPUT; this does NOT demonstrate a DR5 binder fires caspase-8 (the agonism crux is a wet-lab experiment). Input knobs are proxies."
+}
