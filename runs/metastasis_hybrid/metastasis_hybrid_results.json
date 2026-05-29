@@ -1,0 +1,84 @@
+{
+  "local_only": {
+    "cleared": 0.5843108504398826,
+    "healthy_killed": 0.0,
+    "dose_frac": 0.0007331378299120235
+  },
+  "sweep": [
+    {
+      "p_seed": 0.005,
+      "systemic_cleared": 0.004,
+      "hybrid_cleared": 0.762,
+      "systemic_dose": 0.004,
+      "hybrid_dose": 0.004,
+      "hybrid_healthy": 0.0
+    },
+    {
+      "p_seed": 0.01,
+      "systemic_cleared": 0.01,
+      "hybrid_cleared": 0.822,
+      "systemic_dose": 0.01,
+      "hybrid_dose": 0.01,
+      "hybrid_healthy": 0.0
+    },
+    {
+      "p_seed": 0.02,
+      "systemic_cleared": 0.019,
+      "hybrid_cleared": 0.881,
+      "systemic_dose": 0.019,
+      "hybrid_dose": 0.019,
+      "hybrid_healthy": 0.0
+    },
+    {
+      "p_seed": 0.05,
+      "systemic_cleared": 0.053,
+      "hybrid_cleared": 1.0,
+      "systemic_dose": 0.053,
+      "hybrid_dose": 0.053,
+      "hybrid_healthy": 0.0
+    },
+    {
+      "p_seed": 0.1,
+      "systemic_cleared": 0.108,
+      "hybrid_cleared": 1.0,
+      "systemic_dose": 0.108,
+      "hybrid_dose": 0.108,
+      "hybrid_healthy": 0.0
+    },
+    {
+      "p_seed": 0.2,
+      "systemic_cleared": 0.206,
+      "hybrid_cleared": 1.0,
+      "systemic_dose": 0.206,
+      "hybrid_dose": 0.206,
+      "hybrid_healthy": 0.0
+    },
+    {
+      "p_seed": 0.5,
+      "systemic_cleared": 0.494,
+      "hybrid_cleared": 1.0,
+      "systemic_dose": 0.494,
+      "hybrid_dose": 0.494,
+      "hybrid_healthy": 0.0
+    },
+    {
+      "p_seed": 0.99,
+      "systemic_cleared": 0.99,
+      "hybrid_cleared": 1.0,
+      "systemic_dose": 0.99,
+      "hybrid_dose": 0.99,
+      "hybrid_healthy": 0.0
+    }
+  ],
+  "min_p_systemic": 0.99,
+  "min_p_hybrid": 0.05,
+  "dose_economy_x": 19.799999999999997,
+  "checks": {
+    "local_only leaves metastases (cleared < 90%)": true,
+    "hybrid clears everything (>99%) at low dose (p_seed <= 0.1)": true,
+    "systemic_only needs near-saturating dose (p_seed >= 0.5 for >99%)": true,
+    "hybrid spares healthy (<1%)": true,
+    "hybrid >> systemic dose economy (>=5x)": true
+  },
+  "supported": true
+}
