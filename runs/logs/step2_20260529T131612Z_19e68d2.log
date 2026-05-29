@@ -1,0 +1,27 @@
+# cancer-recon-apoptosis — run log
+# step          : step2
+# utc           : 20260529T131612Z
+# commit_short  : 19e68d2
+# commit_full   : 19e68d2627d42cea13b484b59065d330b3ec974c
+# branch        : main
+# python        : 3.12.13
+# platform      : Linux-6.6.122+-x86_64-with-glibc2.35
+#================================================================
+
+$ /usr/bin/python3 -u scripts/06_liana_communication.py
+13:16:12 [INFO] cancer-recon-apoptosis — Step 2c — LIANA communication annotation
+13:16:14 [INFO] NumExpr defaulting to 2 threads.
+13:16:26 [INFO] targets from targets_surface_shortlist.csv: 847 receptors (+DR5)
+13:16:26 [INFO] ================================================================
+13:16:32 [INFO] [lung] cancer cell types: ['malignant cell']
+13:16:37 [INFO] [lung/tumour] subsampled to 15000 cells (RAM guard)
+13:16:37 [INFO] [lung/tumour] restricting 60530→1854 genes (L-R resource) before LIANA
+13:16:37 [INFO] [lung/tumour] running LIANA rank_aggregate (groupby=cell_type, min_cells=10, expr_prop=0.10)…
+/usr/local/lib/python3.12/dist-packages/legacy_api_wrap/__init__.py:88: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/usr/local/lib/python3.12/dist-packages/liana/method/_pipe_utils/_pre.py:165: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/usr/local/lib/python3.12/dist-packages/liana/method/_pipe_utils/_pre.py:168: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/usr/lib/python3.12/functools.py:912: UserWarning: zero-centering a sparse array/matrix densifies it.
+/usr/local/lib/python3.12/dist-packages/liana/method/sc/_liana_pipe.py:288: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/usr/local/lib/python3.12/dist-packages/liana/method/sc/_liana_pipe.py:293: FutureWarning: The method uns_keys is deprecated and will be removed in the future. Use uns instead of uns_keys. (e.g. `k in adata.uns` or `sorted(adata.uns)`)
+/usr/local/lib/python3.12/dist-packages/liana/method/sc/_liana_pipe.py:296: FutureWarning: The method uns_keys is deprecated and will be removed in the future. Use uns instead of uns_keys. (e.g. `k in adata.uns` or `sorted(adata.uns)`)
+[exit -9]

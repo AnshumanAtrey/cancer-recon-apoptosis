@@ -83,7 +83,12 @@ def receptor_hits(receptor_complex: str, targets: set[str]) -> set[str]:
 
 
 # ---------- LIANA run ----------
-MAX_CELLS_LIANA = 15000        # safety cap; LIANA densifies during scaling → bound RAM
+# RAM guards. The earlier OOM (exit -9) came from the cell-type-pair explosion:
+# n_celltypes^2 pairs x ~4700 L-R x 1000-perm null x 6 methods. We bound all three.
+MAX_CELLS_LIANA = 10000        # deterministic cell cap
+TOP_CELLTYPES = 18             # keep the major populations (pairs = TOP^2); + cancer pop
+MIN_CELLS_PER_TYPE = 50        # a cell type needs this many cells to be a reliable L-R group
+N_PERMS = 100                  # permutation null (default 1000) — 10x less memory/time
 
 
 def _resource_genes() -> set[str]:
@@ -98,33 +103,43 @@ def _resource_genes() -> set[str]:
     return genes
 
 
-def run_liana(adata, label: str):
+def run_liana(adata, label: str, cancer_cts):
     import liana as li
     import scanpy as sc
     import numpy as np
-    # Normalise on the FULL gene set (CP10k uses total counts), THEN restrict to the
-    # L-R resource genes BEFORE rank_aggregate. LIANA only scores resource genes, so
-    # this is lossless — but it shrinks the matrix ~15x and avoids the densification OOM
-    # ([exit -9]) that 60k genes caused.
+    # Normalise on the FULL gene set (correct CP10k), THEN shrink for LIANA.
     sc.pp.normalize_total(adata, target_sum=1e4)
     sc.pp.log1p(adata)
-    # cap cells (deterministic) as a second RAM guard
+
+    # 1) restrict to MAJOR cell types: top-K with >= MIN_CELLS_PER_TYPE, plus cancer pop.
+    #    This caps the n_celltypes^2 pair explosion that caused the OOM.
+    vc = adata.obs["cell_type"].value_counts()
+    big = [c for c in vc.index if vc[c] >= MIN_CELLS_PER_TYPE]
+    keep_types = list(dict.fromkeys(big[:TOP_CELLTYPES] + [c for c in cancer_cts if c in set(vc.index)]))
+    adata = adata[adata.obs["cell_type"].isin(keep_types)].copy()
+    log.info("[%s] kept %d cell types (>=%d cells; +cancer): %s",
+             label, len(keep_types), MIN_CELLS_PER_TYPE, keep_types[:6])
+
+    # 2) deterministic cell cap
     if adata.n_obs > MAX_CELLS_LIANA:
         rng = np.random.default_rng(20260529)
         idx = np.sort(rng.choice(adata.n_obs, size=MAX_CELLS_LIANA, replace=False))
         adata = adata[idx].copy()
         log.info("[%s] subsampled to %d cells (RAM guard)", label, adata.n_obs)
+
+    # 3) restrict to L-R resource genes (lossless for LIANA; ~15x smaller matrix)
     rgenes = _resource_genes()
     keep = [g for g in adata.var_names if g in rgenes]
-    log.info("[%s] restricting %d→%d genes (L-R resource) before LIANA", label, adata.n_vars, len(keep))
     adata = adata[:, keep].copy()
-    log.info("[%s] running LIANA rank_aggregate (groupby=cell_type, min_cells=%d, expr_prop=%.2f)…",
-             label, MIN_CELLS, EXPR_PROP)
+    log.info("[%s] %d cells x %d L-R genes; running rank_aggregate (min_cells=%d, n_perms=%d)…",
+             label, adata.n_obs, adata.n_vars, MIN_CELLS, N_PERMS)
+
     li.mt.rank_aggregate(adata, groupby="cell_type", resource_name="consensus",
-                         expr_prop=EXPR_PROP, min_cells=MIN_CELLS, use_raw=False, verbose=False)
+                         expr_prop=EXPR_PROP, min_cells=MIN_CELLS, n_perms=N_PERMS,
+                         use_raw=False, verbose=False)
     res = adata.uns["liana_res"].copy()
     res.columns = [c.replace(".", "_") for c in res.columns]   # normalise '.'/'_'
-    log.info("[%s] LIANA interactions: %d (cell-type pairs × L-R)", label, len(res))
+    log.info("[%s] LIANA interactions: %d", label, len(res))
     return res
 
 
@@ -168,12 +183,13 @@ def main() -> int:
             cancer_cts = select_cancer_celltypes(tum.obs["cell_type"].unique())
             log.info("[%s] cancer cell types: %s", tissue, cancer_cts[:6])
 
-            res_t = run_liana(tum, f"{tissue}/tumour")
+            res_t = run_liana(tum, f"{tissue}/tumour", cancer_cts)
             ann_t = annotate(res_t, targets, cancer_cts)
             ann_t.to_csv(DATA_DIR / f"communication_{tissue}_tumour.csv", index=False)
 
-            res_n = run_liana(nor, f"{tissue}/normal")
-            ann_n = annotate(res_n, targets, select_cancer_celltypes(nor.obs["cell_type"].unique()))
+            normal_cancer_cts = select_cancer_celltypes(nor.obs["cell_type"].unique())
+            res_n = run_liana(nor, f"{tissue}/normal", normal_cancer_cts)
+            ann_n = annotate(res_n, targets, normal_cancer_cts)
             ann_n.to_csv(DATA_DIR / f"communication_{tissue}_normal.csv", index=False)
 
             # tumour L-R pairs (ligand→receptor) and whether they also occur in normal
