@@ -60,6 +60,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
     datefmt="%H:%M:%S",
+    stream=sys.stdout,                    # ← Colab swallows stderr; send logs to stdout
 )
 log = logging.getLogger("step1")
 
@@ -92,8 +93,10 @@ def find_affinity_json(out_dir: Path) -> Optional[Path]:
     return matches[0] if matches else None
 
 
-def run_boltz(input_yaml: Path, out_dir: Path, diffusion_samples: int = 5) -> int:
+def run_boltz(input_yaml: Path, out_dir: Path, diffusion_samples: int = 1) -> int:
+    """Run boltz CLI, mirror output to stdout AND a per-complex boltz.log."""
     out_dir.mkdir(parents=True, exist_ok=True)
+    log_path = out_dir / "boltz.log"
     cmd = [
         "boltz", "predict", str(input_yaml),
         "--use_msa_server",
@@ -101,10 +104,33 @@ def run_boltz(input_yaml: Path, out_dir: Path, diffusion_samples: int = 5) -> in
         "--out_dir", str(out_dir),
     ]
     log.info("invoking: %s", " ".join(cmd))
+    log.info("boltz log mirrored to %s", log_path.relative_to(PROJECT_ROOT))
     t0 = time.time()
-    proc = subprocess.run(cmd, capture_output=False)
-    log.info("boltz exited rc=%d in %.1fs", proc.returncode, time.time() - t0)
-    return proc.returncode
+    # Stream output: read line-by-line from boltz, write to BOTH stdout (for Colab) and log file
+    with open(log_path, "w") as logf:
+        proc = subprocess.Popen(
+            cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+            text=True, bufsize=1,
+        )
+        for line in proc.stdout:
+            sys.stdout.write(line)
+            sys.stdout.flush()
+            logf.write(line)
+        rc = proc.wait()
+    log.info("boltz exited rc=%d in %.1fs", rc, time.time() - t0)
+    return rc
+
+
+def tail_log(log_path: Path, n: int = 30) -> None:
+    """Print the last n lines of a boltz log for post-mortem diagnostics."""
+    if not log_path.exists():
+        log.warning("no boltz.log at %s", log_path)
+        return
+    lines = log_path.read_text().splitlines()
+    log.error("--- last %d lines of %s ---", min(n, len(lines)), log_path.name)
+    for ln in lines[-n:]:
+        print(f"    {ln}", flush=True)
+    log.error("--- end of %s ---", log_path.name)
 
 
 @dataclass
@@ -147,11 +173,19 @@ def process_complex(name: str, receptor: str, ligand: str, out_dir: Path) -> Aff
     rc = run_boltz(yaml_path, out_dir)
     if rc != 0:
         log.error("[%s] boltz failed with rc=%d", name, rc)
+        tail_log(out_dir / "boltz.log")
+        log.error("[%s] out_dir contents:", name)
+        for p in sorted(out_dir.rglob("*")):
+            print(f"    {p.relative_to(out_dir)}", flush=True)
         return AffinityResult(name, None, None, None, None, "FAILED")
 
     res = parse_affinity(out_dir, name, cached=False)
     if res.status == "MISSING":
-        log.error("[%s] boltz returned rc=0 but no affinity JSON found", name)
+        log.error("[%s] boltz rc=0 but no affinity JSON found — likely OOM mid-inference", name)
+        tail_log(out_dir / "boltz.log")
+        log.error("[%s] out_dir contents:", name)
+        for p in sorted(out_dir.rglob("*")):
+            print(f"    {p.relative_to(out_dir)}", flush=True)
     return res
 
 
