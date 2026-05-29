@@ -83,11 +83,41 @@ def receptor_hits(receptor_complex: str, targets: set[str]) -> set[str]:
 
 
 # ---------- LIANA run ----------
+MAX_CELLS_LIANA = 15000        # safety cap; LIANA densifies during scaling → bound RAM
+
+
+def _resource_genes() -> set[str]:
+    """Genes (ligand + receptor subunits) in LIANA's consensus resource."""
+    import liana
+    res = liana.resource.select_resource("consensus")
+    genes: set[str] = set()
+    for col in ("ligand", "receptor"):
+        for v in res[col].astype(str):
+            genes.update(v.split("_"))
+    genes.discard("")
+    return genes
+
+
 def run_liana(adata, label: str):
     import liana as li
     import scanpy as sc
+    import numpy as np
+    # Normalise on the FULL gene set (CP10k uses total counts), THEN restrict to the
+    # L-R resource genes BEFORE rank_aggregate. LIANA only scores resource genes, so
+    # this is lossless — but it shrinks the matrix ~15x and avoids the densification OOM
+    # ([exit -9]) that 60k genes caused.
     sc.pp.normalize_total(adata, target_sum=1e4)
     sc.pp.log1p(adata)
+    # cap cells (deterministic) as a second RAM guard
+    if adata.n_obs > MAX_CELLS_LIANA:
+        rng = np.random.default_rng(20260529)
+        idx = np.sort(rng.choice(adata.n_obs, size=MAX_CELLS_LIANA, replace=False))
+        adata = adata[idx].copy()
+        log.info("[%s] subsampled to %d cells (RAM guard)", label, adata.n_obs)
+    rgenes = _resource_genes()
+    keep = [g for g in adata.var_names if g in rgenes]
+    log.info("[%s] restricting %d→%d genes (L-R resource) before LIANA", label, adata.n_vars, len(keep))
+    adata = adata[:, keep].copy()
     log.info("[%s] running LIANA rank_aggregate (groupby=cell_type, min_cells=%d, expr_prop=%.2f)…",
              label, MIN_CELLS, EXPR_PROP)
     li.mt.rank_aggregate(adata, groupby="cell_type", resource_name="consensus",

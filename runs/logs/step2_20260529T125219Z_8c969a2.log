@@ -1,0 +1,97 @@
+# cancer-recon-apoptosis — run log
+# step          : step2
+# utc           : 20260529T125219Z
+# commit_short  : 8c969a2
+# commit_full   : 8c969a28a26a680c9e5d6ef9a87e80253c9ff55e
+# branch        : main
+# python        : 3.12.13
+# platform      : Linux-6.6.122+-x86_64-with-glibc2.35
+#================================================================
+
+$ /usr/bin/python3 -u scripts/05_surfaceome_filter.py
+12:52:19 [INFO] cancer-recon-apoptosis — Step 2b.2 — surfaceome filter
+12:52:20 [INFO] NumExpr defaulting to 2 threads.
+12:52:20 [INFO] loaded shortlist: 916 receptors
+12:52:23 [INFO] Downloading data from `https://omnipathdb.org/queries/enzsub?format=json`
+12:52:23 [INFO] Downloading data from `https://omnipathdb.org/queries/interactions?format=json`
+12:52:23 [INFO] Downloading data from `https://omnipathdb.org/queries/complexes?format=json`
+12:52:23 [INFO] Downloading data from `https://omnipathdb.org/queries/annotations?format=json`
+12:52:23 [INFO] Downloading data from `https://omnipathdb.org/queries/intercell?format=json`
+12:52:23 [INFO] Downloading data from `https://omnipathdb.org/about?format=text`
+12:52:23 [INFO] Downloading data from `https://omnipathdb.org/intercell?format=tsv`
+
+0.00B [00:00, ?B/s]
+4.11MB [00:00, 41.9MB/s]
+8.56MB [00:00, 44.1MB/s]
+12.0MB [00:00, 40.0MB/s]
+15.5MB [00:00, 38.3MB/s]
+20.4MB [00:00, 42.6MB/s]
+23.8MB [00:00, 40.1MB/s]
+26.6MB [00:00, 36.5MB/s]
+30.3MB [00:00, 36.9MB/s]
+35.1MB [00:00, 41.2MB/s]
+40.2MB [00:01, 44.6MB/s]
+44.7MB [00:01, 45.4MB/s]
+49.6MB [00:01, 46.7MB/s]
+52.9MB [00:01, 43.1MB/s]
+12:52:27 [INFO] omnipath intercell rows=388239 cols=['category', 'parent', 'database', 'scope', 'aspect', 'source', 'uniprot', 'genesymbol', 'entity_type', 'consensus_score', 'transmitter', 'receiver', 'secreted', 'plasma_membrane_transmembrane', 'plasma_membrane_peripheral']
+12:52:27 [INFO] surface-indicating categories matched: ['cell_surface', 'cell_surface_enzyme', 'cell_surface_ligand', 'cell_surface_peptidase', 'plasma_membrane_transmembrane']
+12:52:27 [INFO] omnipath surface gene set: 5007 genes
+12:52:27 [INFO] cached surface gene set → data/cellxgene/surfaceome_genes.txt
+12:52:27 [INFO] surface gene set source=omnipath size=5007
+12:52:27 [INFO] of 916 receptors, 847 are cell-surface (92%)
+12:52:27 [INFO] of the original top-25, 22/25 are cell-surface
+12:52:27 [INFO] ================================================================
+12:52:27 [INFO] ACTIONABLE SURFACE TARGETS (surface ∧ enriched in >=2 tissues ∧ meanL2FC>=0.5): 43
+12:52:27 [INFO] receptor      nEnr  meanL2FC   maxL2FC   meanPct
+12:52:27 [INFO] ADGRG1           3      2.15      2.79      0.32
+12:52:27 [INFO] FLOT1            3      1.68      2.64      0.52
+12:52:27 [INFO] CD82             3      1.58      1.95      0.33
+12:52:27 [INFO] EPHB4            3      1.55      3.31      0.22
+12:52:27 [INFO] CD74             3      1.49      1.84      0.56
+12:52:27 [INFO] SDC1             3      1.42      1.68      0.46
+12:52:27 [INFO] NCSTN            3      1.19      1.29      0.25
+12:52:27 [INFO] BTN3A2           3      1.18      1.51      0.17
+12:52:27 [INFO] ERBB3            3      0.98      1.57      0.51
+12:52:27 [INFO] SORL1            3      0.98      1.17      0.27
+12:52:27 [INFO] ERBB2            3      0.92      0.99      0.36
+12:52:27 [INFO] PTPRF            3      0.82      1.23      0.54
+12:52:27 [INFO] SIGIRR           3      0.76      1.06      0.30
+12:52:27 [INFO] LAMP1            3      0.75      1.04      0.52
+12:52:27 [INFO] TSPAN15          3      0.73      0.81      0.30
+12:52:27 [INFO] RAMP1            2      2.07      4.22      0.19
+12:52:27 [INFO] ITGB4            2      1.68      3.13      0.39
+12:52:27 [INFO] SEMA4C           2      1.47      2.71      0.11
+12:52:27 [INFO] SDC3             2      1.47      4.09      0.11
+12:52:27 [INFO] TMEM219          2      1.27      1.79      0.61
+12:52:27 [INFO] PLXNA3           2      1.23      2.17      0.15
+12:52:27 [INFO] RHBDF2           2      1.21      2.93      0.12
+12:52:27 [INFO] TSPAN5           2      1.19      3.20      0.21
+12:52:27 [INFO] TSPAN17          2      1.07      1.29      0.14
+12:52:27 [INFO] DDR1             2      1.05      1.84      0.45
+12:52:27 [INFO] SLC40A1          2      1.00      2.56      0.27
+12:52:27 [INFO] ATP5F1B          2      0.96      1.40      0.69
+12:52:27 [INFO] IL10RB           2      0.93      1.42      0.17
+12:52:27 [INFO] AGR2             2      0.91      2.65      0.56
+12:52:27 [INFO] IL17RE           2      0.89      2.15      0.19
+12:52:27 [INFO] sanity TNFRSF10B is_surface=True (expect True)
+12:52:27 [INFO] sanity TNFRSF10A is_surface=True (expect True)
+12:52:27 [INFO] surface shortlist saved → data/cellxgene/targets_surface_shortlist.csv (847 receptors)
+12:52:27 [INFO] ✓ done — pick the target thesis from the actionable surface list.
+[exit 0]
+
+$ /usr/bin/python3 -u scripts/06_liana_communication.py
+12:52:27 [INFO] cancer-recon-apoptosis — Step 2c — LIANA communication annotation
+12:52:28 [INFO] NumExpr defaulting to 2 threads.
+12:52:36 [INFO] targets from targets_surface_shortlist.csv: 847 receptors (+DR5)
+12:52:36 [INFO] ================================================================
+12:52:42 [INFO] [lung] cancer cell types: ['malignant cell']
+12:52:47 [INFO] [lung/tumour] running LIANA rank_aggregate (groupby=cell_type, min_cells=10, expr_prop=0.10)…
+/usr/local/lib/python3.12/dist-packages/legacy_api_wrap/__init__.py:88: FutureWarning: The dtype argument is deprecated and will be removed in late 2024.
+/usr/local/lib/python3.12/dist-packages/liana/method/_pipe_utils/_pre.py:165: ImplicitModificationWarning: Trying to modify attribute `.obs` of view, initializing view as actual.
+/usr/local/lib/python3.12/dist-packages/liana/method/_pipe_utils/_pre.py:168: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+/usr/lib/python3.12/functools.py:912: UserWarning: zero-centering a sparse array/matrix densifies it.
+/usr/local/lib/python3.12/dist-packages/liana/method/sc/_liana_pipe.py:288: ImplicitModificationWarning: Setting element `.layers['scaled']` of view, initializing view as actual.
+/usr/local/lib/python3.12/dist-packages/liana/method/sc/_liana_pipe.py:293: FutureWarning: The method uns_keys is deprecated and will be removed in the future. Use uns instead of uns_keys. (e.g. `k in adata.uns` or `sorted(adata.uns)`)
+/usr/local/lib/python3.12/dist-packages/liana/method/sc/_liana_pipe.py:296: FutureWarning: The method uns_keys is deprecated and will be removed in the future. Use uns instead of uns_keys. (e.g. `k in adata.uns` or `sorted(adata.uns)`)
+[exit -9]
