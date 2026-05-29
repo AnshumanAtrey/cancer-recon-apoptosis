@@ -48,6 +48,27 @@ that recognises cancer badges on neighbours and triggers their apoptosis).
   apoptosis design, evaluated end-to-end (apoptosis cascade, bystander tissue sim, DepMap/
   GTEx selectivity, ADMET/immunogenicity).
 
+## Anchor locked (2026-05-29, after Step 3): Trop2 (TACSTD2)
+
+Step 3's specificity audit (STEP3_METHODOLOGY.md) FAILed all 10 Step-2 over-expressed
+candidates on safety (broad expression and/or vital parenchyma) — a real, benchmark-
+calibrated finding that cancer over-expression ≠ therapeutic window. The anchor therefore
+pivots to a **tissue-restricted, audit-PASSing, clinically-validated** antigen:
+
+**ANCHOR = Trop2 / TACSTD2.** Rationale: PASSes the audit (tissue-restricted, not in vital
+parenchyma); ADC-approved (sacituzumab govitecan) in **breast + lung** — covers 2 of our 3
+tumour types; single-pass TM with a well-characterised ectodomain (cysteine-rich + thyroglobulin
+type-1 domain; structures available) → modelable by Boltz. **Key asset for Step 4:** the
+sacituzumab Fab is a *known Trop2 binder* → it is the positive control for the anchor-binding
+oracle, exactly as TRAIL→DR5 anchored Step 1. Anti-target for specificity: the paralog EPCAM
+(TACSTD1) — the binder must hit Trop2, not EPCAM.
+
+**TRIGGER (unchanged) = DR5 / TNFRSF10B.**
+
+So the design object is now concrete: a bispecific that binds **Trop2** (cancer anchor) and
+clusters **DR5** (apoptosis trigger). Step 4 reward (two-axis Boltz oracle, the Step-1 method):
+`+ binds Trop2 ECD`, `+ engages DR5`, `− binds EPCAM` (paralog off-target), `− foldability/length`.
+
 ## One-line project framing
 
 > Engineer recognition ligands that bind cancer-enriched surface receptors and trigger
