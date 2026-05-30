@@ -1,0 +1,51 @@
+# cancer-recon-apoptosis — run log
+# step          : rung3b_multisite
+# utc           : 20260530T064018Z
+# commit_short  : 8ce3067  (+uncommitted changes)
+# commit_full   : 8ce30670916938a4321a64c60ce979cfc8269e70
+# branch        : main
+# python        : 3.12.6
+# platform      : macOS-26.3-arm64-arm-64bit
+#================================================================
+
+$ /Library/Frameworks/Python.framework/Versions/3.12/bin/python3 -u scripts/16_multisite_seeding.py
+================================================================================
+RUNG 3b — manual multi-site seeding: does injecting at calibrated spots solve speed/fizzle?
+================================================================================
+[A] ONE contiguous focus — sweep number of injection sites (contact arm, tumour-exclusive badge)
+ sites  seeded |  cleared  t_end_h amplification
+     1      13 |     0.99    14.00          53.8
+     4      52 |     0.99    14.00          13.4
+     9     117 |     0.99    14.00           6.0
+    16     208 |     0.99    14.00           3.4
+  -> a SINGLE injection already clears the connected focus = True (amplification 54x: one seed -> the whole focus). 'Slow but working' is fine.
+--------------------------------------------------------------------------------
+[C] MULTI-FOCUS tumour: 4 large foci + 3 micro-mets (495 cancer cells), disconnected by healthy tissue
+strategy                      seeds |  cleared  note
+one focus only (1 needle)         1 |     0.29  clears only that focus; others survive
+1 per LARGE focus                 4 |     0.91  misses the unseeded micro-mets
+every focus + micro-mets          7 |     0.99  clears all — but needs a needle in EVERY focus
+  -> wave CANNOT jump healthy gaps to unseeded foci (center-only clears 29%); undetectable micro-mets ESCAPE unless physically needled. This is the one thing self-propagation was for.
+--------------------------------------------------------------------------------
+[D] SAFETY under multi-site seeding (Trop2+ healthy = 30%): does adding needles relax specificity?
+ sites |  cleared healthyKill
+     1 |     0.98        0.05
+     9 |     0.99        0.05
+  -> healthy-kill is set by Trop2 SPECIFICITY (~5%), not by needle count (stable across 1->9 sites). Manual seeding does NOT relax the tumour-exclusive-badge requirement.
+================================================================================
+VERDICT: MANUAL MULTI-SITE SEEDING WORKS and is the right delivery strategy: slow/fizzling propagation is a non-issue for accessible foci, and the contact wave gives REAL intra-focus dose amplification (one injection clears a whole connected focus, ~54x). TWO honest limits persist and are NOT fixed by injecting more: (1) the wave cannot jump healthy gaps, so you must physically reach EACH disconnected focus — undetectable micro-metastases escape (the original reason to want self-propagation); (2) every injection site still leaks into Trop2+ normal epithelium, so safety is set by antigen SPECIFICITY, not needle count -> the tumour-exclusive (logic-gated) recognition requirement from RUNG 3 / Step-3 stands.
+--------------------------------------------------------------------------------
+METHODOLOGY-INTEGRITY CHECKS:
+  [OK] uses the validated RUNG-3 engine (same physics, oracle-checked)
+  [OK] amplification DERIVED (cancer killed / seeds), not assumed
+  [OK] multi-focus reachability tested (center-only leaves foci alive)
+  [OK] micro-met escape shown (seeding large foci misses small ones)
+  [OK] safety re-tested under multi-site (specificity, not site count)
+  [OK] no-multiply HARD RULE held (RUNG-1 x RUNG-2 never fused)
+  [OK] honest: manual seeding solves speed, NOT safety or invisible-met reach
+results -> runs/rung3_tissue/multisite_seeding.json
+figure -> runs/rung3_tissue/multisite_seeding.png
+================================================================================
+CEILING: manual seeding is a delivery strategy; it does not change the agonism (wet-lab) crux nor the
+tumour-exclusive-recognition safety requirement. Assumed-physics; NOT efficacy. RUNG-1 never x RUNG-2.
+[exit 0]

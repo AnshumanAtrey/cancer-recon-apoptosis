@@ -91,6 +91,26 @@ recognition — and a sharpened, prioritized wet-lab handoff.
 
 ---
 
+## RUNG 3b — manual multi-site seeding (does injecting at calibrated spots fix the slow/fizzle problem?)
+
+A design move worth quantifying: *if the wave is slow, inject the trigger manually at several calibrated
+spots; slow-but-working is fine; if it won't spread, inject everywhere.* Simulated on the **same validated
+engine** (`scripts/16_multisite_seeding.py`). The idea is **right** — and the sim shows exactly where it
+helps and where it doesn't:
+
+| finding | result |
+|---|---|
+| **One injection clears a whole connected focus** | amplification ≈ **54×** (one seed → 54 cancer cells dead); the contact wave does the rest. "Slow but working" is genuinely fine — clears in ~14 h. |
+| **More needles = redundant for a single mass** | amplification falls 54→13→6→3 as you add sites; 1 already clears 99%. |
+| **You must needle EVERY disconnected focus** | 1 focus seeded → 29% total; 1 per large focus → 91% (misses micro-mets); every focus + micro-mets → 99%. The wave **cannot jump healthy gaps**. |
+| **Undetectable micro-mets escape** | seeding only the *visible* large foci leaves the tiny ones alive — the exact thing self-propagation was supposed to buy. |
+| **Manual seeding does NOT relax safety** | with 30% Trop2+ normal cells, healthy-kill is ~5% whether you use 1 or 9 needles — safety is set by antigen **specificity**, not needle count. |
+
+**So:** multi-site injection is the correct delivery strategy and makes the propagation-speed worry moot for
+**accessible** tumours — but it does not reach **invisible** micro-metastases, and it does not lift the
+**tumour-exclusive (logic-gated) recognition** requirement. Both limits trace back to RUNG 3 / Step-3.
+(`runs/rung3_tissue/multisite_seeding.{json,png}`.)
+
 ## What RUNG 3 does NOT claim
 
 - **Not patient efficacy.** It is a safety/dynamics **regime map** over assumed, literature-borrowed

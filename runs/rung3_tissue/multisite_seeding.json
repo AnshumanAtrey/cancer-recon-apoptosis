@@ -1,0 +1,79 @@
+{
+  "frozen_git_sha": "8ce3067",
+  "A_sites_sweep_one_focus": [
+    {
+      "sites": 1,
+      "n_seeded": 13,
+      "cancer_cleared": 0.9859,
+      "t_end_h": 14.0,
+      "amplification": 53.77
+    },
+    {
+      "sites": 4,
+      "n_seeded": 52,
+      "cancer_cleared": 0.9859,
+      "t_end_h": 14.0,
+      "amplification": 13.44
+    },
+    {
+      "sites": 9,
+      "n_seeded": 117,
+      "cancer_cleared": 0.9873,
+      "t_end_h": 14.0,
+      "amplification": 5.98
+    },
+    {
+      "sites": 16,
+      "n_seeded": 208,
+      "cancer_cleared": 0.9915,
+      "t_end_h": 14.0,
+      "amplification": 3.38
+    }
+  ],
+  "one_site_clears_connected_focus": true,
+  "C_multifocus": [
+    {
+      "strategy": "one focus only (1 needle)",
+      "n_sites": 1,
+      "cancer_cleared": 0.2949
+    },
+    {
+      "strategy": "1 per LARGE focus",
+      "n_sites": 4,
+      "cancer_cleared": 0.9111
+    },
+    {
+      "strategy": "every focus + micro-mets",
+      "n_sites": 7,
+      "cancer_cleared": 0.9899
+    }
+  ],
+  "wave_cannot_jump_gaps": true,
+  "micromets_escape": true,
+  "D_safety_multisite": [
+    {
+      "sites": 1,
+      "cancer_cleared": 0.9845,
+      "healthy_killed": 0.0523
+    },
+    {
+      "sites": 9,
+      "cancer_cleared": 0.9859,
+      "healthy_killed": 0.0526
+    }
+  ],
+  "safety_set_by_specificity_not_sitecount": true,
+  "verdict": "MANUAL MULTI-SITE SEEDING WORKS and is the right delivery strategy: slow/fizzling propagation is a non-issue for accessible foci, and the contact wave gives REAL intra-focus dose amplification (one injection clears a whole connected focus, ~54x). TWO honest limits persist and are NOT fixed by injecting more: (1) the wave cannot jump healthy gaps, so you must physically reach EACH disconnected focus \u2014 undetectable micro-metastases escape (the original reason to want self-propagation); (2) every injection site still leaks into Trop2+ normal epithelium, so safety is set by antigen SPECIFICITY, not needle count -> the tumour-exclusive (logic-gated) recognition requirement from RUNG 3 / Step-3 stands.",
+  "methodology_checks": {
+    "uses the validated RUNG-3 engine (same physics, oracle-checked)": true,
+    "amplification DERIVED (cancer killed / seeds), not assumed": true,
+    "multi-focus reachability tested (center-only leaves foci alive)": true,
+    "micro-met escape shown (seeding large foci misses small ones)": true,
+    "safety re-tested under multi-site (specificity, not site count)": true,
+    "no-multiply HARD RULE held (RUNG-1 x RUNG-2 never fused)": true,
+    "honest: manual seeding solves speed, NOT safety or invisible-met reach": true
+  },
+  "methodology_valid": true,
+  "HARD_RULE": "RUNG-1 latency NEVER multiplied by RUNG-2 clustering score.",
+  "CEILING": "assumed-physics regime map, NOT efficacy; agonism is wet-lab."
+}

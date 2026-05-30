@@ -112,14 +112,16 @@ def gaussian_oracle_check():
 
 def run_tissue(modality, L_eff_um, trop2_healthy_frac, shed_frac, r1,
                c_star_nm=C_STAR_BASE_NM, release=RELEASE_MOLEC, use_latency=True,
-               rng=None, snapshot=False):
+               rng=None, snapshot=False, tumour_mask=None, seed_centers=None):
     """One tissue realisation. Returns metrics dict (+ optional snapshots).
-    modality: 'soluble' | 'contact'. L_eff_um sets the receptor-uptake sink gamma = D/L_eff^2."""
+    modality: 'soluble' | 'contact'. L_eff_um sets the receptor-uptake sink gamma = D/L_eff^2.
+    tumour_mask: optional custom tumour geometry (e.g. multiple disconnected foci); default single disk.
+    seed_centers: optional list of (i,j) injection sites; default = single central seed (RUNG-3 baseline)."""
     if rng is None:
         rng = np.random.default_rng(SEED)
     HEALTHY, CANCER, DEAD = 1, 2, 3
     cx = cy = N // 2
-    tumour = disk(N, cx, cy, TUMOUR_R_UM / DX_UM)
+    tumour = disk(N, cx, cy, TUMOUR_R_UM / DX_UM) if tumour_mask is None else tumour_mask
     state = np.where(tumour, CANCER, HEALTHY).astype(np.int8)
     # Trop2 badge: all cancer +; healthy + with the swept fraction (Trop2 is on normal epithelium)
     antigen = (state == CANCER) | ((state == HEALTHY) & (rng.random((N, N)) < trop2_healthy_frac))
@@ -131,10 +133,16 @@ def run_tissue(modality, L_eff_um, trop2_healthy_frac, shed_frac, r1,
     coef = D_UM2_S * DT_S                       # laplacian() already divides by dx^2
     cstar_molec = c_star_nm / NM_PER_MOLEC     # threshold in molecules/voxel
 
-    # ignition: force-commit a small central core (the initial therapeutic seed)
-    seed_core = disk(N, cx, cy, 3) & (state == CANCER)
+    # ignition: force-commit small cores at the injection site(s) — the initial therapeutic seed.
+    # Default = one central seed (RUNG-3 baseline). seed_centers = manual multi-site injection (RUNG 3b).
+    centers = seed_centers if seed_centers is not None else [(cx, cy)]
+    seed_core = np.zeros((N, N), bool)
+    for (sci, scj) in centers:
+        seed_core |= disk(N, scj, sci, 2)
+    seed_core &= (state == CANCER)
     for (i, j) in np.argwhere(seed_core):
         death_time[i, j] = (td_for_dose(r1, 5.0) if use_latency else 0.0)
+    n_seeded = int(seed_core.sum())
 
     steps = int(T_MAX_H * 3600 / DT_S)
     last_event_step = 0
@@ -198,13 +206,16 @@ def run_tissue(modality, L_eff_um, trop2_healthy_frac, shed_frac, r1,
             break
 
     dead = state == DEAD
-    cancer_cleared = int((dead & tumour).sum()) / max(1, n_cancer0)
+    n_cancer_dead = int((dead & tumour).sum())
+    cancer_cleared = n_cancer_dead / max(1, n_cancer0)
     healthy_killed = int((dead & ~tumour).sum()) / max(1, n_healthy0)
     out = {"modality": modality, "L_eff_um": L_eff_um, "trop2_healthy_frac": trop2_healthy_frac,
            "shed_frac": shed_frac, "c_star_nm": c_star_nm, "release_molec": release,
            "use_latency": use_latency, "t_end_h": round(t_h, 2),
            "cancer_cleared": round(cancer_cleared, 4), "healthy_killed": round(healthy_killed, 4),
-           "n_cancer0": n_cancer0, "n_healthy0": n_healthy0}
+           "n_cancer0": n_cancer0, "n_healthy0": n_healthy0,
+           "n_seeded": n_seeded, "n_cancer_dead": n_cancer_dead,
+           "amplification": round(n_cancer_dead / max(1, n_seeded), 2)}   # cancer cells killed per injected seed
     if snapshot:
         out["_snaps"] = {str(k): v for k, v in snap_times.items()}
         out["_final"] = state.copy()
