@@ -41,6 +41,10 @@ DATA_DIR = PROJECT_ROOT / "data" / "logicgate"
 CENSUS_VERSION = "2024-07-01"            # pinned to match scripts/03
 MIN_VITAL_CELLS = 200                    # below this a vital type is UNAUDITED
 K = 2                                    # per-cell POSITIVE threshold (UMI >= K)
+MAX_PER_TYPE = 1500                      # STRATIFIED cap: <=N cells per cell_type per tissue. Bounds the
+#                                          transfer (the reason an uncapped pull took >20 min) AND preserves
+#                                          rare vital types (per-cell-type co-positivity needs ~hundreds, not millions).
+SEED = 20260530
 
 lg_spec = importlib.util.spec_from_file_location("lg", PROJECT_ROOT / "scripts" / "18_logicgate_search.py")
 lg = importlib.util.module_from_spec(lg_spec); lg_spec.loader.exec_module(lg)
@@ -59,41 +63,55 @@ VITAL_AUDIT = {"cardiac muscle": "cardiomyocyte", "cardiomyocyte": "cardiomyocyt
 
 
 def fetch_panel():
-    """Stream normal + tumour single-cell into one per-cell Panel over ALL_GENES. Colab only."""
+    """Stream normal + tumour single-cell into one per-cell Panel over ALL_GENES, with a STRATIFIED
+    per-cell-type cap so the transfer is bounded (fast) and rare vital types survive. Colab only."""
     import cellxgene_census
-    import scanpy as sc  # noqa: F401  (AnnData handling)
+    rng = np.random.default_rng(SEED)
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     counts_blocks, ct, ts, comp = [], [], [], []
     census = cellxgene_census.open_soma(census_version=CENSUS_VERSION)
+
+    def capped_pull(value_filter, label):
+        # 1) FAST metadata-only query (2 columns) for all matching cells
+        obs = cellxgene_census.get_obs(census, "Homo sapiens", value_filter=value_filter,
+                                       column_names=["soma_joinid", "cell_type"])
+        if len(obs) == 0:
+            print(f"[fetch] {label}: 0 cells", flush=True); return None
+        # 2) STRATIFIED subsample: <= MAX_PER_TYPE per cell_type (keeps every cell type, incl. rare vital ones)
+        keep = []
+        for _, grp in obs.groupby("cell_type"):
+            ids = grp["soma_joinid"].to_numpy()
+            keep.append(rng.choice(ids, MAX_PER_TYPE, replace=False) if len(ids) > MAX_PER_TYPE else ids)
+        keep = np.concatenate(keep)
+        print(f"[fetch] {label}: {len(obs)} matching -> {len(keep)} kept "
+              f"({obs['cell_type'].nunique()} cell types @ cap {MAX_PER_TYPE})", flush=True)
+        # 3) materialize ONLY the kept cells x antigen genes (bounded transfer)
+        return cellxgene_census.get_anndata(
+            census, organism="Homo sapiens", obs_coords=[int(x) for x in keep],
+            var_value_filter=f"feature_name in {ALL_GENES}",
+            column_names={"obs": ["cell_type", "tissue_general"]})
+
     try:
         for tissue in NORMAL_TISSUES:
-            print(f"[fetch] normal {tissue} ...", flush=True)
-            ad = cellxgene_census.get_anndata(
-                census, organism="Homo sapiens", var_value_filter=f"feature_name in {ALL_GENES}",
-                obs_value_filter=(f"is_primary_data == True and disease == 'normal' and "
-                                  f"tissue_general == '{tissue}'"),
-                column_names={"obs": ["cell_type", "tissue_general"]})
-            if ad.n_obs == 0:
+            ad = capped_pull(f"is_primary_data == True and disease == 'normal' and tissue_general == '{tissue}'",
+                             f"normal {tissue}")
+            if ad is None or ad.n_obs == 0:
                 continue
-            X = _dense_over(ad, ALL_GENES)
-            counts_blocks.append(X)
+            counts_blocks.append(_dense_over(ad, ALL_GENES))
             ct += list(_map_celltype(ad.obs["cell_type"].astype(str)))
             ts += [tissue] * ad.n_obs; comp += ["normal"] * ad.n_obs
-        # tumour: reuse scripts/03 disease!=normal malignant/epithelial pulls
+        # tumour: reuse scripts/03 disease pulls (malignant/epithelial), same stratified cap
         for tissue, dis in [("lung", "lung adenocarcinoma"), ("breast", "breast carcinoma"),
                             ("colon", "colorectal cancer")]:
-            print(f"[fetch] tumour {dis} ...", flush=True)
-            ad = cellxgene_census.get_anndata(
-                census, organism="Homo sapiens", var_value_filter=f"feature_name in {ALL_GENES}",
-                obs_value_filter=(f"is_primary_data == True and disease == '{dis}'"),
-                column_names={"obs": ["cell_type", "tissue_general"]})
-            if ad.n_obs == 0:
+            ad = capped_pull(f"is_primary_data == True and disease == '{dis}'", f"tumour {dis}")
+            if ad is None or ad.n_obs == 0:
                 continue
-            X = _dense_over(ad, ALL_GENES)
-            counts_blocks.append(X); ct += ["tumour_epithelium"] * ad.n_obs
+            counts_blocks.append(_dense_over(ad, ALL_GENES)); ct += ["tumour_epithelium"] * ad.n_obs
             ts += ["tumour"] * ad.n_obs; comp += ["tumour"] * ad.n_obs
     finally:
         census.close()
+    if not counts_blocks:
+        raise RuntimeError("no cells fetched — check Census version / tissue names / network")
     counts = np.vstack(counts_blocks)
     return lg.Panel(counts, ALL_GENES, np.array(ct), np.array(ts), np.array(comp))
 
@@ -196,8 +214,37 @@ def main() -> int:
                    "separate axis never multiplied with RUNG-1/2/3; the durability cost is in scripts/21.",
     }, indent=2, default=str))
     print("[rung4-data] -> data/logicgate/gate_selectivity.csv + runs/rung4_logicgate/rung4_results.json")
+    _figure(rows, cov)
     print("[rung4-data] CEILING: transcript-only HYPOTHESIS; CITE-seq/flow/co-culture confirm; agonism = wet-lab.")
     return 0
+
+
+def _figure(rows, cov):
+    """Real-discovery figure: gate coverage-vs-leak frontier + vital-coverage census."""
+    if not rows:
+        return
+    try:
+        import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
+        fig, ax = plt.subplots(1, 2, figsize=(13, 5.2))
+        for r in rows:
+            ax[0].scatter(r["tumour_coverage"], r["worst_normal_leak"],
+                          c="#27ae60" if r["selective"] else "#c0392b", s=45, alpha=0.7)
+        ax[0].axhline(0.02, ls="--", color="green", lw=0.8); ax[0].axvline(0.30, ls="--", color="green", lw=0.8)
+        ax[0].set_xlabel("tumour coverage (want high)"); ax[0].set_ylabel("worst normal-cell leak (want ~0)")
+        ax[0].set_title("AND-gate frontier (transcript-only)\ngreen=selective; target=lower-right box")
+        sel = [r for r in rows if r["selective"]][:8]
+        for r in sel:
+            ax[0].annotate(r["gate"][:18], (r["tumour_coverage"], r["worst_normal_leak"]), fontsize=6)
+        ax[1].barh([c["vital_type"] for c in cov], [c["n_cells"] for c in cov],
+                   color=["#2980b9" if c["status"] == "AUDITED" else "#e67e22" for c in cov])
+        ax[1].axvline(MIN_VITAL_CELLS, ls="--", color="red", lw=0.8)
+        ax[1].set_xlabel("cells captured"); ax[1].set_title("vital-coverage census\n(orange = UNAUDITED, < min)")
+        fig.suptitle("RUNG 4 real discovery — transcript-only hypothesis (mRNA!=protein; CITE-seq confirms). "
+                     "Recognition is a separate axis; 'no clean gate' is a valid result.", fontsize=8)
+        fig.tight_layout(rect=[0, 0, 1, 0.95]); fig.savefig(OUT_DIR / "rung4_discovery.png", dpi=110)
+        print("[rung4-data] figure -> runs/rung4_logicgate/rung4_discovery.png")
+    except Exception as e:
+        print(f"[rung4-data] figure skipped ({type(e).__name__}: {e})")
 
 
 if __name__ == "__main__":
