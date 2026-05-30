@@ -49,8 +49,9 @@ SEED = 20260530
 lg_spec = importlib.util.spec_from_file_location("lg", PROJECT_ROOT / "scripts" / "18_logicgate_search.py")
 lg = importlib.util.module_from_spec(lg_spec); lg_spec.loader.exec_module(lg)
 
-NORMAL_TISSUES = ["heart", "brain", "kidney", "liver", "lung", "pancreas",
-                  "adrenal gland", "bone marrow", "skeletal muscle"]
+NORMAL_TISSUES = ["heart", "brain", "kidney", "liver", "lung", "bone marrow"]   # vital (heart/brain/kidney)
+#                  + regenerating (liver/marrow) + the tumour-matched normal (lung). One combined scan, not per-tissue.
+TUMOUR_DISEASES = ["lung adenocarcinoma", "breast carcinoma", "colorectal cancer"]
 # Step-2 activator pool (all FAILED scripts/07 single-antigen safety -> MUST be gated).
 ACTIVATORS = ["ERBB2", "ERBB3", "EPHB4", "TACSTD2", "MUC1", "SDC1", "CD74", "ITGB4"]
 # curated surface partners for the AND co-input (kept small to control multiple testing).
@@ -62,56 +63,62 @@ VITAL_AUDIT = {"cardiac muscle": "cardiomyocyte", "cardiomyocyte": "cardiomyocyt
                "neuron": "neuron", "kidney epithel": "kidney_tubule", "podocyte": "kidney_podocyte"}
 
 
-def fetch_panel():
-    """Stream normal + tumour single-cell into one per-cell Panel over ALL_GENES, with a STRATIFIED
-    per-cell-type cap so the transfer is bounded (fast) and rare vital types survive. Colab only."""
+def _q(items):
+    """SOMA value-filter list literal, e.g. ['heart','brain']."""
+    return "[" + ", ".join(f"'{x}'" for x in items) + "]"
+
+
+def _capped_get(census, value_filter, group_keys, label):
+    """ONE metadata scan + STRATIFIED per-cell-type subsample + ONE bounded materialize. The whole point:
+    do a SINGLE Census obs scan for ALL tissues at once instead of one full-Census scan per tissue (the
+    ~1hr/2-tissue slowdown). group_keys are the obs columns to stratify on (keeps rare vital types)."""
     import cellxgene_census
+    cols = ["soma_joinid"] + group_keys
+    print(f"[fetch] {label}: scanning Census obs (one pass) ...", flush=True)
+    obs = cellxgene_census.get_obs(census, "Homo sapiens", value_filter=value_filter, column_names=cols)
+    if len(obs) == 0:
+        print(f"[fetch] {label}: 0 cells — check disease/tissue labels", flush=True); return None
     rng = np.random.default_rng(SEED)
+    keep = []
+    for _, grp in obs.groupby(group_keys, observed=True):
+        ids = grp["soma_joinid"].to_numpy()
+        keep.append(rng.choice(ids, MAX_PER_TYPE, replace=False) if len(ids) > MAX_PER_TYPE else ids)
+    keep = np.concatenate(keep)
+    print(f"[fetch] {label}: {len(obs):,} matching -> {len(keep):,} kept "
+          f"({len(obs.groupby(group_keys, observed=True))} groups @ cap {MAX_PER_TYPE})", flush=True)
+    return cellxgene_census.get_anndata(
+        census, organism="Homo sapiens", obs_coords=[int(x) for x in keep],
+        var_value_filter=f"feature_name in {ALL_GENES}",
+        column_names={"obs": ["cell_type", "tissue_general"]})
+
+
+def fetch_panel():
+    """Per-cell Panel over ALL_GENES from TWO combined Census scans (normal, tumour) — bounded + fast."""
+    import cellxgene_census
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     counts_blocks, ct, ts, comp = [], [], [], []
     census = cellxgene_census.open_soma(census_version=CENSUS_VERSION)
-
-    def capped_pull(value_filter, label):
-        # 1) FAST metadata-only query (2 columns) for all matching cells
-        obs = cellxgene_census.get_obs(census, "Homo sapiens", value_filter=value_filter,
-                                       column_names=["soma_joinid", "cell_type"])
-        if len(obs) == 0:
-            print(f"[fetch] {label}: 0 cells", flush=True); return None
-        # 2) STRATIFIED subsample: <= MAX_PER_TYPE per cell_type (keeps every cell type, incl. rare vital ones)
-        keep = []
-        for _, grp in obs.groupby("cell_type"):
-            ids = grp["soma_joinid"].to_numpy()
-            keep.append(rng.choice(ids, MAX_PER_TYPE, replace=False) if len(ids) > MAX_PER_TYPE else ids)
-        keep = np.concatenate(keep)
-        print(f"[fetch] {label}: {len(obs)} matching -> {len(keep)} kept "
-              f"({obs['cell_type'].nunique()} cell types @ cap {MAX_PER_TYPE})", flush=True)
-        # 3) materialize ONLY the kept cells x antigen genes (bounded transfer)
-        return cellxgene_census.get_anndata(
-            census, organism="Homo sapiens", obs_coords=[int(x) for x in keep],
-            var_value_filter=f"feature_name in {ALL_GENES}",
-            column_names={"obs": ["cell_type", "tissue_general"]})
-
     try:
-        for tissue in NORMAL_TISSUES:
-            ad = capped_pull(f"is_primary_data == True and disease == 'normal' and tissue_general == '{tissue}'",
-                             f"normal {tissue}")
-            if ad is None or ad.n_obs == 0:
-                continue
+        # ONE scan for ALL normal tissues, stratified by (tissue, cell_type)
+        ad = _capped_get(census,
+                         f"is_primary_data == True and disease == 'normal' and tissue_general in {_q(NORMAL_TISSUES)}",
+                         ["tissue_general", "cell_type"], "normal (all tissues)")
+        if ad is not None and ad.n_obs:
             counts_blocks.append(_dense_over(ad, ALL_GENES))
             ct += list(_map_celltype(ad.obs["cell_type"].astype(str)))
-            ts += [tissue] * ad.n_obs; comp += ["normal"] * ad.n_obs
-        # tumour: reuse scripts/03 disease pulls (malignant/epithelial), same stratified cap
-        for tissue, dis in [("lung", "lung adenocarcinoma"), ("breast", "breast carcinoma"),
-                            ("colon", "colorectal cancer")]:
-            ad = capped_pull(f"is_primary_data == True and disease == '{dis}'", f"tumour {dis}")
-            if ad is None or ad.n_obs == 0:
-                continue
-            counts_blocks.append(_dense_over(ad, ALL_GENES)); ct += ["tumour_epithelium"] * ad.n_obs
-            ts += ["tumour"] * ad.n_obs; comp += ["tumour"] * ad.n_obs
+            ts += list(ad.obs["tissue_general"].astype(str)); comp += ["normal"] * ad.n_obs
+        # ONE scan for ALL tumour diseases, stratified by cell_type
+        adt = _capped_get(census,
+                          f"is_primary_data == True and disease in {_q(TUMOUR_DISEASES)}",
+                          ["cell_type"], "tumour (all diseases)")
+        if adt is not None and adt.n_obs:
+            counts_blocks.append(_dense_over(adt, ALL_GENES))
+            ct += ["tumour_epithelium"] * adt.n_obs
+            ts += ["tumour"] * adt.n_obs; comp += ["tumour"] * adt.n_obs
     finally:
         census.close()
     if not counts_blocks:
-        raise RuntimeError("no cells fetched — check Census version / tissue names / network")
+        raise RuntimeError("no cells fetched — check Census version / tissue & disease labels / network")
     counts = np.vstack(counts_blocks)
     return lg.Panel(counts, ALL_GENES, np.array(ct), np.array(ts), np.array(comp))
 
