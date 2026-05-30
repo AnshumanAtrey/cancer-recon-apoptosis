@@ -1,0 +1,61 @@
+# cancer-recon-apoptosis — run log
+# step          : rung3_tissue
+# utc           : 20260530T061347Z
+# commit_short  : c105291  (+uncommitted changes)
+# commit_full   : c105291c277da1ff072c48d0d25982fda61d4af5
+# branch        : main
+# python        : 3.12.6
+# platform      : macOS-26.3-arm64-arm-64bit
+#================================================================
+
+$ /Library/Frameworks/Python.framework/Versions/3.12/bin/python3 -u scripts/15_tissue_rd.py
+================================================================================
+RUNG 3 — real-physics tissue: does the recognition-gated death wave clear tumour AND spare healthy?
+================================================================================
+[scale] voxel=10.0um -> 0.0017 nM/molecule; C*_base=3.0 nM (~2x TRAIL EC50); D=10.0 um^2/s; effector t1/2=30.0 min
+[RUNG-1 ingested] Td_mean=3.774h CV=0.155 threshold_L0=12.0 (dose-coupled latency; lognormal sampler-mean matched to recorded MEAN)
+--------------------------------------------------------------------------------
+[ORACLE] Gaussian spread <r^2>=8000 um^2 vs analytic 4Dt=8000 um^2 (OK); mass conserved=True
+[regimes] soluble sweep at L_eff=40.0um (gamma=0.006/s); contact at L_eff=10.0um
+--------------------------------------------------------------------------------
+[SOLUBLE range sweep] a freely-diffusing effector cannot be spatially gated: does ANY range clear AND spare?
+ L_eff_um   release |  cleared healthyKill  outcome
+       10    200000 |     0.08        0.00  fizzle
+       40    200000 |     0.09        0.00  fizzle
+      100    200000 |     0.09        0.00  fizzle
+      200    200000 |     0.09        0.00  fizzle
+--------------------------------------------------------------------------------
+[CONTACT specificity sweep] safe ONLY if the Trop2 badge is tumour-exclusive? (real Trop2 is on normal epithelium)
+ trop2H  shed |  cleared healthyKill  outcome
+   0.00  0.00 |     0.99        0.00  CLEAR+SPARE
+   0.00  0.30 |     0.99        0.00  CLEAR+SPARE
+   0.10  0.00 |     0.99        0.01  CLEAR+SPARE
+   0.10  0.30 |     0.99        0.01  CLEAR+SPARE
+   0.30  0.00 |     0.99        0.05  leaks
+   0.30  0.30 |     0.99        0.05  leaks
+   0.50  0.00 |     0.98        0.45  leaks
+   0.50  0.30 |     0.98        0.45  leaks
+--------------------------------------------------------------------------------
+[LATENCY CONTROL] on: t_end=14.0h | off(instant): t_end=1.01h -> RUNG-1 load-bearing=True
+--------------------------------------------------------------------------------
+[C* ROBUSTNESS] contact-clean C*x0.33: cleared=0.9859 healthy=0.0
+[C* ROBUSTNESS] contact-clean C*x1.00: cleared=0.9859 healthy=0.0
+[C* ROBUSTNESS] contact-clean C*x3.00: cleared=0.9859 healthy=0.0
+================================================================================
+VERDICT: TWO honest findings. (1) PROPAGATION needs a CONTACT/juxtacrine mechanism: a freely-diffusing death-RELEASED effector is latency-limited (~one cell-layer per death-generation) and FIZZLES across all tested ranges — it cannot sweep even a 150um focus in a viable timeframe. (2) SAFETY needs a tumour-EXCLUSIVE badge: the contact wave clears+spares ONLY when the recognition antigen is tumour-restricted; with real Trop2+ normal epithelium, healthy-kill rises (0%->0, 10%->1%, 30%->5%, 50%->45%). Ties directly to the Step-3 finding that Trop2 alone lacks a clean window -> combinatorial logic-gating needed. The recognition-gated wave is viable ONLY as contact-modality + tumour-exclusive recognition.
+--------------------------------------------------------------------------------
+METHODOLOGY-INTEGRITY CHECKS:
+  [OK] field-solver oracle passes (Gaussian spread ~4Dt, mass conserved)
+  [OK] units are real (nM/um/h printed; scale anchored to EC50, not circular)
+  [OK] RUNG-1 ingested from file + dose-coupled latency is load-bearing (on != off)
+  [OK] healthy-kill DERIVED from the mechanism (healthy cells ARE killable; contact kills Trop2+ normal cells)
+  [OK] contact arm DE-RIGGED (Trop2+healthy fraction monotonically raises healthy-kill, not unkillable-by-boolean)
+  [OK] no-multiply HARD RULE asserted (RUNG-1 x RUNG-2 forbidden)
+  [OK] C* scaling robustness reported (+/-3x; qualitative verdict holds)
+  [OK] both outcomes publishable (verdict neutral; negative is valid)
+results -> runs/rung3_tissue/tissue_rd_results.json
+figure -> runs/rung3_tissue/rung3_tissue.png
+================================================================================
+CEILING: safety-under-assumed-physics regime map, NOT patient efficacy. Agonism (caspase-8 firing)
+is wet-lab. RUNG-1 latency is never multiplied by the RUNG-2 (refuted) clustering score.
+[exit 0]
