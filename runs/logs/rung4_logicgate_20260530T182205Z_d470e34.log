@@ -1,0 +1,58 @@
+# cancer-recon-apoptosis — run log
+# step          : rung4_logicgate
+# utc           : 20260530T182205Z
+# commit_short  : d470e34  (+uncommitted changes)
+# commit_full   : d470e3435e7095ab1f361edebcc667b20cf34581
+# branch        : main
+# python        : 3.12.6
+# platform      : macOS-26.3-arm64-arm-64bit
+#================================================================
+
+$ /Library/Frameworks/Python.framework/Versions/3.12/bin/python3 -u scripts/20_logicgate_calibration.py
+======================================================================================
+RUNG 4 — logic-gate selectivity engine, RUN-TRUST calibration on biological ground truth
+======================================================================================
+panel: 2560 cells x 10 antigens, 8 cell-types (heart/brain/kidney vital; liver/marrow/epithelium regenerating; tumour)
+--------------------------------------------------------------------------------------
+gate                           cov  vital strict  regen  pbulk  verdict
+ERBB2 (single)                0.97   0.99   0.99   0.69   0.00  NON-SELECTIVE (vital parenchyma co-expression — non-regenerating tissue FORBID)
+TACSTD2 (single)              0.98   0.03   0.03   1.00   0.00  NON-SELECTIVE (vital parenchyma co-expression — non-regenerating tissue FORBID)
+SCV_A AND SCV_B               0.98   0.98   0.98   0.01   0.97  NON-SELECTIVE (vital parenchyma co-expression — non-regenerating tissue FORBID)
+TACSTD2 AND CLEANPART         0.96   0.01   0.01   0.01   0.01  SELECTIVE
+ERBB2 AND_NOT HLA_A02         0.97   0.01   0.01   0.01   0.00  SELECTIVE
+DCELL_A AND DCELL_B           0.97   0.01   0.01   0.02   0.49  SELECTIVE (regen leak tolerated)
+ERBB2 AND_NOT BLOCK_UNDETECT  0.97   0.98   0.98   0.68   0.97  NON-SELECTIVE (vital parenchyma co-expression — non-regenerating tissue FORBID)
+[batch-scorer] fast vectorised scorer identical to per-gate scorer: True
+[fail-closed] clean gate with HEART REMOVED -> UNCERTAIN (cannot certify vital-safe: ['cardiomyocyte'] not adequately  (fail_closed_ok=True)
+--------------------------------------------------------------------------------------
+RUN-TRUST controls:
+  [OK] HER2-alone NON-SELECTIVE on cardiomyocyte (re-derives Step-3)
+  [OK] every known-GOOD gate scores SELECTIVE
+  [OK] every known-BAD gate scores NON-SELECTIVE
+  [OK] co-positivity TRUE-POSITIVE (same-cell pair) NON-SELECTIVE on vital
+  [OK] BULK TRAP exposed (pseudobulk would condemn, single-cell clears)
+  [OK] NOT-arm dropout-falsifiability computed (Tmod blocker falsifiable; undetectable blocker flagged)
+  [OK] FAIL-CLOSED on missing vital tissue (heart removed -> clean gate becomes UNCERTAIN, not SAFE)
+calibration: sensitivity(good->selective)=1.00  specificity(bad->non-selective)=1.00  RUN-TRUST PASS
+--------------------------------------------------------------------------------------
+[ESCAPE-DURABILITY — separate axis] AND-gate coverage half-life 18 divisions vs single 35 (delta 17). AND-gating BUYS selectivity but PAYS durability; for a contact death-wave an antigen-negative escaper is UNREACHABLE -> strictly worse than a CAR. Reported beside selectivity, never multiplied.
+--------------------------------------------------------------------------------------
+[BULK TRAP] DCELL_A AND DCELL_B: a pseudobulk method sees 49% 'co-expression' in liver and would CONDEMN the gate; single-cell shows 2% (A and B are on DIFFERENT liver cells). Gap=0.47 -> bulk data would discard a safe gate (or hide a lethal one).
+--------------------------------------------------------------------------------------
+METHODOLOGY-INTEGRITY CHECKS:
+  [OK] RUN-TRUST passed (engine implements the safety logic correctly)
+  [OK] selectivity computed at single-cell resolution (per-cell co-positivity)
+  [OK] tiered safety rule encoded (heart/brain/kidney strict; regen ceiling)
+  [OK] bulk trap exposed (pseudobulk vs single-cell gap reported)
+  [OK] NOT-arm dropout-falsifiability enforced
+  [OK] escape-durability reported as a SEPARATE axis (not multiplied)
+  [OK] no-multiply HARD RULE asserted
+  [OK] fast batch scorer IDENTICAL to per-gate scorer (used on real data)
+  [OK] method validated, NOT a discovered gate (real run = Colab atlases)
+results -> runs/rung4_logicgate/calibration_results.json
+figure -> runs/rung4_logicgate/rung4_calibration.png
+======================================================================================
+CEILING: this VALIDATES THE ENGINE on known-answer controls. The real antigen-pair discovery runs
+on CELLxGENE single-cell atlases via scripts/17 (Colab). mRNA!=protein; co-localisation!=a working
+circuit (wet-lab). Recognition is a separate axis — never multiplied with RUNG-1/2/3.
+[exit 0]

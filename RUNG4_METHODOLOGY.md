@@ -47,8 +47,11 @@ method validation, NOT a discovered gate.** No clean combination is *claimed* un
    **transcript-only** until CITE-seq confirms co-positivity; HPA IHC is **veto-only** (it can fail a gate,
    never bless one).
 3. **Multiple testing + escape fragility.** The partner pool is kept small (curated, not a 2.5M-pair blind
-   sweep) and the real run carries a scrambled-label null + held-out-donor replication. Crucially, an AND
-   gate is **more** fragile to tumour evolution than a single antigen — a subclone escapes by losing *either*
+   sweep). The valid multiple-testing control here is **held-out-donor replication** — that is **deferred to
+   the next pass** (it needs a donor column), so a real run's selective gates are an explicit **DISCOVERY
+   shortlist** pending replication, not confirmed hits (we do *not* claim a scrambled-label null in the real
+   run — for per-cell co-positivity it would falsely void genuinely-clean gates). Crucially, an AND gate is
+   **more** fragile to tumour evolution than a single antigen — a subclone escapes by losing *either*
    badge. So **escape-durability is reported as a separate axis, never multiplied into selectivity** — they
    are in direct tension. The benchmark shows the AND-gate's coverage half-life is **~half** the single's
    (18 vs 35 divisions), and for our **contact** death-wave an antigen-negative escaper is **unreachable**
@@ -57,6 +60,25 @@ method validation, NOT a discovered gate.** No clean combination is *claimed* un
 Plus the tiered safety rule (your insight): **heart/brain/kidney co-expression FORBIDS a gate; liver/gut/
 marrow is tolerated up to a finite recovery ceiling.** And the **no-multiply HARD RULE**: recognition is a
 *fourth* axis, never fused with RUNG-1 (timing) / RUNG-2 (clustering, refuted) / RUNG-3 (tissue dynamics).
+
+### Audit hardening (after an adversarial code review)
+
+A code-grounded audit of the data layer caught a **fail-OPEN safety bug** and other gaps that *predated*
+the speed refactor (the refactor itself was verified result-equivalent). Fixed this pass:
+
+- **FAIL-CLOSED on vital coverage.** Previously, if a vital organ wasn't captured, leak defaulted to 0 and
+  the gate read SAFE — "we never looked at the heart" was indistinguishable from "the heart is clean" (the
+  exact HER2-CAR-T death mode). Now any required vital type (heart/brain/kidney/pancreas/adrenal/muscle) that
+  isn't adequately captured forces the gate to **UNCERTAIN**, never SELECTIVE. A unit control (remove
+  cardiomyocytes → a clean gate must become UNCERTAIN) is in `scripts/20` and passes.
+- **Asymmetric cap.** Vital-parenchyma cells are now kept in **full** (only abundant non-vital types are
+  subsampled), so a rare lethal double-positive cardiomyocyte can't be statistically erased — and the
+  cell-type mapping runs **before** the cap (a fixed ordering bug).
+- **Upper-bound leaks.** Vital safety is gated on the **Jeffreys one-sided upper confidence bound** of the
+  per-group co-positive rate, not the point estimate — a 0/40 group reads ~7% upper, not 0%.
+- **Restored all 9 vital/normal tissues** (pancreas, adrenal, skeletal muscle were silently dropped).
+- **Honest controls.** Multiple-testing control (held-out-donor replication) is **deferred** — selective
+  gates are a discovery shortlist; we no longer claim a control that doesn't run.
 
 ---
 

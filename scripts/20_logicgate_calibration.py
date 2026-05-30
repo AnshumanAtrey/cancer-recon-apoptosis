@@ -84,18 +84,19 @@ def main() -> int:
         ("DCELL_A", "DCELL_B", "AND", "good", "bulk-trap pair: on DIFFERENT liver cells (single-cell safe)"),
         ("ERBB2", "BLOCK_UNDETECT", "AND_NOT", "control", "NOT on an undetectable blocker (must be UNCERTAIN)"),
     ]
+    REQ_VITAL = {"cardiomyocyte", "neuron", "kidney_tubule"}   # the vital types this synthetic panel models
     print("-" * 86)
     print(f"{'gate':28s} {'cov':>5s} {'vital':>6s} {'strict':>6s} {'regen':>6s} {'pbulk':>6s}  verdict")
     rows = []
     for A, B, logic, klass, desc in GATES:
-        r = lg.score_gate(panel, A, B, logic)
+        r = lg.score_gate(panel, A, B, logic, required_vital=REQ_VITAL)
         r["class"], r["desc"] = klass, desc
         rows.append(r)
         print(f"{r['gate']:28s} {r['tumour_coverage']:5.2f} {r['vital_leak']:6.2f} {r['strict_leak']:6.2f} "
               f"{r['regen_leak']:6.2f} {r['pseudobulk_leak']:6.2f}  {r['verdict']}")
 
     # validate the FAST batch scorer (used by scripts/17 on real data) is IDENTICAL to the per-gate scorer
-    batch = lg.score_gates_batch(panel, [(A, B, logic) for A, B, logic, _, _ in GATES])
+    batch = lg.score_gates_batch(panel, [(A, B, logic) for A, B, logic, _, _ in GATES], required_vital=REQ_VITAL)
     batch_matches = all(
         b["verdict"] == r["verdict"]
         and abs(b["vital_leak"] - r["vital_leak"]) < 1e-9
@@ -103,6 +104,16 @@ def main() -> int:
         and abs(b["worst_normal_leak"] - r["worst_normal_leak"]) < 1e-9
         for b, r in zip(batch, rows))
     print(f"[batch-scorer] fast vectorised scorer identical to per-gate scorer: {batch_matches}")
+
+    # FAIL-CLOSED control: remove cardiomyocytes -> a previously-clean gate must become UNCERTAIN, NOT
+    # silently SELECTIVE ('we never looked at the heart' != 'the heart is clean'). This is the lethal
+    # fail-OPEN bug the audit caught; this control proves it now fails CLOSED.
+    keep = panel.cell_type != "cardiomyocyte"
+    panel_noheart = lg.Panel(panel.counts[keep], panel.genes,
+                             panel.cell_type[keep], panel.tissue[keep], panel.compartment[keep])
+    fc = lg.score_gate(panel_noheart, "TACSTD2", "CLEANPART", "AND", required_vital=REQ_VITAL)
+    fail_closed_ok = (not fc["selective"]) and ("cardiomyocyte" in fc.get("unaudited_vital", []))
+    print(f"[fail-closed] clean gate with HEART REMOVED -> {fc['verdict'][:70]}  (fail_closed_ok={fail_closed_ok})")
 
     by_gate = {r["gate"]: r for r in rows}
     her2 = by_gate["ERBB2 (single)"]
@@ -125,6 +136,8 @@ def main() -> int:
             bulk["selective"] and bulk["pseudobulk_leak"] > 0.2 and bulk["worst_normal_leak"] < 0.05,
         "NOT-arm dropout-falsifiability computed (Tmod blocker falsifiable; undetectable blocker flagged)":
             by_gate["ERBB2 AND_NOT HLA_A02"]["not_arm_falsifiable"] and (not unfals["not_arm_falsifiable"]),
+        "FAIL-CLOSED on missing vital tissue (heart removed -> clean gate becomes UNCERTAIN, not SAFE)":
+            fail_closed_ok,
     }
     print("RUN-TRUST controls:")
     for k, v in controls.items():

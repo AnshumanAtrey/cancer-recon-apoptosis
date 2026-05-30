@@ -11,9 +11,13 @@ What it does, one tissue in RAM at a time (never bulk/pseudobulk):
   1. Stream NORMAL per-tissue single-cell slices from CZ CELLxGENE Census for ALL Step-3 vital tissues
      (heart, brain, kidney, liver, lung, pancreas, adrenal gland, bone marrow, skeletal muscle), subset to
      the antigen-pool genes only (keeps each slice small).
-  2. Emit a VITAL-COVERAGE CENSUS: per tissue, how many cells of each vital parenchymal type we actually
-     captured. A vital type with < MIN_VITAL_CELLS is marked UNAUDITED -> no gate may be certified
-     vital-safe for it (droplet scRNA-seq under-samples cardiomyocytes/neurons; prefer snRNA-seq atlases).
+  2. Emit a VITAL-COVERAGE CENSUS. SAFETY MECHANICS (audit-hardened): vital-parenchyma cells are kept in
+     FULL (asymmetric cap — only abundant non-vital types are capped) so a rare lethal double-positive is
+     not statistically erased; leaks are Jeffreys UPPER bounds (a false zero from dropout cannot pass); and
+     it FAILS CLOSED — if any non-regen vital type (heart/brain/kidney/pancreas/adrenal/muscle) was NOT
+     adequately captured, the gate is UNCERTAIN, never silently SELECTIVE ('never looked at the heart' !=
+     'the heart is clean'). Multiple-testing control = held-out-donor replication is DEFERRED to the next
+     pass; selective gates are a DISCOVERY shortlist until then.
   3. Pull the TUMOUR single-cell (reuse scripts/03's lung/breast/colon malignant pulls).
   4. Assemble a per-cell Panel and score the candidate AND / AND-NOT gates with scripts/18, emitting
      gate_selectivity.csv (both tumour COVERAGE and worst-case NORMAL LEAK, vital broken out).
@@ -57,8 +61,8 @@ SEED = 20260530
 lg_spec = importlib.util.spec_from_file_location("lg", PROJECT_ROOT / "scripts" / "18_logicgate_search.py")
 lg = importlib.util.module_from_spec(lg_spec); lg_spec.loader.exec_module(lg)
 
-NORMAL_TISSUES = ["heart", "brain", "kidney", "liver", "lung", "bone marrow"]   # vital (heart/brain/kidney)
-#                  + regenerating (liver/marrow) + the tumour-matched normal (lung). One combined scan, not per-tissue.
+NORMAL_TISSUES = ["heart", "brain", "kidney", "liver", "lung", "bone marrow",
+                  "pancreas", "adrenal gland", "skeletal muscle"]   # all 9: non-regen vital + regen + tumour-matched
 TUMOUR_DISEASES = ["lung adenocarcinoma", "breast carcinoma", "colorectal cancer"]
 # Step-2 activator pool (all FAILED scripts/07 single-antigen safety -> MUST be gated).
 ACTIVATORS = ["ERBB2", "ERBB3", "EPHB4", "TACSTD2", "MUC1", "SDC1", "CD74", "ITGB4"]
@@ -66,9 +70,16 @@ ACTIVATORS = ["ERBB2", "ERBB3", "EPHB4", "TACSTD2", "MUC1", "SDC1", "CD74", "ITG
 PARTNERS = ["ERBB3", "EPHB4", "EPCAM", "CDH1", "MET", "PROM1", "CD24", "FOLR1", "MSLN", "CEACAM5",
             "NECTIN4", "CLDN6", "CLDN18", "ROR1", "MUC16"]
 ALL_GENES = sorted(set(ACTIVATORS + PARTNERS))
-# Canonical non-regenerating vital parenchyma to audit (cell_type substrings).
+# Canonical non-regenerating vital parenchyma to audit (cell_type substrings -> canonical label).
+# Cardiac entries FIRST so 'cardiac muscle cell' maps to cardiomyocyte before any 'muscle' rule.
+# NOTE: if a real Census label doesn't match here, that vital type stays UNAUDITED and the gate
+# FAILS CLOSED (UNCERTAIN) — imperfect mapping is now conservative-safe, never lethally false-safe.
 VITAL_AUDIT = {"cardiac muscle": "cardiomyocyte", "cardiomyocyte": "cardiomyocyte",
-               "neuron": "neuron", "kidney epithel": "kidney_tubule", "podocyte": "kidney_podocyte"}
+               "neuron": "neuron", "glial": "neuron",
+               "kidney epithel": "kidney_tubule", "renal": "kidney_tubule", "podocyte": "kidney_podocyte",
+               "pancreatic": "pancreatic_islet", "islet": "pancreatic_islet", "beta cell": "pancreatic_islet",
+               "adrenal": "adrenal_cortical",
+               "skeletal muscle": "skeletal_myocyte", "skeletal": "skeletal_myocyte"}
 
 
 def _q(items):
@@ -76,11 +87,12 @@ def _q(items):
     return "[" + ", ".join(f"'{x}'" for x in items) + "]"
 
 
-def _stream_pull(census, value_filter, label):
+def _stream_pull(census, value_filter, label, tissue_index=0):
     """STREAM one slice via get_anndata(obs_value_filter=...) — a CONTIGUOUS, predicate-pushed read — then
-    stratified-subsample per cell_type IN MEMORY. This replaces the obs_coords=[scattered ids] approach,
-    which forced TileDB random-access seeks (~35 min per 60k-cell chunk). Returns (counts, cell_types, tissues)
-    or None. One tissue in RAM at a time bounds memory."""
+    map cell_types to canonical labels and ASYMMETRICALLY subsample: keep ALL vital-parenchyma cells (so a
+    rare lethal double-positive cardiomyocyte cannot be statistically erased), cap only abundant non-vital
+    types at MAX_PER_TYPE. Mapping happens BEFORE the cap so vital cells are recognised first. Independent
+    RNG per tissue. Returns (counts, canonical_cell_types, tissues) or None."""
     import cellxgene_census
     log(f"{label}: streaming get_anndata (contiguous predicate read) ...")
     ad = cellxgene_census.get_anndata(
@@ -89,17 +101,19 @@ def _stream_pull(census, value_filter, label):
         column_names={"obs": ["cell_type", "tissue_general"]})
     if ad.n_obs == 0:
         log(f"{label}: 0 cells matched — check disease/tissue labels"); return None
-    log(f"{label}: {ad.n_obs:,} cells read; stratified-subsampling <= {MAX_PER_TYPE}/cell_type ...")
-    rng = np.random.default_rng(SEED)
-    ct_arr = ad.obs["cell_type"].astype(str).to_numpy()
+    mapped = np.array(_map_celltype(ad.obs["cell_type"].astype(str).to_numpy()))   # MAP BEFORE CAP
+    log(f"{label}: {ad.n_obs:,} cells read; asymmetric cap (vital kept in FULL, non-vital <= {MAX_PER_TYPE}) ...")
+    rng = np.random.default_rng([SEED, tissue_index])   # independent draws per tissue
     keep = []
-    for c in np.unique(ct_arr):
-        idx = np.where(ct_arr == c)[0]
-        keep.append(rng.choice(idx, MAX_PER_TYPE, replace=False) if len(idx) > MAX_PER_TYPE else idx)
+    for lab in np.unique(mapped):
+        idx = np.where(mapped == lab)[0]
+        cap = None if lab in lg.VITAL_NONREGEN else MAX_PER_TYPE   # keep ALL vital-parenchyma cells
+        keep.append(idx if (cap is None or len(idx) <= cap) else rng.choice(idx, cap, replace=False))
     keep = np.sort(np.concatenate(keep))
-    ad = ad[keep]
-    log(f"{label}: kept {ad.n_obs:,} cells ({len(np.unique(ct_arr))} cell types)")
-    return _dense_over(ad, ALL_GENES), list(ad.obs["cell_type"].astype(str)), list(ad.obs["tissue_general"].astype(str))
+    ad = ad[keep]; mapped = mapped[keep]
+    vital_kept = sorted(set(mapped.tolist()) & lg.VITAL_NONREGEN)
+    log(f"{label}: kept {ad.n_obs:,} cells; vital types kept in FULL: {vital_kept or 'NONE in this tissue'}")
+    return _dense_over(ad, ALL_GENES), list(mapped), list(ad.obs["tissue_general"].astype(str))
 
 
 def fetch_panel():
@@ -111,16 +125,16 @@ def fetch_panel():
     census = cellxgene_census.open_soma(census_version=CENSUS_VERSION)
     log("census open ✓")
     try:
-        for tissue in NORMAL_TISSUES:   # one streaming read per tissue (bounds RAM; brain is the big one)
+        for ti, tissue in enumerate(NORMAL_TISSUES):   # one streaming read per tissue (bounds RAM)
             res = _stream_pull(census,
                                f"is_primary_data == True and disease == 'normal' and tissue_general == '{tissue}'",
-                               f"NORMAL {tissue}")
+                               f"NORMAL {tissue}", tissue_index=ti)
             if res is not None:
-                c, cts, tss = res
-                counts_blocks.append(c); ct += list(_map_celltype(cts)); ts += tss; comp += ["normal"] * len(cts)
+                c, cts, tss = res   # cts already mapped to canonical labels inside _stream_pull
+                counts_blocks.append(c); ct += list(cts); ts += tss; comp += ["normal"] * len(cts)
         res = _stream_pull(census,
                            f"is_primary_data == True and disease in {_q(TUMOUR_DISEASES)}",
-                           "TUMOUR (all diseases)")
+                           "TUMOUR (all diseases)", tissue_index=99)
         if res is not None:
             c, cts, tss = res
             counts_blocks.append(c); ct += ["tumour_epithelium"] * len(cts)
@@ -208,11 +222,14 @@ def main() -> int:
             log(f"  scored {i:3d}/{n}  {r['gate']:26s} cov={r['tumour_coverage']:.2f} "
                 f"leak={r['worst_normal_leak']:.2f} vital={r['vital_leak']:.2f} -> {tag}")
 
-    rows = lg.score_gates_batch(panel, specs, k=K, progress=_prog)
+    # FAIL-CLOSED: require every non-regen vital type to be adequately captured; a gate where heart/brain/
+    # kidney/pancreas/adrenal/muscle was NOT captured is UNCERTAIN, never silently SELECTIVE. Leaks are
+    # Jeffreys UPPER bounds, vital cells kept in full (asymmetric cap) — so a false zero cannot pass.
+    rows = lg.score_gates_batch(panel, specs, k=K, required_vital=lg.VITAL_NONREGEN, progress=_prog)
     for r in rows:
-        r["vital_unaudited"] = unaudited
         r["protein_copositivity_status"] = "NO_SINGLECELL_PROTEIN_DATA"  # transcript-only until CITE-seq
         r["transcript_only"] = True
+        r["multiple_testing_control"] = "held-out-donor replication DEFERRED (next pass) — treat selective as DISCOVERY shortlist"
     rows.sort(key=lambda r: (not r["selective"], r["worst_normal_leak"], -r["tumour_coverage"]))
 
     import csv

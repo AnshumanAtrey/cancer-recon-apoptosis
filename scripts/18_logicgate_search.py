@@ -30,9 +30,10 @@ from __future__ import annotations
 
 import numpy as np
 
-# Non-regenerating vital parenchyma — co-expression here FORBIDS a gate (heart/brain/kidney).
-# (Cell-type names align with the HPA vital-parenchyma set used in scripts/07.)
-VITAL_NONREGEN = {"cardiomyocyte", "neuron", "kidney_tubule", "kidney_podocyte"}
+# Non-regenerating vital parenchyma — co-expression here FORBIDS a gate. These tissues do not regenerate,
+# so a single double-positive cell is potentially lethal (heart/brain/kidney/pancreas-islet/adrenal/muscle).
+VITAL_NONREGEN = {"cardiomyocyte", "neuron", "kidney_tubule", "kidney_podocyte",
+                  "pancreatic_islet", "adrenal_cortical", "skeletal_myocyte"}
 # Regenerating tissue — single-cell co-expression TOLERATED up to a higher (but finite) ceiling: you can
 # survive transient loss of liver/gut/marrow/epithelium, but not wholesale denudation.
 REGEN_TYPES = {"hepatocyte", "marrow_hsc", "enterocyte", "keratinocyte", "liver_endothelial",
@@ -82,53 +83,69 @@ def not_arm_falsifiable(panel: Panel, B, k, min_detect=0.10):
     return best >= min_detect, round(best, 3)
 
 
-def _decide(tumour_coverage, vital_leak, strict_leak, regen_leak, not_ok, logic, leak_bar, regen_bar, cov_bar):
-    """The TIERED safety verdict — single source of truth, shared by score_gate (per-gate) and
-    score_gates_batch (vectorised) so they CANNOT diverge. Strict near-zero bar on non-regenerating
-    tissue (heart/brain/kidney FORBID); a higher but finite ceiling on regenerating tissue."""
+def jeffreys_upper(k, n, alpha=0.05):
+    """One-sided upper (1-alpha) confidence bound on a binomial rate k/n (Jeffreys interval). A 0/40 group
+    has point-rate 0 but upper bound ~0.07 — so 'we saw no leak' is NOT credited as 'there is no leak'.
+    Vital safety is gated on THIS bound, not the point estimate (the dangerous error is the false zero)."""
+    if n <= 0:
+        return 1.0   # no cells observed -> maximal uncertainty (fail-closed)
+    try:
+        from scipy.stats import beta
+        return float(beta.ppf(1 - alpha, k + 0.5, n - k + 0.5)) if k < n else 1.0
+    except Exception:
+        return min(1.0, (k + 1.96 ** 2 / 2) / (n + 1.96 ** 2) + 1.96 / (n + 4) * 0.5)  # crude fallback
+
+
+def _decide(tumour_coverage, vital_leak, strict_leak, regen_leak, not_ok, logic, leak_bar, regen_bar, cov_bar,
+            unaudited_vital=None):
+    """The TIERED safety verdict — single source of truth, shared by score_gate and score_gates_batch so
+    they CANNOT diverge. Strict near-zero bar on non-regenerating tissue (FORBID); a finite ceiling on
+    regenerating tissue. FAIL-CLOSED: if a required vital type was never adequately captured, the gate is
+    NOT certifiable vital-safe — 'we never looked at the heart' must NOT read as 'the heart is clean'.
+    Leak inputs are UPPER confidence bounds, so a false zero from dropout/undersampling cannot pass."""
     if tumour_coverage < cov_bar:
         return "NON-SELECTIVE (insufficient tumour coverage)"
     if vital_leak > leak_bar:
-        return "NON-SELECTIVE (vital parenchyma co-expression — heart/brain/kidney FORBID)"
+        return "NON-SELECTIVE (vital parenchyma co-expression — non-regenerating tissue FORBID)"
     if strict_leak > leak_bar:
         return "NON-SELECTIVE (non-regenerating normal leak)"
     if regen_leak > regen_bar:
         return "NON-SELECTIVE (regenerating-tissue leak exceeds the recovery ceiling)"
     if logic == "AND_NOT" and not not_ok:
         return "UNCERTAIN (NOT-arm dropout-unfalsifiable: blocker not robustly detectable)"
+    if unaudited_vital:
+        return f"UNCERTAIN (cannot certify vital-safe: {sorted(unaudited_vital)} not adequately captured — FAIL-CLOSED)"
     return "SELECTIVE" + (" (regen leak tolerated)" if regen_leak > leak_bar else "")
 
 
-def score_gate(panel: Panel, A, B=None, logic="SINGLE", k=2, leak_bar=0.02, regen_bar=0.15, cov_bar=0.30):
-    """Score one gate. Returns coverage, worst normal leak (vital broken out), bulk-vs-single-cell gap,
-    NOT-falsifiability, and a verdict under the TIERED safety rule (strict near-zero bar on
-    non-regenerating tissue incl. heart/brain/kidney; a higher but finite ceiling on regenerating tissue).
-    NEVER a single fused number."""
+def score_gate(panel: Panel, A, B=None, logic="SINGLE", k=2, leak_bar=0.02, regen_bar=0.15, cov_bar=0.30,
+               required_vital=None):
+    """Score one gate. Leak metrics are UPPER confidence bounds (Jeffreys) so a false zero from dropout/
+    undersampling cannot pass the vital bar. FAIL-CLOSED: required_vital types that were never adequately
+    captured make the gate UNCERTAIN (not vital-safe). NEVER a single fused number."""
     fire = gate_fire(panel, A, B, logic, k)
     is_tum = panel.compartment == "tumour"
     tumour_coverage = float(fire[is_tum].mean()) if is_tum.any() else 0.0
 
-    # per (cell_type, tissue) NORMAL group leak = fraction of that group's cells the gate would kill
-    groups = {}
+    # per (cell_type, tissue) NORMAL group -> (k co-positive, n cells); leak = UPPER bound of k/n
     norm = panel.compartment == "normal"
+    groups = {}
     for ct in np.unique(panel.cell_type[norm]):
         for ts in np.unique(panel.tissue[norm & (panel.cell_type == ct)]):
             m = norm & (panel.cell_type == ct) & (panel.tissue == ts)
-            if m.sum() >= 20:
-                groups[(ct, ts)] = float(fire[m].mean())
-    worst_leak = max(groups.values(), default=0.0)
-    worst_group = max(groups, key=groups.get) if groups else None
-    vital_leak = max((v for (ct, ts), v in groups.items() if ct in VITAL_NONREGEN), default=0.0)
-    vital_group = max(((g, v) for g, v in groups.items() if g[0] in VITAL_NONREGEN),
-                      key=lambda x: x[1], default=(None, 0.0))[0]
-    regen_leak = max((v for (ct, ts), v in groups.items() if ct in REGEN_TYPES), default=0.0)
-    # strict bucket = every normal group that is NOT regenerating (vital + any other non-regen normal)
-    strict_leak = max((v for (ct, ts), v in groups.items() if ct not in REGEN_TYPES), default=0.0)
-    strict_group = max(((g, v) for g, v in groups.items() if g[0] not in REGEN_TYPES),
-                       key=lambda x: x[1], default=(None, 0.0))[0]
+            n = int(m.sum())
+            if n >= 20:
+                groups[(ct, ts)] = (int(fire[m].sum()), n)
+    leaks = {g: jeffreys_upper(kk, nn) for g, (kk, nn) in groups.items()}     # UPPER-bound leak per group
+    worst_leak = max(leaks.values(), default=0.0); worst_group = max(leaks, key=leaks.get) if leaks else None
+    vit = {g: v for g, v in leaks.items() if g[0] in VITAL_NONREGEN}
+    vital_leak = max(vit.values(), default=0.0); vital_group = max(vit, key=vit.get) if vit else None
+    regen_leak = max((v for g, v in leaks.items() if g[0] in REGEN_TYPES), default=0.0)
+    strict = {g: v for g, v in leaks.items() if g[0] not in REGEN_TYPES}
+    strict_leak = max(strict.values(), default=0.0); strict_group = max(strict, key=strict.get) if strict else None
+    audited_vital = {g[0] for g in groups if g[0] in VITAL_NONREGEN}
+    unaudited_vital = (set(required_vital) - audited_vital) if required_vital else set()
 
-    # BULK TRAP: a pseudobulk method asks "are A and B both present in this tissue?" (marginal), which
-    # FALSELY flags co-expression when A and B sit on DIFFERENT cells. Report the gap.
     pseudobulk_leak = 0.0
     if logic in ("AND", "AND_NOT"):
         for ts in np.unique(panel.tissue[norm]):
@@ -137,19 +154,20 @@ def score_gate(panel: Panel, A, B=None, logic="SINGLE", k=2, leak_bar=0.02, rege
                 a_present = panel.positive(A, k)[m].mean()
                 b = panel.positive(B, k)[m]
                 b_term = (1 - b.mean()) if logic == "AND_NOT" else b.mean()
-                pseudobulk_leak = max(pseudobulk_leak, float(min(a_present, b_term)))  # marginal AND proxy
+                pseudobulk_leak = max(pseudobulk_leak, float(min(a_present, b_term)))
 
     not_ok, not_detect = (True, None)
     if logic == "AND_NOT":
         not_ok, not_detect = not_arm_falsifiable(panel, B, k)
 
-    verdict = _decide(tumour_coverage, vital_leak, strict_leak, regen_leak, not_ok, logic, leak_bar, regen_bar, cov_bar)
+    verdict = _decide(tumour_coverage, vital_leak, strict_leak, regen_leak, not_ok, logic,
+                      leak_bar, regen_bar, cov_bar, unaudited_vital)
 
     return {
         "gate": f"{A}" + (f" {logic} {B}" if logic != "SINGLE" else " (single)"),
         "logic": logic, "A": A, "B": B, "k": k,
         "tumour_coverage": round(tumour_coverage, 3),
-        "worst_normal_leak": round(worst_leak, 3),
+        "worst_normal_leak": round(worst_leak, 3),   # UPPER bound
         "worst_group": f"{worst_group[0]}@{worst_group[1]}" if worst_group else None,
         "vital_leak": round(vital_leak, 3),
         "vital_group": f"{vital_group[0]}@{vital_group[1]}" if vital_group else None,
@@ -157,14 +175,16 @@ def score_gate(panel: Panel, A, B=None, logic="SINGLE", k=2, leak_bar=0.02, rege
         "strict_group": f"{strict_group[0]}@{strict_group[1]}" if strict_group else None,
         "regen_leak": round(regen_leak, 3),
         "pseudobulk_leak": round(pseudobulk_leak, 3),
-        "bulk_trap_gap": round(pseudobulk_leak - worst_leak, 3),  # >0 => bulk would falsely condemn a safe gate
+        "bulk_trap_gap": round(pseudobulk_leak - worst_leak, 3),
         "not_arm_falsifiable": not_ok, "not_arm_detect": not_detect,
+        "audited_vital": sorted(audited_vital), "unaudited_vital": sorted(unaudited_vital),
+        "leak_is_upper_bound": True,
         "verdict": verdict, "selective": verdict.startswith("SELECTIVE"),
     }
 
 
 def score_gates_batch(panel: Panel, specs, k=2, leak_bar=0.02, regen_bar=0.15, cov_bar=0.30,
-                      not_min_detect=0.10, progress=None):
+                      not_min_detect=0.10, required_vital=None, progress=None):
     """Score MANY gates fast: precompute per-cell-type/tissue group ids + per-gene positives ONCE, then
     each gate is a couple of boolean ops + one np.bincount (milliseconds), instead of re-scanning every
     group per gate. Returns the SAME dicts as score_gate (verdict via the shared _decide), so results are
@@ -195,17 +215,31 @@ def score_gates_batch(panel: Panel, specs, k=2, leak_bar=0.02, regen_bar=0.15, c
     tissues_norm = [t for t in np.unique(panel.tissue[norm])]
     tmask = {t: (norm & (panel.tissue == t)) for t in tissues_norm}
 
-    def grp_leak(fire_norm):
+    # leak per group = UPPER confidence bound of (co-positive count / group size), vectorised
+    try:
+        from scipy.stats import beta as _beta
+    except Exception:
+        _beta = None
+
+    def grp_upper(fire_norm):
+        if not ng:
+            return np.zeros(0)
         sel = gid[fire_norm]
-        cnt = np.bincount(sel[sel >= 0], minlength=ng) if ng else np.zeros(0)
-        return cnt / np.maximum(gsize, 1) if ng else np.zeros(0)
+        cnt = np.bincount(sel[sel >= 0], minlength=ng).astype(float)
+        if _beta is None:
+            return cnt / np.maximum(gsize, 1)
+        ub = _beta.ppf(0.95, cnt + 0.5, gsize - cnt + 0.5)
+        return np.where(cnt >= gsize, 1.0, np.nan_to_num(ub, nan=1.0))
+
+    audited_vital = {glabels[j][0] for j in range(ng) if gvital[j]}
+    unaudited_vital = (set(required_vital) - audited_vital) if required_vital else set()
 
     out = []
     for i, (A, B, logic) in enumerate(specs):
         a = pos[A]
         fire = a if logic == "SINGLE" else (a & pos[B] if logic == "AND" else a & ~pos[B])
         tumour_coverage = float(fire[tum].mean()) if tum.any() else 0.0
-        fr = grp_leak(fire & norm)
+        fr = grp_upper(fire & norm)
         worst_leak = float(fr.max()) if ng else 0.0
         wi = int(fr.argmax()) if ng else -1
         vital_leak = float(fr[gvital].max()) if gvital.any() else 0.0
@@ -223,7 +257,8 @@ def score_gates_batch(panel: Panel, specs, k=2, leak_bar=0.02, regen_bar=0.15, c
         not_ok, not_detect = (True, None)
         if logic == "AND_NOT":
             not_detect = round(gene_max_detect[B], 3); not_ok = gene_max_detect[B] >= not_min_detect
-        verdict = _decide(tumour_coverage, vital_leak, strict_leak, regen_leak, not_ok, logic, leak_bar, regen_bar, cov_bar)
+        verdict = _decide(tumour_coverage, vital_leak, strict_leak, regen_leak, not_ok, logic,
+                          leak_bar, regen_bar, cov_bar, unaudited_vital)
         r = {"gate": f"{A}" + (f" {logic} {B}" if logic != "SINGLE" else " (single)"),
              "logic": logic, "A": A, "B": B, "k": k,
              "tumour_coverage": round(tumour_coverage, 3),
@@ -237,6 +272,8 @@ def score_gates_batch(panel: Panel, specs, k=2, leak_bar=0.02, regen_bar=0.15, c
              "pseudobulk_leak": round(pseudobulk, 3),
              "bulk_trap_gap": round(pseudobulk - worst_leak, 3),
              "not_arm_falsifiable": not_ok, "not_arm_detect": not_detect,
+             "audited_vital": sorted(audited_vital), "unaudited_vital": sorted(unaudited_vital),
+             "leak_is_upper_bound": True,
              "verdict": verdict, "selective": verdict.startswith("SELECTIVE")}
         out.append(r)
         if progress:
