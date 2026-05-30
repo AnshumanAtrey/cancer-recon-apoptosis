@@ -41,3 +41,4 @@ data/cellxgene/
 data/specificity/*.gct.gz
 data/specificity/*.tsv.zip
 data/specificity/*.tsv
+data/logicgate/
