@@ -1,0 +1,220 @@
+# cancer-recon-apoptosis — run log
+# step          : rung4_logicgate
+# utc           : 20260531T114550Z
+# commit_short  : c35b897
+# commit_full   : c35b897bf239c02cb1542b2d20fb844231831b83
+# branch        : main
+# python        : 3.12.13
+# platform      : Linux-6.6.122+-x86_64-with-glibc2.35
+#================================================================
+
+$ /usr/bin/python3 -u scripts/20_logicgate_calibration.py
+======================================================================================
+RUNG 4 — logic-gate selectivity engine, RUN-TRUST calibration on biological ground truth
+======================================================================================
+panel: 2560 cells x 10 antigens, 8 cell-types (heart/brain/kidney vital; liver/marrow/epithelium regenerating; tumour)
+--------------------------------------------------------------------------------------
+gate                           cov  vital strict  regen  pbulk  verdict
+ERBB2 (single)                0.97   0.99   0.99   0.69   0.00  NON-SELECTIVE (vital parenchyma co-expression — non-regenerating tissue FORBID)
+TACSTD2 (single)              0.98   0.03   0.03   1.00   0.00  NON-SELECTIVE (vital parenchyma co-expression — non-regenerating tissue FORBID)
+SCV_A AND SCV_B               0.98   0.98   0.98   0.01   0.97  NON-SELECTIVE (vital parenchyma co-expression — non-regenerating tissue FORBID)
+TACSTD2 AND CLEANPART         0.96   0.01   0.01   0.01   0.01  SELECTIVE
+ERBB2 AND_NOT HLA_A02         0.97   0.01   0.01   0.01   0.00  SELECTIVE
+DCELL_A AND DCELL_B           0.97   0.01   0.01   0.02   0.49  SELECTIVE (regen leak tolerated)
+ERBB2 AND_NOT BLOCK_UNDETECT  0.97   0.98   0.98   0.68   0.97  NON-SELECTIVE (vital parenchyma co-expression — non-regenerating tissue FORBID)
+[batch-scorer] fast vectorised scorer identical to per-gate scorer: True
+[fail-closed] clean gate with HEART REMOVED -> UNCERTAIN (cannot certify vital-safe: ['cardiomyocyte'] not adequately  (fail_closed_ok=True)
+--------------------------------------------------------------------------------------
+RUN-TRUST controls:
+  [OK] HER2-alone NON-SELECTIVE on cardiomyocyte (re-derives Step-3)
+  [OK] every known-GOOD gate scores SELECTIVE
+  [OK] every known-BAD gate scores NON-SELECTIVE
+  [OK] co-positivity TRUE-POSITIVE (same-cell pair) NON-SELECTIVE on vital
+  [OK] BULK TRAP exposed (pseudobulk would condemn, single-cell clears)
+  [OK] NOT-arm dropout-falsifiability computed (Tmod blocker falsifiable; undetectable blocker flagged)
+  [OK] FAIL-CLOSED on missing vital tissue (heart removed -> clean gate becomes UNCERTAIN, not SAFE)
+calibration: sensitivity(good->selective)=1.00  specificity(bad->non-selective)=1.00  RUN-TRUST PASS
+--------------------------------------------------------------------------------------
+[ESCAPE-DURABILITY — separate axis] AND-gate coverage half-life 18 divisions vs single 35 (delta 17). AND-gating BUYS selectivity but PAYS durability; for a contact death-wave an antigen-negative escaper is UNREACHABLE -> strictly worse than a CAR. Reported beside selectivity, never multiplied.
+--------------------------------------------------------------------------------------
+[BULK TRAP] DCELL_A AND DCELL_B: a pseudobulk method sees 49% 'co-expression' in liver and would CONDEMN the gate; single-cell shows 2% (A and B are on DIFFERENT liver cells). Gap=0.47 -> bulk data would discard a safe gate (or hide a lethal one).
+--------------------------------------------------------------------------------------
+METHODOLOGY-INTEGRITY CHECKS:
+  [OK] RUN-TRUST passed (engine implements the safety logic correctly)
+  [OK] selectivity computed at single-cell resolution (per-cell co-positivity)
+  [OK] tiered safety rule encoded (heart/brain/kidney strict; regen ceiling)
+  [OK] bulk trap exposed (pseudobulk vs single-cell gap reported)
+  [OK] NOT-arm dropout-falsifiability enforced
+  [OK] escape-durability reported as a SEPARATE axis (not multiplied)
+  [OK] no-multiply HARD RULE asserted
+  [OK] fast batch scorer IDENTICAL to per-gate scorer (used on real data)
+  [OK] method validated, NOT a discovered gate (real run = Colab atlases)
+results -> runs/rung4_logicgate/calibration_results.json
+figure -> runs/rung4_logicgate/rung4_calibration.png
+======================================================================================
+CEILING: this VALIDATES THE ENGINE on known-answer controls. The real antigen-pair discovery runs
+on CELLxGENE single-cell atlases via scripts/17 (Colab). mRNA!=protein; co-localisation!=a working
+circuit (wet-lab). Recognition is a separate axis — never multiplied with RUNG-1/2/3.
+[exit 0]
+
+$ pip install cellxgene-census
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 91.2/91.2 kB 2.0 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 55.6/55.6 kB 4.3 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 203.4/203.4 kB 5.4 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 22.3/22.3 MB 58.0 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 175.3/175.3 kB 14.1 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 89.5/89.5 kB 7.0 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 60.1/60.1 kB 5.6 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 76.9 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.4/12.4 MB 67.6 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 319.6/319.6 kB 26.2 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.0/15.0 MB 63.6 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.2/9.2 MB 75.2 MB/s eta 0:00:00
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+google-colab 1.0.0 requires pandas==2.2.2, but you have pandas 2.3.3 which is incompatible.
+datasets 4.0.0 requires fsspec[http]<=2025.3.0,>=2023.1.0, but you have fsspec 2026.4.0 which is incompatible.
+gcsfs 2025.3.0 requires fsspec==2025.3.0, but you have fsspec 2026.4.0 which is incompatible.
+[exit 0]
+
+$ /usr/bin/python3 -u scripts/17_logicgate_data.py
+[+    0.0s] [rung4] === RUNG 4 real discovery — CELLxGENE single-cell logic-gate search ===
+[+    4.2s] [rung4] opening CELLxGENE Census version 2024-07-01 ...
+[+    5.3s] [rung4] census open ✓
+[+    5.3s] [rung4] NORMAL heart: streaming get_anndata (contiguous predicate read) ...
+/content/cancer-recon-apoptosis/scripts/17_logicgate_data.py:108: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+  101.6s] [rung4] NORMAL heart: top unmapped raw cell types -> regular ventricular cardiac myocyte(125289), pericyte(82185), fibroblast(74476), capillary endothelial cell(59326), unknown(44630), regular atrial cardiac myocyte(23585)
+[+  101.6s] [rung4] NORMAL heart: 791,411 cells read; asymmetric cap (vital <= 50000, non-vital <= 1500) ...
+[+  103.4s] [rung4] NORMAL heart: kept 137,251 cells; vital types kept in FULL: ['cardiomyocyte', 'neuron', 'skeletal_myocyte']
+[+  103.5s] [rung4] NORMAL brain: streaming get_anndata (contiguous predicate read) ...
+/content/cancer-recon-apoptosis/scripts/17_logicgate_data.py:108: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 1963.0s] [rung4] NORMAL brain: top unmapped raw cell types -> neuron(2653334), oligodendrocyte(874970), astrocyte(618500), neural cell(511111), Purkinje cell(365431), unknown(235014)
+[+ 1963.0s] [rung4] NORMAL brain: 10,560,614 cells read; asymmetric cap (vital <= 50000, non-vital <= 1500) ...
+[+ 1987.4s] [rung4] NORMAL brain: kept 104,458 cells; vital types kept in FULL: ['neuron', 'skeletal_myocyte']
+[+ 1987.8s] [rung4] NORMAL kidney: streaming get_anndata (contiguous predicate read) ...
+/content/cancer-recon-apoptosis/scripts/17_logicgate_data.py:108: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 2045.9s] [rung4] NORMAL kidney: top unmapped raw cell types -> epithelial cell of proximal tubule(94133), unknown(92518), kidney loop of Henle thick ascending limb epithelial cell(46964), mesangial cell(44490), endothelial cell(26933), kidney collecting duct principal cell(23039)
+[+ 2045.9s] [rung4] NORMAL kidney: 550,007 cells read; asymmetric cap (vital <= 50000, non-vital <= 1500) ...
+[+ 2048.1s] [rung4] NORMAL kidney: kept 106,006 cells; vital types kept in FULL: ['kidney_podocyte', 'kidney_tubule', 'neuron', 'skeletal_myocyte']
+[+ 2048.2s] [rung4] NORMAL liver: streaming get_anndata (contiguous predicate read) ...
+/content/cancer-recon-apoptosis/scripts/17_logicgate_data.py:108: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 2139.2s] [rung4] NORMAL liver: top unmapped raw cell types -> T cell(79596), macrophage(66202), hepatoblast(58447), periportal region hepatocyte(57504), erythrocyte(56539), erythroblast(46008)
+[+ 2139.2s] [rung4] NORMAL liver: 748,717 cells read; asymmetric cap (vital <= 50000, non-vital <= 1500) ...
+[+ 2142.0s] [rung4] NORMAL liver: kept 112,379 cells; vital types kept in FULL: ['kidney_tubule', 'neuron', 'skeletal_myocyte']
+[+ 2142.1s] [rung4] NORMAL lung: streaming get_anndata (contiguous predicate read) ...
+/content/cancer-recon-apoptosis/scripts/17_logicgate_data.py:108: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 2500.1s] [rung4] NORMAL lung: top unmapped raw cell types -> alveolar macrophage(208468), type II pneumocyte(149703), epithelial cell of lower respiratory tract(106732), unknown(103145), stromal cell(87375), natural killer cell(41793)
+[+ 2500.1s] [rung4] NORMAL lung: 1,512,380 cells read; asymmetric cap (vital <= 50000, non-vital <= 1500) ...
+[+ 2508.9s] [rung4] NORMAL lung: kept 165,062 cells; vital types kept in FULL: ['cardiomyocyte', 'kidney_tubule', 'neuron', 'skeletal_myocyte']
+[+ 2509.3s] [rung4] NORMAL bone marrow: streaming get_anndata (contiguous predicate read) ...
+/content/cancer-recon-apoptosis/scripts/17_logicgate_data.py:108: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 2583.0s] [rung4] NORMAL bone marrow: top unmapped raw cell types -> unknown(20733), erythrocyte(20156), precursor B cell(17956), classical monocyte(15451), CD16-positive, CD56-dim natural killer cell, human(14578), neutrophil(12087)
+[+ 2583.0s] [rung4] NORMAL bone marrow: 296,739 cells read; asymmetric cap (vital <= 50000, non-vital <= 1500) ...
+[+ 2584.5s] [rung4] NORMAL bone marrow: kept 96,535 cells; vital types kept in FULL: ['skeletal_myocyte']
+[+ 2584.6s] [rung4] NORMAL pancreas: streaming get_anndata (contiguous predicate read) ...
+/content/cancer-recon-apoptosis/scripts/17_logicgate_data.py:108: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 2606.7s] [rung4] NORMAL pancreas: top unmapped raw cell types -> acinar cell(15054), T cell(7973), stromal cell(6770), innate lymphoid cell(6330), epithelial cell of exocrine pancreas(5567), endocrine cell(5424)
+[+ 2606.7s] [rung4] NORMAL pancreas: 166,012 cells read; asymmetric cap (vital <= 50000, non-vital <= 1500) ...
+[+ 2607.0s] [rung4] NORMAL pancreas: kept 79,130 cells; vital types kept in FULL: ['neuron', 'pancreatic_islet', 'skeletal_myocyte']
+[+ 2607.1s] [rung4] NORMAL adrenal gland: streaming get_anndata (contiguous predicate read) ...
+/content/cancer-recon-apoptosis/scripts/17_logicgate_data.py:108: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 2638.4s] [rung4] NORMAL adrenal gland: top unmapped raw cell types -> epithelial cell(23897), endothelial cell of vascular tree(14417), stromal cell(10923), macrophage(6462), endothelial cell(4374), myeloid cell(3457)
+[+ 2638.4s] [rung4] NORMAL adrenal gland: 437,889 cells read; asymmetric cap (vital <= 50000, non-vital <= 1500) ...
+[+ 2639.3s] [rung4] NORMAL adrenal gland: kept 101,579 cells; vital types kept in FULL: ['adrenal_cortical', 'kidney_tubule', 'neuron', 'skeletal_myocyte']
+[+ 2639.4s] [rung4] NORMAL skeletal muscle: streaming get_anndata (contiguous predicate read) ...
+/content/cancer-recon-apoptosis/scripts/17_logicgate_data.py:108: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 2640.8s] [rung4] NORMAL skeletal muscle: 0 cells matched — check disease/tissue labels
+[+ 2640.8s] [rung4] TUMOUR (all diseases): streaming get_anndata (contiguous predicate read) ...
+/content/cancer-recon-apoptosis/scripts/17_logicgate_data.py:108: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 3047.8s] [rung4] TUMOUR (all diseases): top unmapped raw cell types -> CD4-positive, alpha-beta T cell(166940), CD8-positive, alpha-beta T cell(119304), macrophage(70504), T cell(69061), alveolar macrophage(65297), B cell(60409)
+[+ 3047.8s] [rung4] TUMOUR (all diseases): 988,239 cells read; asymmetric cap (vital <= 50000, non-vital <= 1500) ...
+[+ 3049.9s] [rung4] TUMOUR (all diseases): kept 74,013 cells; vital types kept in FULL: ['skeletal_myocyte']
+[+ 3050.4s] [rung4] census closed
+[+ 3051.9s] [rung4] panel assembled: 976,413 cells (902,400 normal, 74,013 tumour) x 21 antigens
+[+ 3052.5s] [rung4]   tissue adrenal gland : 101,579 cells
+[+ 3052.5s] [rung4]   tissue bone marrow   : 96,535 cells
+[+ 3052.5s] [rung4]   tissue brain         : 104,458 cells
+[+ 3052.5s] [rung4]   tissue heart         : 137,251 cells
+[+ 3052.6s] [rung4]   tissue kidney        : 106,006 cells
+[+ 3052.6s] [rung4]   tissue liver         : 112,379 cells
+[+ 3052.6s] [rung4]   tissue lung          : 165,062 cells
+[+ 3052.6s] [rung4]   tissue pancreas      : 79,130 cells
+[+ 3052.6s] [rung4]   tissue tumour        : 74,013 cells
+[+ 3057.9s] [rung4] cached panel -> /content/drive/MyDrive/cancer-recon/rung4_panel_cache.npz  (976,413 cells). Re-runs resume from here.
+[+ 3058.1s] [rung4] VITAL-COVERAGE CENSUS (heart/brain/kidney must be AUDITED to certify vital-safe):
+[+ 3058.1s] [rung4]   adrenal_cortical n= 20456  AUDITED
+[+ 3058.1s] [rung4]   cardiomyocyte    n= 50002  AUDITED
+[+ 3058.1s] [rung4]   kidney_podocyte  n=  4156  AUDITED
+[+ 3058.1s] [rung4]   kidney_tubule    n= 78752  AUDITED
+[+ 3058.1s] [rung4]   neuron           n= 62041  AUDITED
+[+ 3058.1s] [rung4]   pancreatic_islet n= 50000  AUDITED
+[+ 3058.1s] [rung4]   skeletal_myocyte n= 56073  AUDITED
+[+ 3058.1s] [rung4] scoring 118 candidate AND gates over 976,413 cells (vectorised) ...
+[+ 3378.8s] [rung4]   scored  10/118  ERBB2 AND CEACAM5          cov=0.01 leak=0.25 vital=0.01 -> no
+[+ 3378.9s] [rung4]   scored  20/118  ERBB3 AND PROM1            cov=0.01 leak=0.18 vital=0.02 -> no
+[+ 3379.1s] [rung4]   scored  30/118  EPHB4 AND ERBB3            cov=0.00 leak=0.11 vital=0.03 -> no
+[+ 3379.2s] [rung4]   scored  40/118  EPHB4 AND CLDN6            cov=0.00 leak=0.10 vital=0.01 -> no
+[+ 3379.4s] [rung4]   scored  50/118  TACSTD2 AND CD24           cov=0.05 leak=0.90 vital=0.24 -> no
+[+ 3379.5s] [rung4]   scored  60/118  MUC1 AND EPHB4             cov=0.00 leak=0.13 vital=0.01 -> no
+[+ 3379.7s] [rung4]   scored  70/118  MUC1 AND CLDN6             cov=0.00 leak=0.30 vital=0.01 -> no
+[+ 3379.8s] [rung4]   scored  80/118  SDC1 AND CD24              cov=0.03 leak=0.46 vital=0.04 -> no
+[+ 3380.0s] [rung4]   scored  90/118  CD74 AND EPHB4             cov=0.01 leak=0.23 vital=0.01 -> no
+[+ 3380.1s] [rung4]   scored 100/118  CD74 AND CLDN6             cov=0.00 leak=0.27 vital=0.01 -> no
+[+ 3380.3s] [rung4]   scored 110/118  ITGB4 AND CD24             cov=0.02 leak=0.18 vital=0.01 -> no
+[+ 3380.4s] [rung4]   scored 118/118  ITGB4 AND MUC16            cov=0.00 leak=0.21 vital=0.01 -> no
+[+ 3380.5s] [rung4] wrote data/logicgate/gate_selectivity.csv (118 gates) + vital_coverage_census.csv
+[+ 3380.5s] [rung4] scored 118 AND gates; 0 predicted SELECTIVE (transcript-only).
+[+ 3380.5s] [rung4] NO clean gate found in this pool — a FIRST-CLASS, valid outcome (no forced winner).
+[rung4-data] -> data/logicgate/gate_selectivity.csv + runs/rung4_logicgate/rung4_results.json
+[rung4-data] figure -> runs/rung4_logicgate/rung4_discovery.png
+[rung4-data] CEILING: transcript-only HYPOTHESIS; CITE-seq/flow/co-culture confirm; agonism = wet-lab.
+[exit 0]

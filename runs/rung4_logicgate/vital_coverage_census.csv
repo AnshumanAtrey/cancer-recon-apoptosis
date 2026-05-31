@@ -1,0 +1,8 @@
+vital_type,n_cells,status
+adrenal_cortical,20456,AUDITED
+cardiomyocyte,50002,AUDITED
+kidney_podocyte,4156,AUDITED
+kidney_tubule,78752,AUDITED
+neuron,62041,AUDITED
+pancreatic_islet,50000,AUDITED
+skeletal_myocyte,56073,AUDITED
