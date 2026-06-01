@@ -1,0 +1,55 @@
+# cancer-recon-apoptosis — run log
+# step          : rung5_data_selftest
+# utc           : 20260601T070526Z
+# commit_short  : bd73fec  (+uncommitted changes)
+# commit_full   : bd73fec78c9d490ec73266c18658fb21157def6c
+# branch        : main
+# python        : 3.12.6
+# platform      : macOS-26.3-arm64-arm-64bit
+#================================================================
+
+$ /Library/Frameworks/Python.framework/Versions/3.12/bin/python3 -u scripts/25_logicgate_data_rung5.py selftest
+[+    0.0s] [rung5] === RUNG 5 data-layer SELF-TEST (synthetic donor panel; validates the full downstream) ===
+[+    0.0s] [rung5] [selftest] panel: 8,040 cells (6,240 normal / 1,800 malignant), 14 donors, 7 genes
+[+    0.0s] [rung5] family: 7 genes >= COV_FLOOR 0.05; activators=top 7 by coverage
+[+    0.0s] [rung5] family size N = 21 gates (AND + AND-NOT). FDR/shrinkage operate on exactly this set.
+[+    0.0s] [rung5] [selftest] donor split: DISCOVERY 4 / SELECT 5 / REPORT 5
+[+    0.0s] [rung5] [selftest] scoring family of 21 gates on ALL donors (worst-over-donor; this is the heavy step) ...
+[+    0.6s] [rung5]   [1/21] BROAD AND CLEANA                   cov=0.32 vital=0.007 -> SEL
+[+    0.6s] [rung5]   [2/21] BROAD AND CLEANB                   cov=0.32 vital=0.007 -> SEL
+[+    0.6s] [rung5]   [3/21] BROAD AND N0                       cov=0.07 vital=0.121 -> NON-SELECTIVE 
+[+    0.6s] [rung5]   [4/21] BROAD AND N1                       cov=0.07 vital=0.134 -> NON-SELECTIVE 
+[+    0.6s] [rung5]   [5/21] BROAD AND N2                       cov=0.07 vital=0.138 -> NON-SELECTIVE 
+[+    0.7s] [rung5]   [6/21] BROAD AND N3                       cov=0.08 vital=0.103 -> NON-SELECTIVE 
+[+    0.7s] [rung5]   [7/21] CLEANA AND CLEANB                  cov=0.48 vital=0.007 -> SEL
+[+    0.7s] [rung5]   [8/21] CLEANB AND N0                      cov=0.04 vital=0.007 -> SAFE-LOW-COVER
+[+    0.7s] [rung5]   [9/21] CLEANB AND N1                      cov=0.04 vital=0.007 -> SAFE-LOW-COVER
+[+    0.7s] [rung5]   [10/21] CLEANB AND N2                      cov=0.04 vital=0.007 -> SAFE-LOW-COVER
+[+    0.7s] [rung5]   [11/21] CLEANB AND N3                      cov=0.05 vital=0.007 -> SAFE-LOW-COVER
+[+    0.7s] [rung5]   [12/21] CLEANA AND N0                      cov=0.04 vital=0.007 -> SAFE-LOW-COVER
+[+    0.7s] [rung5]   [13/21] CLEANA AND N1                      cov=0.04 vital=0.007 -> SAFE-LOW-COVER
+[+    0.7s] [rung5]   [14/21] CLEANA AND N2                      cov=0.04 vital=0.007 -> SAFE-LOW-COVER
+[+    0.7s] [rung5]   [15/21] CLEANA AND N3                      cov=0.05 vital=0.007 -> SAFE-LOW-COVER
+[+    0.7s] [rung5]   [16/21] N0 AND N3                          cov=0.01 vital=0.037 -> NON-SELECTIVE 
+[+    0.7s] [rung5]   [17/21] N1 AND N3                          cov=0.01 vital=0.037 -> NON-SELECTIVE 
+[+    0.7s] [rung5]   [18/21] N2 AND N3                          cov=0.01 vital=0.021 -> NON-SELECTIVE 
+[+    0.7s] [rung5]   [19/21] N0 AND N2                          cov=0.00 vital=0.032 -> NON-SELECTIVE 
+[+    0.7s] [rung5]   [20/21] N1 AND N2                          cov=0.01 vital=0.037 -> NON-SELECTIVE 
+[+    0.7s] [rung5]   [21/21] N0 AND N1                          cov=0.01 vital=0.032 -> NON-SELECTIVE 
+[+    0.7s] [rung5] [selftest] 11 SAFE on all audited axes; 3 also clear coverage (pre-FDR).
+[+    0.7s] [rung5] [selftest] family-max decoy FDR (N_PERM=100) + winner's-curse shrinkage (N_BOOT=100) ...
+[+   12.9s] [rung5] [selftest] family-max threshold cov=0.000; 3 gates SURVIVE FDR + shrinkage.
+[+   12.9s] [rung5] [selftest] ADDRESSABILITY GAP: 50% of 6 patients have NO safe gate at coverage >= 0.15.  by type: {'breast carcinoma': 1.0, 'lung adenocarcinoma': 0.0}
+[+   13.4s] [rung5] figure -> runs/rung5_logicgate/rung5_selftest.png
+[+   13.4s] [rung5] results -> runs/rung5_logicgate/rung5_selftest.json
+============================================================================================
+SELF-TEST CHECKS:
+  [OK] downstream ran end-to-end (family -> score -> FDR -> shrinkage -> gap)
+  [OK] a safe gate exists (planted CLEANA AND CLEANB)
+  [OK] at least one gate SURVIVES FDR + shrinkage
+  [OK] the planted clean gate is among survivors
+  [OK] addressability gap is computed per cancer type
+  [OK] BRCA gap > LUAD gap (planted: clean gate misses BRCA patients)
+============================================================================================
+[+   13.4s] [rung5] self-test PASSED — downstream integration validated; real run is the Colab fetch
+[exit 0]

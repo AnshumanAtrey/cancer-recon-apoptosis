@@ -1,0 +1,234 @@
+{
+  "tag": "selftest",
+  "n_cells": 8040,
+  "n_donors": 14,
+  "n_genes": 7,
+  "family_size": 21,
+  "n_activators": 7,
+  "donor_split": {
+    "discovery": 4,
+    "select": 5,
+    "report": 5
+  },
+  "n_safe": 11,
+  "n_selective_preFDR": 3,
+  "familymax_fdr": {
+    "n_family": 21,
+    "n_true_safe": 11,
+    "familymax_threshold_cov": 0.0,
+    "n_discoveries": 11,
+    "discoveries": [
+      "BROAD AND CLEANA",
+      "BROAD AND CLEANB",
+      "CLEANA AND CLEANB",
+      "CLEANB AND N0",
+      "CLEANB AND N1",
+      "CLEANB AND N2",
+      "CLEANB AND N3",
+      "CLEANA AND N0",
+      "CLEANA AND N1",
+      "CLEANA AND N2",
+      "CLEANA AND N3"
+    ],
+    "best_true_safe_cov": 0.478,
+    "decoy_max_safe_cov_mean": 0.0,
+    "pergate_cov_p95": 0.017,
+    "familymax_cov_p95": 0.154,
+    "lookelsewhere_inflation": 0.137,
+    "fdr_curve": {
+      "0.05": 0.0,
+      "0.1": 0.0,
+      "0.15": 0.0,
+      "0.2": 0.0,
+      "0.25": 0.0,
+      "0.3": 0.0,
+      "0.35": 0.0,
+      "0.4": 0.0,
+      "0.45": 0.0,
+      "0.5": 0.0,
+      "0.55": 0.0,
+      "0.6": 0.0,
+      "0.65": 0.0,
+      "0.7": 0.0,
+      "0.75": 0.0,
+      "0.8": 0.0,
+      "0.85": 0.0,
+      "0.9": 0.0,
+      "0.95": 0.0
+    }
+  },
+  "winners_curse": {
+    "winner_gate": "CLEANA AND CLEANB",
+    "naive": {
+      "coverage": 0.478,
+      "vital_leak": 0.007,
+      "strict_leak": 0.0,
+      "regen_leak": 0.001,
+      "safe": true,
+      "selective": true
+    },
+    "optimism": {
+      "coverage": 0.026,
+      "strict_leak": 0.0,
+      "regen_leak": 0.002,
+      "vital_leak": -0.0
+    },
+    "corrected": {
+      "coverage": 0.452,
+      "vital_leak": 0.007,
+      "strict_leak": 0.0,
+      "regen_leak": 0.003
+    },
+    "still_safe_after_shrinkage": true,
+    "still_selective_after_shrinkage": true
+  },
+  "n_survivors": 3,
+  "survivors": [
+    "CLEANA AND CLEANB",
+    "BROAD AND CLEANB",
+    "BROAD AND CLEANA"
+  ],
+  "addressability": {
+    "n_patients": 6,
+    "addressability_gap_overall": 0.5,
+    "addressability_gap_by_cancer_type": {
+      "breast carcinoma": 1.0,
+      "lung adenocarcinoma": 0.0
+    },
+    "best_per_patient_coverage": {
+      "brca::0": 0.0,
+      "brca::1": 0.0,
+      "brca::2": 0.0,
+      "luad::0": 0.953,
+      "luad::1": 0.963,
+      "luad::2": 0.95
+    },
+    "n_surviving_gates": 3
+  },
+  "top_gates": [
+    {
+      "gate": "CLEANA AND CLEANB",
+      "coverage": 0.478,
+      "vital_leak": 0.007,
+      "strict_leak": 0.0,
+      "regen_leak": 0.001,
+      "verdict": "SELECTIVE"
+    },
+    {
+      "gate": "BROAD AND CLEANB",
+      "coverage": 0.321,
+      "vital_leak": 0.007,
+      "strict_leak": 0.0,
+      "regen_leak": 0.001,
+      "verdict": "SELECTIVE"
+    },
+    {
+      "gate": "BROAD AND CLEANA",
+      "coverage": 0.319,
+      "vital_leak": 0.007,
+      "strict_leak": 0.0,
+      "regen_leak": 0.002,
+      "verdict": "SELECTIVE"
+    },
+    {
+      "gate": "CLEANB AND N3",
+      "coverage": 0.047,
+      "vital_leak": 0.007,
+      "strict_leak": 0.0,
+      "regen_leak": 0.001,
+      "verdict": "SAFE-LOW-COVERAGE"
+    },
+    {
+      "gate": "CLEANA AND N3",
+      "coverage": 0.047,
+      "vital_leak": 0.007,
+      "strict_leak": 0.0,
+      "regen_leak": 0.001,
+      "verdict": "SAFE-LOW-COVERAGE"
+    },
+    {
+      "gate": "CLEANB AND N2",
+      "coverage": 0.044,
+      "vital_leak": 0.007,
+      "strict_leak": 0.0,
+      "regen_leak": 0.001,
+      "verdict": "SAFE-LOW-COVERAGE"
+    },
+    {
+      "gate": "CLEANA AND N2",
+      "coverage": 0.044,
+      "vital_leak": 0.007,
+      "strict_leak": 0.0,
+      "regen_leak": 0.001,
+      "verdict": "SAFE-LOW-COVERAGE"
+    },
+    {
+      "gate": "CLEANA AND N0",
+      "coverage": 0.043,
+      "vital_leak": 0.007,
+      "strict_leak": 0.0,
+      "regen_leak": 0.001,
+      "verdict": "SAFE-LOW-COVERAGE"
+    },
+    {
+      "gate": "CLEANB AND N0",
+      "coverage": 0.042,
+      "vital_leak": 0.007,
+      "strict_leak": 0.0,
+      "regen_leak": 0.001,
+      "verdict": "SAFE-LOW-COVERAGE"
+    },
+    {
+      "gate": "CLEANB AND N1",
+      "coverage": 0.039,
+      "vital_leak": 0.007,
+      "strict_leak": 0.0,
+      "regen_leak": 0.001,
+      "verdict": "SAFE-LOW-COVERAGE"
+    },
+    {
+      "gate": "CLEANA AND N1",
+      "coverage": 0.038,
+      "vital_leak": 0.007,
+      "strict_leak": 0.0,
+      "regen_leak": 0.001,
+      "verdict": "SAFE-LOW-COVERAGE"
+    },
+    {
+      "gate": "N2 AND N3",
+      "coverage": 0.01,
+      "vital_leak": 0.021,
+      "strict_leak": 0.0,
+      "regen_leak": 0.011,
+      "verdict": "NON-SELECTIVE (vital leak 0.021 @ cardiomyocyte@n::0 \u2014 FORBID)"
+    },
+    {
+      "gate": "N0 AND N1",
+      "coverage": 0.01,
+      "vital_leak": 0.032,
+      "strict_leak": 0.0,
+      "regen_leak": 0.013,
+      "verdict": "NON-SELECTIVE (vital leak 0.032 @ cardiomyocyte@n::0 \u2014 FORBID)"
+    },
+    {
+      "gate": "N0 AND N2",
+      "coverage": 0.004,
+      "vital_leak": 0.032,
+      "strict_leak": 0.0,
+      "regen_leak": 0.011,
+      "verdict": "NON-SELECTIVE (vital leak 0.032 @ cardiomyocyte@n::4 \u2014 FORBID)"
+    },
+    {
+      "gate": "N0 AND N3",
+      "coverage": 0.012,
+      "vital_leak": 0.037,
+      "strict_leak": 0.0,
+      "regen_leak": 0.015,
+      "verdict": "NON-SELECTIVE (vital leak 0.037 @ cardiomyocyte@n::1 \u2014 FORBID)"
+    }
+  ],
+  "no_safe_gate": false,
+  "no_surviving_gate": false,
+  "CEILING": "transcript-level; mRNA!=surface protein (CITE-seq confirms co-positivity); co-localisation!=a firing circuit (wet-lab); NOT first at combinatorial search; contribution = worst-case-safety harness + per-patient addressability gap. A surviving gate is the best NEXT wet-lab experiment, not a cure.",
+  "HARD_RULE": "worst-over-donor vital leak (never pooled); fail-closed vital; lexicographic no-multiply; AND-NOT expression-NOT is a weak proxy for a tumour-LOST signal (HLA-LOH genotype NOT is scripts/24, not atlas-scored)."
+}
