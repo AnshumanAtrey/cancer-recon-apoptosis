@@ -1,12 +1,12 @@
 {
   "tag": "selftest",
-  "n_cells": 8040,
-  "n_donors": 14,
+  "n_cells": 8050,
+  "n_donors": 15,
   "n_genes": 7,
   "family_size": 21,
   "n_activators": 7,
   "donor_split": {
-    "discovery": 4,
+    "discovery": 5,
     "select": 5,
     "report": 5
   },
@@ -15,22 +15,22 @@
   "familymax_fdr": {
     "n_family": 21,
     "n_true_safe": 11,
-    "familymax_threshold_cov": 0.154,
+    "familymax_threshold_cov": 0.157,
     "n_discoveries": 3,
     "discoveries": [
       "BROAD AND CLEANA",
       "BROAD AND CLEANB",
       "CLEANA AND CLEANB"
     ],
-    "best_true_safe_cov": 0.478,
-    "decoy_max_safe_cov_mean": 0.143,
-    "pergate_cov_p95": 0.017,
-    "familymax_cov_p95": 0.154,
-    "lookelsewhere_inflation": 0.137,
+    "best_true_safe_cov": 0.481,
+    "decoy_max_safe_cov_mean": 0.145,
+    "pergate_cov_p95": 0.016,
+    "familymax_cov_p95": 0.157,
+    "lookelsewhere_inflation": 0.141,
     "fdr_curve": {
       "0.05": 1.0,
       "0.1": 0.547,
-      "0.15": 0.067,
+      "0.15": 0.09,
       "0.2": 0.0,
       "0.25": 0.0,
       "0.3": 0.0,
@@ -52,7 +52,7 @@
   "winners_curse": {
     "winner_gate": "CLEANA AND CLEANB",
     "naive": {
-      "coverage": 0.478,
+      "coverage": 0.481,
       "vital_leak": 0.007,
       "strict_leak": 0.0,
       "regen_leak": 0.007,
@@ -60,13 +60,13 @@
       "selective": true
     },
     "optimism": {
-      "coverage": 0.026,
+      "coverage": 0.032,
       "strict_leak": 0.0,
       "regen_leak": -0.0,
       "vital_leak": -0.0
     },
     "corrected": {
-      "coverage": 0.452,
+      "coverage": 0.449,
       "vital_leak": 0.007,
       "strict_leak": 0.0,
       "regen_leak": 0.007
@@ -108,15 +108,16 @@
   ],
   "pooled_fallback_types": [],
   "addressability": {
-    "n_patients": 6,
+    "n_patients": 7,
     "n_powered_patients": 6,
-    "n_underpowered_patients": 0,
+    "n_underpowered_patients": 1,
     "min_patient_cells": 30,
-    "addressability_gap_overall": 0.5,
-    "addressability_gap_worstcase": 0.5,
+    "addressability_gap_overall": 0.571,
+    "addressability_gap_point_powered": 0.5,
+    "addressability_gap_worstcase": 0.571,
     "addressability_gap_by_cancer_type": {
       "breast carcinoma": 1.0,
-      "lung adenocarcinoma": 0.0
+      "lung adenocarcinoma": 0.25
     },
     "best_per_patient_coverage_lb": {
       "brca::0": 0.0,
@@ -124,14 +125,15 @@
       "brca::2": 0.0,
       "luad::0": 0.93,
       "luad::1": 0.942,
-      "luad::2": 0.926
+      "luad::2": 0.926,
+      "luad::underpowered": 0.829
     },
     "n_surviving_gates": 3
   },
   "top_gates": [
     {
       "gate": "CLEANA AND CLEANB",
-      "coverage": 0.478,
+      "coverage": 0.481,
       "vital_leak": 0.007,
       "strict_leak": 0.0,
       "regen_leak": 0.007,
@@ -139,7 +141,7 @@
     },
     {
       "gate": "BROAD AND CLEANB",
-      "coverage": 0.321,
+      "coverage": 0.323,
       "vital_leak": 0.007,
       "strict_leak": 0.0,
       "regen_leak": 0.007,
@@ -147,7 +149,7 @@
     },
     {
       "gate": "BROAD AND CLEANA",
-      "coverage": 0.319,
+      "coverage": 0.32,
       "vital_leak": 0.007,
       "strict_leak": 0.0,
       "regen_leak": 0.015,
@@ -155,7 +157,7 @@
     },
     {
       "gate": "CLEANB AND N3",
-      "coverage": 0.047,
+      "coverage": 0.048,
       "vital_leak": 0.007,
       "strict_leak": 0.0,
       "regen_leak": 0.007,
@@ -163,7 +165,7 @@
     },
     {
       "gate": "CLEANA AND N3",
-      "coverage": 0.047,
+      "coverage": 0.048,
       "vital_leak": 0.007,
       "strict_leak": 0.0,
       "regen_leak": 0.007,
@@ -171,6 +173,14 @@
     },
     {
       "gate": "CLEANB AND N2",
+      "coverage": 0.044,
+      "vital_leak": 0.007,
+      "strict_leak": 0.0,
+      "regen_leak": 0.007,
+      "verdict": "SAFE-LOW-COVERAGE"
+    },
+    {
+      "gate": "CLEANA AND N0",
       "coverage": 0.044,
       "vital_leak": 0.007,
       "strict_leak": 0.0,
@@ -186,7 +196,7 @@
       "verdict": "SAFE-LOW-COVERAGE"
     },
     {
-      "gate": "CLEANA AND N0",
+      "gate": "CLEANB AND N0",
       "coverage": 0.043,
       "vital_leak": 0.007,
       "strict_leak": 0.0,
@@ -194,16 +204,8 @@
       "verdict": "SAFE-LOW-COVERAGE"
     },
     {
-      "gate": "CLEANB AND N0",
-      "coverage": 0.042,
-      "vital_leak": 0.007,
-      "strict_leak": 0.0,
-      "regen_leak": 0.007,
-      "verdict": "SAFE-LOW-COVERAGE"
-    },
-    {
       "gate": "CLEANB AND N1",
-      "coverage": 0.039,
+      "coverage": 0.04,
       "vital_leak": 0.007,
       "strict_leak": 0.0,
       "regen_leak": 0.007,
@@ -211,7 +213,7 @@
     },
     {
       "gate": "CLEANA AND N1",
-      "coverage": 0.038,
+      "coverage": 0.039,
       "vital_leak": 0.007,
       "strict_leak": 0.0,
       "regen_leak": 0.007,
@@ -219,7 +221,7 @@
     },
     {
       "gate": "N2 AND N3",
-      "coverage": 0.01,
+      "coverage": 0.011,
       "vital_leak": 0.021,
       "strict_leak": 0.0,
       "regen_leak": 0.037,
@@ -227,7 +229,7 @@
     },
     {
       "gate": "N0 AND N1",
-      "coverage": 0.01,
+      "coverage": 0.009,
       "vital_leak": 0.032,
       "strict_leak": 0.0,
       "regen_leak": 0.032,
@@ -235,7 +237,7 @@
     },
     {
       "gate": "N0 AND N2",
-      "coverage": 0.004,
+      "coverage": 0.003,
       "vital_leak": 0.032,
       "strict_leak": 0.0,
       "regen_leak": 0.037,
@@ -243,7 +245,7 @@
     },
     {
       "gate": "N0 AND N3",
-      "coverage": 0.012,
+      "coverage": 0.011,
       "vital_leak": 0.037,
       "strict_leak": 0.0,
       "regen_leak": 0.037,

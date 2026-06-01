@@ -349,21 +349,28 @@ def addressability_gap(panel, surviving_gates):
                 addressed[p] = True
     powered = [p for p in patients if pcells[p] >= MIN_PATIENT_CELLS]
     underpowered = [p for p in patients if pcells[p] < MIN_PATIENT_CELLS]
+    # re-audit F4-NEW-2 FIX: in the worst-case, an UNDER-POWERED patient is forced to NOT-addressed (its
+    # noisy lower bound is not trustworthy), so the worst-case is a true UPPER bound on the gap (>= point gap)
+    # and a noisy small-n patient can never DILUTE it downward.
+    eff = {p: (addressed[p] if pcells[p] >= MIN_PATIENT_CELLS else False) for p in patients}
 
-    def _gaps(plist):
+    def _gaps(plist, amap):
         by = {}
         for p in plist:
-            by.setdefault(ptype[p], []).append(addressed[p])
-        overall = 1.0 - (sum(addressed[p] for p in plist) / max(1, len(plist)))
+            by.setdefault(ptype[p], []).append(amap[p])
+        overall = 1.0 - (sum(amap[p] for p in plist) / max(1, len(plist)))
         return round(overall, 3), {t: round(1.0 - sum(v) / len(v), 3) for t, v in by.items()}
 
-    gap_point, gap_by_type = _gaps(powered) if powered else (1.0, {})
-    gap_worstcase, _ = _gaps(patients)             # under-powered counted as not-addressed
+    # HEADLINE = WORST-CASE over ALL patients (under-powered = not-addressed) — re-audit F4-NEW-1 FIX: never
+    # surface a powered-only gap as the headline; genuinely-unaddressed low-yield patients must NOT vanish.
+    gap_worstcase, gap_by_type = _gaps(patients, eff)
+    gap_point, _ = _gaps(powered, addressed) if powered else (1.0, {})   # secondary: over powered patients only
     return {"n_patients": len(patients), "n_powered_patients": len(powered),
             "n_underpowered_patients": len(underpowered), "min_patient_cells": MIN_PATIENT_CELLS,
-            "addressability_gap_overall": gap_point,
+            "addressability_gap_overall": gap_worstcase,                 # HEADLINE = honest worst-case
+            "addressability_gap_point_powered": gap_point,               # secondary (powered patients only)
             "addressability_gap_worstcase": gap_worstcase,
-            "addressability_gap_by_cancer_type": gap_by_type,
+            "addressability_gap_by_cancer_type": gap_by_type,            # worst-case by type
             "best_per_patient_coverage_lb": {p: round(c, 3) for p, c in best_lb.items()},
             "n_surviving_gates": len(surviving_gates)}
 
@@ -433,8 +440,11 @@ def run_pipeline(panel, genes, tag, required_vital=REQUIRED_VITAL):
     log(f"[{tag}] {len(survivors)} gates SURVIVE FDR + shrinkage + GUARD B (donor-permutation null).")
 
     gap = addressability_gap(panel, surviving_gates)
-    log(f"[{tag}] ADDRESSABILITY GAP: {gap['addressability_gap_overall']:.0%} of {gap['n_patients']} patients "
-        f"have NO safe gate at coverage >= {COV_BAR}.  by type: {gap['addressability_gap_by_cancer_type']}")
+    log(f"[{tag}] ADDRESSABILITY GAP (worst-case over ALL {gap['n_patients']} patients, "
+        f"{gap['n_underpowered_patients']} under-powered counted as not-addressed): "
+        f"{gap['addressability_gap_overall']:.0%} have NO safe gate at coverage >= {COV_BAR} "
+        f"[point over {gap['n_powered_patients']} powered patients: {gap['addressability_gap_point_powered']:.0%}].  "
+        f"by type: {gap['addressability_gap_by_cancer_type']}")
 
     _figure(scored, gap, thr, f"rung5_{tag}.png")
     return {
@@ -476,7 +486,8 @@ def _figure(scored, gap, thr, name):
             ax[1].set_xticks(range(len(types)))
             ax[1].set_xticklabels([t.replace(" ", "\n") for t in types], fontsize=7)
             ax[1].set_ylabel("% patients with NO safe gate"); ax[1].set_ylim(0, 105)
-            ax[1].set_title(f"ADDRESSABILITY GAP (overall {gap['addressability_gap_overall']:.0%})\n"
+            ax[1].set_title(f"ADDRESSABILITY GAP — worst-case, all {gap['n_patients']} patients "
+                            f"({gap['addressability_gap_overall']:.0%}; {gap['n_underpowered_patients']} under-powered=not-addressed)\n"
                             f"the headline: who is left with no safe option")
         fig.suptitle("RUNG 5 — worst-case-safety surfaceome re-audit + per-patient addressability gap "
                      "(transcript-only; mRNA!=protein; NOT a cure)", fontsize=8.5)
@@ -528,6 +539,10 @@ def _selftest_panel():
     # cancer type LUAD: 3 patients; CLEANA/B co-positive (planted clean gate covers them well -> addressed)
     for d in range(3):
         add("tumour_malignant", "lung adenocarcinoma", "tumour", f"luad::{d}", [HI, HI, MID, LOW, LOW, LOW, LOW], 300)
+    # an UNDER-POWERED LUAD patient (n=10 < MIN_PATIENT_CELLS=30) that FIRES the clean gate (noisy HIGH lower
+    # bound). re-audit F4-NEW-2: the worst-case MUST force it not-addressed (its lower bound is untrustworthy),
+    # so it appears as a LUAD gap rather than being falsely counted as addressed.
+    add("tumour_malignant", "lung adenocarcinoma", "tumour", "luad::underpowered", [HI, HI, MID, LOW, LOW, LOW, LOW], 10)
     # cancer type BRCA: 3 patients with NO tumour-exclusive antigen — only BROAD (shared with normal) is high,
     # so no SAFE high-coverage gate exists for them -> a real per-type ADDRESSABILITY GAP (BRCA gap ~100%).
     for d in range(3):
@@ -553,6 +568,14 @@ def selftest() -> int:
         "BRCA gap > LUAD gap (planted: clean gate misses BRCA patients)":
             gap.get("addressability_gap_by_cancer_type", {}).get("breast carcinoma", 0)
             > gap.get("addressability_gap_by_cancer_type", {}).get("lung adenocarcinoma", 1),
+        # re-audit F4-NEW-1/2/3: under-powered patients are exercised, the worst-case is a true UPPER bound
+        # on the gap (>= point), and a noisy under-powered patient is NOT falsely counted as addressed.
+        "under-powered patient path is exercised (>=1 under-powered)":
+            gap.get("n_underpowered_patients", 0) >= 1,
+        "worst-case gap >= point gap (invariant; headline is the worst-case)":
+            gap.get("addressability_gap_worstcase", 0) >= gap.get("addressability_gap_point_powered", 1) - 1e-9,
+        "F4-NEW-2: noisy under-powered LUAD patient FORCED not-addressed (LUAD worst-case > 0 though powered LUAD addressed)":
+            gap.get("addressability_gap_by_cancer_type", {}).get("lung adenocarcinoma", 0) > 0,
     }
     print("=" * 92)
     print("SELF-TEST CHECKS:")

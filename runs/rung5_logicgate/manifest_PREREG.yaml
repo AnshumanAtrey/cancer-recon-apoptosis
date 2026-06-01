@@ -178,4 +178,12 @@ audit_fixes:
     FIX: vital cells capped PER DONOR (PER_DONOR_VITAL_CAP), never donor-blind."
   guards_F2_MED: "AND-NOT blocker had no dropout-falsifiability guard in scripts/22 (scripts/18 had it). FIX:
     a blocker not detectable in NORMAL tissue -> UNCERTAIN; planted ATTACK-4 added to the harness."
-  re_validation: "scripts/20 RUN-TRUST PASS; scripts/22 8/8 guards; scripts/23 9/9 (FDR live); scripts/25 selftest 6/6."
+  re_validation: "scripts/20 RUN-TRUST PASS; scripts/22 8/8 guards; scripts/23 9/9 (FDR live); scripts/25 selftest 9/9."
+  re_audit_F4: >
+    A second adversarial pass (wf_ae523721) confirmed 5/6 fixes sound (two independent foci) but caught TWO
+    NEW holes the datalayer/F1 fix introduced, both falsely-LOW-gap: (F4-NEW-1) the LOGGED/plotted headline
+    gap was powered-patients-only, so genuinely-unaddressed low-yield patients vanished; (F4-NEW-2) the
+    'worst-case' did not force under-powered patients to not-addressed, so a noisy small-n patient could
+    DILUTE it below the point gap. FIXED: the HEADLINE is now the worst-case over ALL patients (under-powered
+    forced not-addressed); point-over-powered reported as secondary; selftest now exercises the under-powered
+    path and asserts worst-case >= point. addressability_gap_overall == worst-case.
