@@ -127,34 +127,46 @@ def _donor_key_obs(df):
     return np.array([f"{a}::{b}" for a, b in zip(ds, dn)])
 
 
-PER_DONOR_VITAL_CAP = 2500   # audit INT-2: cap vital cells PER DONOR (not donor-blind) so no lethal-leaker
-#   donor is silently subsampled below the per-donor power floor (185) and dropped from the worst-donor max.
+PER_DONOR_VITAL_CAP = 600   # audit INT-2: cap vital cells PER DONOR (not donor-blind) so no lethal-leaker
+#   donor is starved below the per-donor power floor (185). 600 >> 185 keeps every donor powered while
+#   bounding the materialise/dense footprint (2500 ballooned heart to 203k cells -> downstream OOM).
 
 
 def _scout_capped_joinids(census, value_filter, tissue_index, label):
-    """OBS METADATA ONLY (soma_joinid + cell_type + donor; ~hundreds of MB even for 10M-cell brain -> fits
-    RAM). Map cell types, then cap: for VITAL types DONOR-AWARE (per (type,donor) <= PER_DONOR_VITAL_CAP, so
-    every contributing donor stays powered — audit INT-2 fail-OPEN fix); for non-vital types donor-blind
-    <= MAX_PER_TYPE. Returns (joinids int64, total)."""
+    """STREAMING obs-metadata scout (OOM fix): the brain tissue is ~10.5M cells; reading its whole obs into
+    one DataFrame (with the donor columns INT-2 needs) OOM-killed free Colab (exit -9). Instead iterate the
+    obs read in pyarrow BATCHES (TableReadIter) and cap INCREMENTALLY, so the full row set is never
+    materialised. Per group keep up to the cap (VITAL -> per (type,donor) <= PER_DONOR_VITAL_CAP, donor-aware
+    so INT-2 holds; non-vital -> per type <= MAX_PER_TYPE), filling in stream order (a fair per-donor sample
+    for a leak RATE; not reservoir-random, noted). Memory is bounded by the cells KEPT, not the tissue size.
+    Returns (joinids int64, total) or None."""
     exp = census["census_data"]["homo_sapiens"]
-    obs = exp.obs.read(value_filter=value_filter,
-                       column_names=["soma_joinid", "cell_type", "donor_id", "dataset_id"]).concat().to_pandas()
-    if len(obs) == 0:
+    VITAL = set(lg.VITAL_NONREGEN)
+    keep_by_group, total = {}, 0
+    reader = exp.obs.read(value_filter=value_filter,
+                          column_names=["soma_joinid", "cell_type", "donor_id", "dataset_id"])
+    batches = reader.tables() if hasattr(reader, "tables") else reader   # TableReadIter is itself iterable
+    for tbl in batches:
+        jid = tbl.column("soma_joinid").to_numpy()
+        mapped = np.asarray(d4._map_celltype([str(x) for x in tbl.column("cell_type").to_pylist()]))
+        ds = [str(x) for x in tbl.column("dataset_id").to_pylist()]
+        dn = [str(x) for x in tbl.column("donor_id").to_pylist()]
+        total += len(jid)
+        is_vital = np.isin(mapped, list(VITAL))
+        donorkey = np.array([f"{a}::{b}" for a, b in zip(ds, dn)])
+        gkey = np.where(is_vital, np.char.add(np.char.add(mapped.astype(str), "|"), donorkey), mapped.astype(str))
+        caps = np.where(is_vital, PER_DONOR_VITAL_CAP, d4.MAX_PER_TYPE)
+        for k in np.unique(gkey):
+            m = gkey == k
+            cap = int(caps[m][0])
+            cur = keep_by_group.setdefault(k, [])
+            room = cap - len(cur)
+            if room > 0:
+                cur.extend(int(x) for x in jid[m][:room])
+    if total == 0:
         log(f"{label}: 0 cells matched"); return None
-    mapped = np.array(d4._map_celltype(obs["cell_type"].astype(str).to_numpy()))
-    jid = obs["soma_joinid"].to_numpy()
-    donor = _donor_key_obs(obs)
-    rng = np.random.default_rng([SEED, tissue_index])
-    keep = []
-    for lab in np.unique(mapped):
-        idx = np.where(mapped == lab)[0]
-        if lab in lg.VITAL_NONREGEN:
-            for d in np.unique(donor[idx]):           # DONOR-AWARE: never starve a donor below the power floor
-                di = idx[donor[idx] == d]
-                keep.append(di if len(di) <= PER_DONOR_VITAL_CAP else rng.choice(di, PER_DONOR_VITAL_CAP, replace=False))
-        else:
-            keep.append(idx if len(idx) <= d4.MAX_PER_TYPE else rng.choice(idx, d4.MAX_PER_TYPE, replace=False))
-    return jid[np.sort(np.concatenate(keep))].astype(np.int64), len(obs)
+    keep = sorted(j for lst in keep_by_group.values() for j in lst)
+    return np.array(keep, dtype=np.int64), total
 
 
 def _materialise(census, joinids, genes, label):
