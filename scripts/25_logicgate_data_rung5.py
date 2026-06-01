@@ -104,84 +104,133 @@ def get_surfaceome():
 
 
 # =====================================================================================================
-#  donor-aware Census fetch  (the literal RUNG-5 change: add donor_id + dataset_id to obs)
+#  donor-aware, MEMORY-SAFE Census fetch (free-Colab friendly)
+#  A naive get_anndata(obs_value_filter=...) materialises a WHOLE tissue x all-genes matrix before capping
+#  -> brain (~10.5M cells) x 5007 genes OOMs free Colab's 12GB. Two fixes:
+#   (1) cap cells at the QUERY level: scout cheap OBS metadata (soma_joinid + cell_type), pick a capped,
+#       donor-preserving joinid set (ALL vital, non-vital <= MAX_PER_TYPE), then materialise ONLY those.
+#   (2) two-pass GENES (in main_real): fetch the small tumour set over the FULL surfaceome, keep only the
+#       tumour-EXPRESSED surface genes (a gate's activator MUST be expressed in tumour), and fetch the big
+#       normal atlas for just those. The full surfaceome is screened; dead-weight genes aren't carried at depth.
+#  Reads are deprecation-clean (obs_column_names/var_column_names). Per-tissue tiles cache to Drive so a
+#  disconnect doesn't lose prior tissues.
 # =====================================================================================================
-OBS_COLS = ["cell_type", "tissue_general", "donor_id", "dataset_id", "development_stage", "assay"]
+OBS_FETCH = ["cell_type", "tissue_general", "donor_id", "dataset_id", "development_stage", "assay", "disease"]
 
 
-def _donor_key(ad):
-    ds = ad.obs["dataset_id"].astype(str).to_numpy()
-    dn = ad.obs["donor_id"].astype(str).to_numpy()
+def _genes_literal(genes):
+    return "[" + ", ".join(f"'{g}'" for g in genes) + "]"
+
+
+def _donor_key_obs(df):
+    ds = df["dataset_id"].astype(str).to_numpy(); dn = df["donor_id"].astype(str).to_numpy()
     return np.array([f"{a}::{b}" for a, b in zip(ds, dn)])
 
 
-def _stream_pull_donor(census, value_filter, label, genes, tissue_index):
-    """Donor-aware contiguous predicate read; map cell types; asymmetric cap (keep ALL vital, cap abundant
-    non-vital) WHILE preserving donor labels. Returns (counts, cell_types, tissues, donors) or None."""
-    import cellxgene_census
-    log(f"{label}: streaming get_anndata (donor-aware) ...")
-    ad = cellxgene_census.get_anndata(
-        census, organism="Homo sapiens", obs_value_filter=value_filter,
-        var_value_filter=f"feature_name in {d4._q(genes) if hasattr(d4, '_q') else genes}",
-        column_names={"obs": OBS_COLS})
-    if ad.n_obs == 0:
+def _scout_capped_joinids(census, value_filter, tissue_index, label):
+    """OBS METADATA ONLY (soma_joinid + cell_type; ~hundreds of MB even for 10M-cell brain -> fits RAM).
+    Map cell types, cap per type (ALL vital, non-vital <= MAX_PER_TYPE). Returns (joinids int64, total)."""
+    exp = census["census_data"]["homo_sapiens"]
+    obs = exp.obs.read(value_filter=value_filter,
+                       column_names=["soma_joinid", "cell_type"]).concat().to_pandas()
+    if len(obs) == 0:
         log(f"{label}: 0 cells matched"); return None
-    raw = ad.obs["cell_type"].astype(str).to_numpy()
-    mapped = np.array(d4._map_celltype(raw))
-    donors = _donor_key(ad)
-    log(f"{label}: {ad.n_obs:,} cells, {len(set(donors))} donors, "
-        f"assays={sorted(set(ad.obs['assay'].astype(str)))[:3]}...; asymmetric cap ...")
+    mapped = np.array(d4._map_celltype(obs["cell_type"].astype(str).to_numpy()))
+    jid = obs["soma_joinid"].to_numpy()
     rng = np.random.default_rng([SEED, tissue_index])
     keep = []
     for lab in np.unique(mapped):
         idx = np.where(mapped == lab)[0]
         cap = d4.VITAL_CAP if lab in lg.VITAL_NONREGEN else d4.MAX_PER_TYPE
         keep.append(idx if len(idx) <= cap else rng.choice(idx, cap, replace=False))
-    keep = np.sort(np.concatenate(keep))
-    ad = ad[keep]; mapped = mapped[keep]; donors = donors[keep]
+    return jid[np.sort(np.concatenate(keep))].astype(np.int64), len(obs)
+
+
+def _materialise(census, joinids, genes, label):
+    """Materialise expression for an EXPLICIT capped joinid set over `genes` (bounded memory)."""
+    import cellxgene_census
+    log(f"{label}: materialising {len(joinids):,} capped cells x {len(genes)} genes ...")
+    return cellxgene_census.get_anndata(
+        census, organism="Homo sapiens", obs_coords=joinids.tolist(),
+        var_value_filter=f"feature_name in {_genes_literal(genes)}",
+        obs_column_names=OBS_FETCH, var_column_names=["feature_name"])
+
+
+def _pull_tissue(census, value_filter, label, genes, tissue_index):
+    """Scout-cap then materialise one tissue. Returns (counts, cell_types, tissues, donors) or None."""
+    sc = _scout_capped_joinids(census, value_filter, tissue_index, label)
+    if sc is None:
+        return None
+    joinids, total = sc
+    log(f"{label}: {total:,} cells in tissue -> query-capped to {len(joinids):,} (vital kept in full)")
+    ad = _materialise(census, joinids, genes, label)
+    mapped = np.array(d4._map_celltype(ad.obs["cell_type"].astype(str).to_numpy()))
+    donors = _donor_key_obs(ad.obs)
     vital = sorted(set(mapped.tolist()) & lg.VITAL_NONREGEN)
-    log(f"{label}: kept {ad.n_obs:,}; vital kept in FULL: {vital or 'none here'}")
+    log(f"{label}: kept {ad.n_obs:,}; vital here: {vital or 'none'}")
     return d4._dense_over(ad, genes), list(mapped), list(ad.obs["tissue_general"].astype(str)), list(donors)
 
 
-def fetch_normal(census, genes):
+def fetch_normal(census, genes, tile_dir=None):
+    """Per-tissue, memory-safe, with per-tissue Drive tiles (a disconnect doesn't lose prior tissues).
+    A tile is reused only if it was built over the SAME gene set (else the columns wouldn't align)."""
     cb, ct, ts, dn = [], [], [], []
     for ti, tissue in enumerate(d4.NORMAL_TISSUES):
-        res = _stream_pull_donor(
+        tile = (tile_dir / f"{tissue.replace(' ', '_')}.npz") if tile_dir else None
+        if tile and tile.exists():
+            d = np.load(tile, allow_pickle=True)
+            if list(d["genes"]) == list(genes):
+                log(f"NORMAL {tissue}: from tile cache ({d['counts'].shape[0]:,} cells)")
+                cb.append(d["counts"]); ct += list(d["cell_type"]); ts += list(d["tissue"]); dn += list(d["donor"])
+                continue
+            log(f"NORMAL {tissue}: tile gene set differs from current shortlist -> refetching")
+        res = _pull_tissue(
             census, f"is_primary_data == True and disease == 'normal' and tissue_general == '{tissue}'",
             f"NORMAL {tissue}", genes, ti)
-        if res:
-            c, a, b, d = res; cb.append(c); ct += a; ts += b; dn += d
+        if not res:
+            continue
+        c, a, b, dd = res; cb.append(c); ct += a; ts += b; dn += dd
+        if tile:
+            tile.parent.mkdir(parents=True, exist_ok=True)
+            np.savez_compressed(tile, counts=c, cell_type=np.array(a), tissue=np.array(b),
+                                donor=np.array(dd), genes=np.array(list(genes), dtype=object))
+            log(f"NORMAL {tissue}: tile cached -> {tile}")
     if not cb:
         raise RuntimeError("no normal cells fetched")
-    return lg.Panel(np.vstack(cb), genes, np.array(ct), np.array(ts), np.array(["normal"] * len(ct)),
-                    donor=np.array(dn))
+    return lg.Panel(np.vstack(cb), list(genes), np.array(ct), np.array(ts),
+                    np.array(["normal"] * len(ct)), donor=np.array(dn))
 
 
 def fetch_tumour(census, genes):
-    """Malignant cells only, donor-aware. panel.tissue carries the cancer type (for per-type gap)."""
-    import cellxgene_census
-    log("TUMOUR (malignant only, donor-aware): streaming ...")
-    ad = cellxgene_census.get_anndata(
-        census, organism="Homo sapiens",
-        obs_value_filter=f"is_primary_data == True and disease in {d4._q(d4.TUMOUR_DISEASES)}",
-        var_value_filter=f"feature_name in {genes}", column_names={"obs": OBS_COLS + ["disease"]})
-    raw = ad.obs["cell_type"].astype(str).to_numpy()
-    mal = np.array([any(k in c.lower() for k in d4.MALIGNANT_KEYWORDS) for c in raw])
-    log(f"TUMOUR: {ad.n_obs:,} cells, {int(mal.sum()):,} malignant")
+    """Malignant cells only, donor-aware, memory-safe (scout-cap then materialise). panel.tissue = cancer type."""
+    vf = f"is_primary_data == True and disease in {d4._q(d4.TUMOUR_DISEASES)}"
+    exp = census["census_data"]["homo_sapiens"]
+    obs = exp.obs.read(value_filter=vf,
+                       column_names=["soma_joinid", "cell_type", "disease"]).concat().to_pandas()
+    if len(obs) == 0:
+        raise RuntimeError("no tumour cells matched")
+    mal = np.array([any(k in c.lower() for k in d4.MALIGNANT_KEYWORDS)
+                    for c in obs["cell_type"].astype(str).to_numpy()])
+    log(f"TUMOUR: {len(obs):,} cells, {int(mal.sum()):,} malignant")
     if mal.sum() < 100:
-        log("TUMOUR: <100 malignant matched -> FALLING BACK to all tumour cells (coverage diluted, flagged)")
-        mal = np.ones(ad.n_obs, bool)
-    ad = ad[mal]
-    if ad.n_obs > d4.TUMOUR_CAP:
-        idx = np.sort(np.random.default_rng([SEED, 99]).choice(ad.n_obs, d4.TUMOUR_CAP, replace=False))
-        ad = ad[idx]
-    donors = _donor_key(ad)
-    disease = ad.obs["disease"].astype(str).to_numpy()    # cancer type -> panel.tissue
-    log(f"TUMOUR: kept {ad.n_obs:,} malignant cells, {len(set(donors))} patients, "
-        f"types={sorted(set(disease))}")
-    return lg.Panel(d4._dense_over(ad, genes), genes, np.array(["tumour_malignant"] * ad.n_obs),
+        log("TUMOUR: <100 malignant matched -> falling back to all tumour cells (coverage diluted, flagged)")
+        mal = np.ones(len(obs), bool)
+    jid = obs["soma_joinid"].to_numpy()[mal]
+    if len(jid) > d4.TUMOUR_CAP:
+        jid = np.sort(np.random.default_rng([SEED, 99]).choice(jid, d4.TUMOUR_CAP, replace=False))
+    ad = _materialise(census, jid.astype(np.int64), genes, "TUMOUR (malignant)")
+    donors = _donor_key_obs(ad.obs)
+    disease = ad.obs["disease"].astype(str).to_numpy()
+    log(f"TUMOUR: kept {ad.n_obs:,} malignant cells, {len(set(donors))} patients, types={sorted(set(disease))}")
+    return lg.Panel(d4._dense_over(ad, genes), list(genes), np.array(["tumour_malignant"] * ad.n_obs),
                     disease, np.array(["tumour"] * ad.n_obs), donor=donors)
+
+
+def subset_genes(panel, keep):
+    """Restrict a panel to a gene subset (column slice), preserving order in `keep`."""
+    idx = [panel.genes.index(g) for g in keep]
+    return lg.Panel(panel.counts[:, idx], list(keep), panel.cell_type, panel.tissue,
+                    panel.compartment, donor=panel.donor)
 
 
 def _concat(a, b):
@@ -475,34 +524,55 @@ def main_real() -> int:
         print("[rung5] cellxgene_census not installed — the REAL run is on COLAB.")
         print("[rung5] locally, run:  python scripts/25_logicgate_data_rung5.py selftest")
         return 0
-    log("=== RUNG 5 REAL run — donor-aware full-surfaceome addressability-gap map ===")
-    log(f"knobs: K_ACTIVATORS={K_ACTIVATORS} COV_FLOOR={COV_FLOOR} MAX_FAMILY={MAX_FAMILY} "
-        f"N_PERM={N_PERM} N_BOOT={N_BOOT}")
-    genes, src = get_surfaceome()
-    log(f"surfaceome source={src}, {len(genes)} genes (RAM note: normal cells x {len(genes)} genes can be "
-        f"multi-GB; reduce caps or genes if Colab OOMs)")
+    import cellxgene_census
+    GENE_FLOOR = float(os.environ.get("R5_GENE_FLOOR", "0.02"))
+    log("=== RUNG 5 REAL run — donor-aware, MEMORY-SAFE, two-pass full-surfaceome addressability gap ===")
+    log(f"knobs: K_ACTIVATORS={K_ACTIVATORS} COV_FLOOR={COV_FLOOR} GENE_FLOOR={GENE_FLOOR} "
+        f"MAX_FAMILY={MAX_FAMILY} N_PERM={N_PERM} N_BOOT={N_BOOT}")
+    genes_full, src = get_surfaceome()
+    log(f"surfaceome source={src}, {len(genes_full)} genes (full set is SCREENED; only tumour-expressed "
+        f"genes are carried at depth -> fits free-Colab RAM)")
+    tile_dir = (TUMOUR_CACHE.parent / "r5_normal_tiles") if TUMOUR_CACHE else None
     census = None
-    if NORMAL_CACHE and NORMAL_CACHE.exists():
-        normal = _loadp(NORMAL_CACHE)
-    else:
-        census = d4._open_census() if hasattr(d4, "_open_census") else None
-        import cellxgene_census
-        census = census or cellxgene_census.open_soma(census_version=d4.CENSUS_VERSION)
-        normal = fetch_normal(census, genes)
-        if NORMAL_CACHE: _save(normal, NORMAL_CACHE)
+
+    # ---- PASS 1: tumour over the FULL surfaceome (small; ~50k malignant cells) ----
     if TUMOUR_CACHE and TUMOUR_CACHE.exists():
         tumour = _loadp(TUMOUR_CACHE)
     else:
-        import cellxgene_census
-        census = census or cellxgene_census.open_soma(census_version=d4.CENSUS_VERSION)
-        tumour = fetch_tumour(census, genes)
+        census = cellxgene_census.open_soma(census_version=d4.CENSUS_VERSION)
+        tumour = fetch_tumour(census, genes_full)
         if TUMOUR_CACHE: _save(tumour, TUMOUR_CACHE)
+    # shortlist = surface genes EXPRESSED in tumour (a gate activator must be); the rest can't form a gate.
+    cov = malignant_coverage_per_gene(tumour, list(tumour.genes))
+    shortlist = sorted([g for g in tumour.genes if cov[g] >= GENE_FLOOR], key=lambda g: -cov[g])
+    if not shortlist:
+        log(f"NO surface gene clears GENE_FLOOR={GENE_FLOOR} in tumour — a genuine negative (no activator exists).")
+        shortlist = sorted(tumour.genes, key=lambda g: -cov[g])[:50]   # keep a few so the run still reports
+    log(f"two-pass: {len(shortlist)}/{len(genes_full)} surface genes are tumour-expressed (>= {GENE_FLOOR}) "
+        f"-> normal atlas fetched for THESE only")
+    tumour = subset_genes(tumour, shortlist)
+
+    # ---- PASS 2: normal atlas over the SHORTLIST only (big tissues, query-capped, per-tissue tiles) ----
+    normal = None
+    if NORMAL_CACHE and NORMAL_CACHE.exists():
+        cached = _loadp(NORMAL_CACHE)
+        if list(cached.genes) == shortlist:
+            normal = cached
+        else:
+            log("NORMAL cache gene set != current shortlist -> refetching normal")
+    if normal is None:
+        census = census or cellxgene_census.open_soma(census_version=d4.CENSUS_VERSION)
+        normal = fetch_normal(census, shortlist, tile_dir=tile_dir)
+        if NORMAL_CACHE: _save(normal, NORMAL_CACHE)
     if census is not None:
         census.close()
-    # align gene order (caches share `genes`); intersect just in case
+
     panel = _concat(normal, tumour)
     res = run_pipeline(panel, list(panel.genes), "real")
     res["surfaceome_source"] = src
+    res["surfaceome_full"] = len(genes_full)
+    res["surfaceome_screened_expressed"] = len(shortlist)
+    res["gene_floor"] = GENE_FLOOR
     _write(res, "rung5_addressability.json")
     print("[rung5] CEILING: transcript-only HYPOTHESIS; CITE-seq/flow confirm co-positivity; agonism = wet-lab.")
     return 0
