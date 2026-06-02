@@ -207,6 +207,122 @@ def score_gate(panel, pos_genes, neg_genes, required_vital):
             "transcript_only": True, "protein_copositivity_status": "NO_SINGLECELL_PROTEIN_DATA"}
 
 
+def _beta_ppf_vec(k, n, alpha=0.05):
+    """Vectorised Jeffreys UPPER bound over arrays (elementwise-identical to lg.jeffreys_upper): n<=0 -> 1.0
+    (fail-closed), k>=n -> 1.0, else beta.ppf(1-alpha, k+0.5, n-k+0.5)."""
+    k = np.asarray(k, float); n = np.asarray(n, float)
+    out = np.ones(n.shape, float)
+    m = (n > 0) & (k < n)
+    if m.any():
+        from scipy.stats import beta
+        out[m] = beta.ppf(1 - alpha, k[m] + 0.5, n[m] - k[m] + 0.5)
+    return out
+
+
+def score_gates_vec(panel, gates, required_vital):
+    """VECTORISED equivalent of [score_gate(panel, g['pos'], g['neg'], required_vital) for g in gates] —
+    bit-equivalent on coverage/leaks/verdict (validated batch==per-gate), but tractable at real scale
+    (M cells x thousands of donors x large family x perms). Precomputes per-(cell_type,donor) groups + the
+    per-gene positive columns ONCE; each gate is then one bincount + a Jeffreys bound on only the NONZERO
+    groups (zero-fire groups reuse a precomputed UB). Same worst-donor / fail-closed / dropout / AND-NOT
+    semantics as score_gate (it shares the constants and lg.VITAL_NONREGEN / REGEN_TYPES classification)."""
+    ct = np.asarray(panel.cell_type); comp = np.asarray(panel.compartment)
+    donors = np.asarray(panel.donor) if panel.donor is not None else np.array(["_one"] * len(ct))
+    is_tum = comp == "tumour"; ntum = int(is_tum.sum())
+    malignant = set(np.unique(ct[is_tum]).tolist()) if is_tum.any() else set()
+    norm = comp == "normal"
+    normv = norm & ~np.isin(ct, list(malignant)) if malignant else norm           # exclude malignant from leak
+    nv_idx = np.where(normv)[0]
+    # groups over normal-valid cells = (cell_type, donor)
+    gkeys = np.array([f"{a}\x01{b}" for a, b in zip(ct[nv_idx], donors[nv_idx])]) if nv_idx.size else np.array([], object)
+    uniq, ginv = (np.unique(gkeys, return_inverse=True) if gkeys.size else (np.array([], object), np.array([], int)))
+    ng = len(uniq)
+    gtot = np.bincount(ginv, minlength=ng).astype(float) if ng else np.array([])
+    gtype = np.array([u.split("\x01")[0] for u in uniq]) if ng else np.array([], object)
+    utypes, tinv = (np.unique(gtype, return_inverse=True) if ng else (np.array([], object), np.array([], int)))
+    is_vital_t = np.isin(utypes, list(lg.VITAL_NONREGEN)) if len(utypes) else np.array([], bool)
+    is_regen_t = np.isin(utypes, list(lg.REGEN_TYPES)) if len(utypes) else np.array([], bool)
+    gpowered = gtot >= MIN_VITAL_CELLS_PER_DONOR if ng else np.array([], bool)
+    UB0 = _beta_ppf_vec(np.zeros(ng), gtot) if ng else np.array([])               # k=0 fast-path per group
+    used = sorted({g for gate in gates for g in gate["pos"] + gate["neg"]})
+    P = {g: (panel.counts[:, panel.genes.index(g)] >= K) for g in used}
+    Pnv = {g: P[g][nv_idx] for g in used}
+    det_all = {g: arm_max_detect(panel, g) for g in used}
+    det_norm = {g: arm_max_detect_in(panel, g, norm) for g in used}
+
+    out = []
+    for gate in gates:
+        pos, neg = list(gate["pos"]), list(gate["neg"])
+        fire_t = np.ones(ntum, bool) if ntum else np.zeros(0, bool)
+        if ntum:
+            tnz = np.where(is_tum)[0]
+            for g in pos: fire_t &= P[g][tnz]
+            for g in neg: fire_t &= ~P[g][tnz]
+        coverage = float(fire_t.mean()) if ntum else 0.0
+        firenv = np.ones(nv_idx.size, bool)
+        for g in pos: firenv &= Pnv[g]
+        for g in neg: firenv &= ~Pnv[g]
+        gk = np.bincount(ginv, weights=firenv, minlength=ng) if ng else np.array([])
+        gub = UB0.copy() if ng else np.array([])
+        nz = gk > 0 if ng else np.array([], bool)
+        if ng and nz.any():
+            gub[nz] = _beta_ppf_vec(gk[nz], gtot[nz])
+        type_leak = np.zeros(len(utypes)); type_pw = np.zeros(len(utypes))
+        type_k = np.zeros(len(utypes)); type_n = np.zeros(len(utypes))
+        if ng:
+            np.add.at(type_k, tinv, gk); np.add.at(type_n, tinv, gtot)
+            if gpowered.any():
+                np.maximum.at(type_leak, tinv[gpowered], gub[gpowered])
+                np.add.at(type_pw, tinv[gpowered], 1.0)
+        pooled_fallback = []
+        for i in range(len(utypes)):
+            if type_pw[i] == 0:                       # no powered donor -> pooled fallback (or skip if <20 cells)
+                if type_n[i] < 20:
+                    type_leak[i] = 0.0
+                else:
+                    type_leak[i] = float(_beta_ppf_vec(np.array([type_k[i]]), np.array([type_n[i]]))[0])
+                    pooled_fallback.append(str(utypes[i]))
+        vmask = is_vital_t; rmask = is_regen_t; smask = (~is_vital_t) & (~is_regen_t) if len(utypes) else np.array([], bool)
+        vital_leak = float(type_leak[vmask].max()) if vmask.any() else 0.0
+        regen_leak = float(type_leak[rmask].max()) if rmask.any() else 0.0
+        strict_leak = float(type_leak[smask].max()) if smask.any() else 0.0
+        # worst (vital type, donor) label = the powered vital group with the max UB (matches score_gate's
+        # "ct@donor"); fall back to the worst vital TYPE label when only a pooled estimate exists.
+        vgrp = (is_vital_t[tinv] & gpowered) if ng else np.array([], bool)
+        if ng and vgrp.any():
+            wi = np.where(vgrp)[0][int(np.argmax(gub[vgrp]))]
+            vital_worst = str(uniq[wi]).replace("\x01", "@")
+        else:
+            vital_worst = str(utypes[vmask][int(np.argmax(type_leak[vmask]))]) if vmask.any() else None
+        audited = {str(utypes[i]): bool(type_pw[i] >= MIN_DONORS) for i in range(len(utypes)) if is_vital_t[i]}
+        unaudited = {c for c in required_vital if not audited.get(c, False)}
+        underdetected = [g for g in pos if det_all[g] < AND_DETECT_FLOOR]
+        unfalsifiable_neg = [g for g in neg if det_norm[g] < AND_DETECT_FLOOR]
+        if vital_leak > LEAK_BAR:
+            verdict = f"NON-SELECTIVE (vital leak {vital_leak:.3f} @ {vital_worst} — FORBID)"
+        elif strict_leak > LEAK_BAR:
+            verdict = f"NON-SELECTIVE (non-regen normal leak {strict_leak:.3f})"
+        elif regen_leak > REGEN_BAR:
+            verdict = f"NON-SELECTIVE (regen ceiling {regen_leak:.3f})"
+        elif underdetected:
+            verdict = f"UNCERTAIN (AND-arm near-undetectable, dropout-deflated: {underdetected})"
+        elif unfalsifiable_neg:
+            verdict = f"UNCERTAIN (AND-NOT blocker not detectable in normal tissue, unfalsifiable: {unfalsifiable_neg})"
+        elif unaudited:
+            verdict = f"UNCERTAIN (vital types under-powered/unaudited: {sorted(unaudited)} — FAIL-CLOSED)"
+        else:
+            verdict = "SAFE-LOW-COVERAGE" if coverage < COV_BAR else "SELECTIVE"
+        safe = verdict in ("SELECTIVE", "SAFE-LOW-COVERAGE")
+        out.append({"pos": pos, "neg": neg,
+                    "gate": " AND ".join(pos) + ("".join(f" AND-NOT {g}" for g in neg)),
+                    "coverage": round(coverage, 3), "vital_leak": round(vital_leak, 3), "vital_worst": vital_worst,
+                    "strict_leak": round(strict_leak, 3), "regen_leak": round(regen_leak, 3),
+                    "pooled_fallback": pooled_fallback, "safe": safe, "selective": verdict == "SELECTIVE",
+                    "verdict": verdict, "transcript_only": True,
+                    "protein_copositivity_status": "NO_SINGLECELL_PROTEIN_DATA"})
+    return out
+
+
 def rank_key(r):
     """LEXICOGRAPHIC — never a scalar combination of leak and coverage (no-multiply invariant)."""
     return (not r["selective"], not r["safe"], r["vital_leak"], r["strict_leak"], -r["coverage"])

@@ -72,7 +72,9 @@ def and_pair_family(genes):
 
 
 def score_family(panel, family, required_vital):
-    return [opt.score_gate(panel, g["pos"], g["neg"], required_vital) for g in family]
+    # VECTORISED scorer (bit-equivalent to per-gate score_gate; validated) — required for real-scale FDR
+    # (family x N_PERM over 1M+ cells x 1000s of donors is intractable with the per-gate Python loop).
+    return opt.score_gates_vec(panel, family, required_vital)
 
 
 def permute_exclusivity_preserve_vital(panel, rng):

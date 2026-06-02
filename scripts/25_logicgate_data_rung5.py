@@ -430,16 +430,10 @@ def run_pipeline(panel, genes, tag, required_vital=REQUIRED_VITAL):
     disc_d, sel_d, rep_d = opt.three_partition(np.array(sorted(set(panel.donor))))
     log(f"[{tag}] donor split: DISCOVERY {len(disc_d)} / SELECT {len(sel_d)} / REPORT {len(rep_d)}")
 
-    # score the whole family on ALL donors (worst-donor vital leak), rank lexicographically
-    log(f"[{tag}] scoring family of {len(family)} gates on ALL donors (worst-over-donor; this is the heavy step) ...")
-    scored = []
-    for i, g in enumerate(family):
-        r = opt.score_gate(panel, g["pos"], g["neg"], required_vital)
-        scored.append(r)
-        if i % max(1, len(family) // 20) == 0 or r["selective"]:
-            log(f"  [{i + 1}/{len(family)}] {r['gate'][:34]:34s} cov={r['coverage']:.2f} "
-                f"vital={r['vital_leak']:.3f} -> {'SEL' if r['selective'] else r['verdict'][:14]}")
-    scored.sort(key=opt.rank_key)
+    # score the whole family on ALL donors (worst-donor vital leak) with the VECTORISED scorer (bit-
+    # equivalent to per-gate score_gate; required for real scale), rank lexicographically
+    log(f"[{tag}] scoring family of {len(family)} gates on ALL donors (vectorised worst-over-donor) ...")
+    scored = sorted(opt.score_gates_vec(panel, family, required_vital), key=opt.rank_key)
     safe = [r for r in scored if r["safe"]]
     selective = [r for r in scored if r["selective"]]
     log(f"[{tag}] {len(safe)} SAFE on all audited axes; {len(selective)} also clear coverage (pre-FDR).")
@@ -673,7 +667,14 @@ def main_real() -> int:
     if census is not None:
         census.close()
 
+    import gc
     panel = _concat(normal, tumour)
+    del normal, tumour; gc.collect()                                 # free the ~3.5GB duplicate (assembly OOM)
+    if panel.counts.dtype != np.int16:
+        panel.counts = panel.counts.astype(np.int16)                 # UMI counts fit int16 -> halve panel RAM
+    gc.collect()
+    log(f"[real] panel ready: {panel.counts.shape[0]:,} cells x {panel.counts.shape[1]} genes "
+        f"(dtype={panel.counts.dtype}, ram {_ram_gb():.1f}GB) -> scoring")
     res = run_pipeline(panel, list(panel.genes), "real")
     res["surfaceome_source"] = src
     res["surfaceome_full"] = len(genes_full)

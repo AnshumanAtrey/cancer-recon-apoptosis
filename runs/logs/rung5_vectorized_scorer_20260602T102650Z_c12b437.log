@@ -1,0 +1,81 @@
+# cancer-recon-apoptosis — run log
+# step          : rung5_vectorized_scorer
+# utc           : 20260602T102650Z
+# commit_short  : c12b437  (+uncommitted changes)
+# commit_full   : c12b43720e64ae8056661e290a9817b2815a5ac7
+# branch        : main
+# python        : 3.12.6
+# platform      : macOS-26.3-arm64-arm-64bit
+#================================================================
+
+$ scripts/23 (vectorized FDR, 9 checks)
+============================================================================================
+RUNG 5 — HELD-OUT VALIDATION (family-max FDR + donor-permutation null + winner's-curse shrinkage)
+       validated on synthetic ground truth BEFORE any real surfaceome run
+============================================================================================
+
+[SIGNAL]  11280 cells, 14 donors, family=36 AND-pairs (planted clean gate = POS1 AND POS2)
+  family-max threshold cov=0.22 (p95 of decoy family-max); best true safe cov=0.96
+  discoveries (beat family-max): ['POS1 AND POS2', 'POS1 AND BROAD', 'POS2 AND BROAD']
+
+[NULL]    11280 cells, 14 donors, family=36 AND-pairs (NO truly exclusive gate exists)
+  family-max threshold cov=0.00; best true safe cov=0.00
+  discoveries (beat family-max): NONE
+  look-elsewhere: family-max cov p95=0.48 vs typical per-gate p95=0.01  -> inflation +0.46 (CONFIRMED; family-max correction is needed)
+
+[GUARD B] clean gate : obs vital_leak=0.0060, null mean=0.0060, p=1.00 -> donor-dependent=False
+[GUARD B] ATK3 gate  : obs vital_leak=0.0896, null mean=0.0333, p=0.00 -> donor-dependent=True (lethal donor concentration)
+
+[GUARD C] winner's-curse panel: 7600 cells, 16 donors, family=78 AND-pairs (each partner covers ONE tumour donor ~1/6~0.16, clean on normal)
+  naive winner   : DRV AND P2               cov=0.16 vital=0.006 selective=True (coverage lives in ONE donor)
+  optimism (in-bag - OOB): cov=+0.290  (that donor falls out-of-bag -> held-out coverage collapses)
+  corrected cov  : 0.00  (COV_BAR=0.15) -> still_selective=False
+
+============================================================================================
+VALIDATION CHECKS:
+  [OK] SIGNAL: planted clean gate (POS1 AND POS2) SURVIVES family-max FDR
+  [OK] SIGNAL: decoy null is NON-DEGENERATE (family-max threshold > 0.05, not the old vacuous 0)
+  [OK] SIGNAL: family-max FDR REJECTS sub-threshold safe gates (discoveries < safe; noise pairs excluded)
+  [OK] NULL: NO gate survives family-max (no false discovery)
+  [OK] family-max NECESSARY: family-max cov-null p95 > per-gate p95 (look-elsewhere)
+  [OK] decoy family size == true family size N
+  [OK] GUARD B: clean gate NOT flagged AND donor-concentrated lethal gate IS flagged
+  [OK] GUARD C: coverage optimism (in-bag - OOB) > 0 (winner's curse exists)
+  [OK] GUARD C: shrinkage DEMOTES an over-claimed winner (selective -> not)
+============================================================================================
+results -> runs/rung5_logicgate/heldout_validation.json
+figure -> runs/rung5_logicgate/rung5_heldout_validation.png
+============================================================================================
+CEILING: this is the look-elsewhere / winner's-curse rigor LAYER, proven on known answers. It does
+NOT find a gate; it makes the eventual real-data verdict honest. mRNA!=protein; recognition is a
+separate axis, never multiplied with RUNG-1/2/3.
+[exit 0]
+
+$ scripts/25 selftest (vectorized, 9 checks)
+[+    0.0s] [rung5] === RUNG 5 data-layer SELF-TEST (synthetic donor panel; validates the full downstream) ===
+[+    0.0s] [rung5] [selftest] panel: 8,050 cells (6,240 normal / 1,810 malignant), 15 donors, 7 genes
+[+    0.0s] [rung5] family: 7 genes >= COV_FLOOR 0.05; activators=top 7 by coverage
+[+    0.0s] [rung5] family size N = 21 gates (AND + AND-NOT). FDR/shrinkage operate on exactly this set.
+[+    0.0s] [rung5] [selftest] donor split: DISCOVERY 5 / SELECT 5 / REPORT 5
+[+    0.0s] [rung5] [selftest] scoring family of 21 gates on ALL donors (vectorised worst-over-donor) ...
+[+    0.5s] [rung5] [selftest] 11 SAFE on all audited axes; 3 also clear coverage (pre-FDR).
+[+    0.5s] [rung5] [selftest] family-max decoy FDR (N_PERM=100) + winner's-curse shrinkage (N_BOOT=100) ...
+[+    3.5s] [rung5] [selftest] family-max threshold cov=0.157; 3 gates pass FDR + shrinkage (pre-GUARD-B).
+[+    3.8s] [rung5] [selftest] 3 gates SURVIVE FDR + shrinkage + GUARD B (donor-permutation null).
+[+    3.8s] [rung5] [selftest] ADDRESSABILITY GAP (worst-case over ALL 7 patients, 1 under-powered counted as not-addressed): 57% have NO safe gate at coverage >= 0.15 [point over 6 powered patients: 50%].  by type: {'breast carcinoma': 1.0, 'lung adenocarcinoma': 0.25}
+[+    4.1s] [rung5] figure -> runs/rung5_logicgate/rung5_selftest.png
+[+    4.1s] [rung5] results -> runs/rung5_logicgate/rung5_selftest.json
+============================================================================================
+SELF-TEST CHECKS:
+  [OK] downstream ran end-to-end (family -> score -> FDR -> shrinkage -> gap)
+  [OK] a safe gate exists (planted CLEANA AND CLEANB)
+  [OK] at least one gate SURVIVES FDR + shrinkage
+  [OK] the planted clean gate is among survivors
+  [OK] addressability gap is computed per cancer type
+  [OK] BRCA gap > LUAD gap (planted: clean gate misses BRCA patients)
+  [OK] under-powered patient path is exercised (>=1 under-powered)
+  [OK] worst-case gap >= point gap (invariant; headline is the worst-case)
+  [OK] F4-NEW-2: noisy under-powered LUAD patient FORCED not-addressed (LUAD worst-case > 0 though powered LUAD addressed)
+============================================================================================
+[+    4.1s] [rung5] self-test PASSED — downstream integration validated; real run is the Colab fetch
+[exit 0]
