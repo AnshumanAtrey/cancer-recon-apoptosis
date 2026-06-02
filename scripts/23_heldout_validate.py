@@ -119,6 +119,7 @@ def familymax_fdr(panel, family, required_vital, rng, n_perm=N_PERM):
     decoy_max_safe_cov = np.zeros(n_perm)          # family-max coverage among SAFE decoys (discovery null)
     decoy_cov_mat = np.zeros((n_perm, len(family)))  # ALL-gate coverage (for the look-elsewhere order stat)
     decoy_safe_cov_all = []                         # pooled SAFE decoy coverages (per-gate FDR curve)
+    import time as _t; _t0 = _t.monotonic()
     for p in range(n_perm):
         d = permute_exclusivity_preserve_vital(panel, rng)
         ds_all = score_family(d, family, required_vital)
@@ -126,6 +127,10 @@ def familymax_fdr(panel, family, required_vital, rng, n_perm=N_PERM):
         safe_cov = [r["coverage"] for r in ds_all if r["safe"]]
         decoy_max_safe_cov[p] = max(safe_cov) if safe_cov else 0.0
         decoy_safe_cov_all.extend(safe_cov)
+        if (p + 1) % max(1, n_perm // 10) == 0 or p == n_perm - 1:   # progress (never a blind box)
+            el = _t.monotonic() - _t0
+            print(f"    [fdr] perm {p + 1}/{n_perm} ({len(family)} gates) {el:.0f}s "
+                  f"~{el / (p + 1) * (n_perm - p - 1):.0f}s left", flush=True)
     decoy_safe_cov_all = np.array(decoy_safe_cov_all)
 
     threshold = float(np.quantile(decoy_max_safe_cov, 1.0 - ALPHA))
@@ -205,7 +210,10 @@ def bootstrap_winners_curse(panel, family, required_vital, rng, n_boot=N_BOOT):
     full_r = full[0]
 
     opt_cov, opt_strict, opt_regen, opt_vital = [], [], [], []
-    for _ in range(n_boot):
+    import time as _t; _b0 = _t.monotonic()
+    for _b in range(n_boot):
+        if (_b + 1) % max(1, n_boot // 10) == 0 or _b == n_boot - 1:
+            print(f"    [boot] resample {_b + 1}/{n_boot} {_t.monotonic() - _b0:.0f}s", flush=True)
         draw = rng.choice(donors, size=donors.size, replace=True)
         inbag = set(draw.tolist())
         oob = set(donors.tolist()) - inbag
