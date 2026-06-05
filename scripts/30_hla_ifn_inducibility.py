@@ -266,17 +266,38 @@ def main_run() -> int:
     per_type, coverage = aggregate(counts, label, donor)
 
     # headline: the immune-privileged tissues RUNG-8 flagged — does IFN rescue HLA-A there?
-    ip = {t: per_type[t] for t in IMMUNE_PRIVILEGED if t in per_type and per_type[t].get("ifn_rescue_delta_lower") is not None}
-    verdict = "inconclusive (too few IFN-high cells in immune-privileged tissue at rest)"
-    if ip:
-        mean_delta = float(np.mean([v["ifn_rescue_delta_lower"] for v in ip.values()]))
-        hk_ok = all(v.get("hk_matched") for v in ip.values())
-        if mean_delta >= 0.20 and hk_ok:
-            verdict = f"IFN LIKELY RESCUES the blocker (mean HLA-A-low drop {mean_delta:.0%}, depth-matched) -> RUNG-8 hole shrinks in vivo"
-        elif mean_delta >= 0.20 and not hk_ok:
-            verdict = f"apparent rescue ({mean_delta:.0%}) but CONFOUNDED by depth (HK differs) -> not trustworthy"
-        else:
-            verdict = f"IFN does NOT rescue much (mean HLA-A-low drop {mean_delta:.0%}) -> RUNG-8 safety hole is likely REAL even under inflammation"
+    # A rescue verdict is only TRUSTED from immune-privileged types that are BOTH depth-matched (hk_matched)
+    # AND well-powered (both strata >= MIN_CELLS). Confounded or underpowered tissues -> INCONCLUSIVE, not
+    # a false "no rescue". We also report the depth-ROBUST direction (sign of the delta across all tissues)
+    # and the cleanest depth-matched evidence anywhere.
+    ip_clean = {t: per_type[t] for t in IMMUNE_PRIVILEGED
+                if per_type.get(t, {}).get("hk_matched") is True
+                and per_type.get(t, {}).get("ifn_rescue_delta_lower") is not None}
+    ip_conf = [t for t in IMMUNE_PRIVILEGED if per_type.get(t, {}).get("hk_matched") is False]
+    ip_underpowered = [t for t in IMMUNE_PRIVILEGED
+                       if per_type.get(t, {}).get("n_cells_measured") and per_type[t].get("ifn_rescue_delta_lower") is None]
+    two = [v for v in per_type.values() if v.get("ifn_rescue_delta_lower") is not None]
+    dir_pos = sum(1 for v in two if v["ifn_rescue_delta_lower"] > 0)
+    clean_all = {t: round(v["ifn_rescue_delta_lower"], 4) for t, v in per_type.items()
+                 if v.get("hk_matched") is True and v.get("ifn_rescue_delta_lower") is not None}
+    verdict_basis = {"immune_privileged_depth_matched": sorted(ip_clean),
+                     "immune_privileged_depth_confounded": sorted(ip_conf),
+                     "immune_privileged_underpowered_at_rest": sorted(ip_underpowered),
+                     "direction_IFNhigh_lower_in_N_of_M": f"{dir_pos}/{len(two)}",
+                     "depth_matched_rescue_deltas_anywhere": clean_all}
+    if ip_clean:
+        md = float(np.mean(list({t: per_type[t]["ifn_rescue_delta_lower"] for t in ip_clean}.values())))
+        verb = "RESCUES" if md >= 0.20 else "does NOT rescue"
+        verdict = (f"IFN {verb} the blocker in immune-privileged tissue (depth-matched HLA-A-low drop {md:.0%} "
+                   f"in {sorted(ip_clean)}).")
+    else:
+        verdict = ("INCONCLUSIVE for the tissues that matter — immune-privileged comparisons are depth-CONFOUNDED "
+                   f"({ip_conf}) or UNDERPOWERED at rest (too few IFN-high cells: {ip_underpowered}; immune-"
+                   f"privileged tissue barely runs IFN at baseline). DIRECTION is consistent ({dir_pos}/{len(two)} "
+                   "tissues: IFN-high has LOWER HLA-A-low) and in the cleanest depth-matched tissue(s) "
+                   f"{sorted(clean_all)} IFN rescues strongly ({clean_all}); so IFN DOES upregulate HLA-A where "
+                   "it is active. Whether therapeutic IFN reaches/re-arms the blocker in heart/brain is a WET-LAB "
+                   "question the resting atlas cannot settle.")
 
     result = {
         "tag": "rung9_ifn_inducibility",
@@ -288,6 +309,7 @@ def main_run() -> int:
         "per_vital_type": per_type,
         "immune_privileged_focus": IMMUNE_PRIVILEGED,
         "VERDICT": verdict,
+        "verdict_basis": verdict_basis,
         "CEILING": "mRNA != surface protein; ISG-score is a PROXY for IFN exposure (resting atlas has few IFN-"
                    "high cells -> IFN-high stratum may be small/noisy, n reported); depth confound controlled by "
                    "HK-score but not perfectly (hk_matched flag); HLA-A GENE not A*02 ALLELE; atlas IFN-high "

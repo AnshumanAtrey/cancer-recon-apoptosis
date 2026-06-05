@@ -26,6 +26,21 @@ HK-score per stratum and set `hk_matched` — a "rescue" is only believed when t
 A small drop ⇒ the hole is real even under inflammation ⇒ the genetic NOT-gate is unsafe in heart/brain. The
 JSON `VERDICT` field states the call.
 
+## First real run (2026-06, `colab_runs/20260605T204104Z_72eac5a/`) — and the honest read
+699,530 cells, 11 datasets dropped as non-HLA-measuring. **The controls did their job:** in every two-stratum
+tissue (10/10) IFN-high cells have *lower* HLA-A-low (direction consistent with IFN inducing MHC-I), and in the
+one **depth-matched** tissue — pancreatic islet — IFN rescues strongly (17%→1%). **But for the tissues that
+matter the test is INCONCLUSIVE:** cardiac conduction had only **9 IFN-high cells** in the entire resting atlas
+(immune-privileged tissue barely runs IFN at baseline), and cardiomyocyte/neuron comparisons are
+**depth-confounded** (`hk_matched=False` — IFN-high cells are just deeper-sequenced). So: **IFN does upregulate
+HLA-A where it is active, but whether *therapeutic* IFN reaches and re-arms the blocker in heart/brain is a
+WET-LAB question the resting atlas cannot settle.** (The v1 auto-VERDICT one-liner overstated this as "hole is
+real"; the verdict logic was corrected to report INCONCLUSIVE + the directional/depth-matched evidence. A free
+re-run of Cell 5 regenerates the corrected VERDICT string; the per-type data was already correct.)
+
+Next refinement if needed: **depth-matched subsampling** (match IFN-high/low cells on housekeeping score before
+comparing) to get a clean immune-privileged answer; or IFN-stimulated / surface-protein data (wet lab).
+
 ## Honest ceiling
 mRNA ≠ surface protein; ISG-score is a proxy for IFN exposure (resting atlas has few IFN-high cells → that
 stratum can be small/noisy, n reported); depth confound controlled by housekeeping genes but not perfectly
