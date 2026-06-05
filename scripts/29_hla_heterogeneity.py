@@ -206,8 +206,15 @@ def pull_vital_hla(census, d4, tissue, ti, n_tissue):
 #  (real biology, e.g. immune-privileged neurons); mRNA dropout still inflates low (upper bound). The
 #  gold-standard fix (Census feature_dataset_presence_matrix) needs a refetch and is noted, not silently done.
 def aggregate(counts, label, donor, gene_idx=0):
-    """Returns (per_type, coverage_meta). gene_idx 0 = HLA-A (the sensed gene)."""
+    """Returns (per_type, coverage_meta). gene_idx 0 = HLA-A (the sensed gene).
+    Reports the HLA-A-low fraction as a BOUNDED RANGE, because mRNA cannot separate 'truly low' from
+    sequencing dropout:
+      UPPER = HLA-A==0 over ALL measured cells (treats every all-zero cell as low -> dropout-inflated).
+      LOWER = HLA-A==0 among cells that detected SOME MHC-I (HLA-A/B/C any>0), i.e. sequenced deeply enough
+              to see class-I at all (treats all-MHC-I-zero cells as dropout, not real null).
+    The truth is between. The dropout-robust deliverable is the RELATIVE RANKING across vital types."""
     a = counts[:, gene_idx].astype(np.int64)
+    mhc1_detected = counts.max(axis=1) > 0                 # any HLA-A/B/C > 0 = enough depth to see MHC-I
     dataset = np.array([str(d).split("::")[0] for d in donor], dtype=object)
     all_ds = set(dataset.tolist())
     measuring = {d for d in all_ds if a[dataset == d].max(initial=0) > 0}    # dataset detects HLA somewhere
@@ -222,22 +229,15 @@ def aggregate(counts, label, donor, gene_idx=0):
         if m.sum() == 0:
             out[t] = {"n_cells_measured": 0, "note": "no cells from HLA-measuring datasets (excluded)"}
             continue
-        c = a[m]; dn = donor[m]
-        donor_low = []
-        for d in set(dn.tolist()):
-            cc = c[dn == d]
-            if len(cc) >= MIN_CELLS_PER_DONOR:
-                donor_low.append(float((cc < 1).mean()))
-        dl = np.array(sorted(donor_low)) if donor_low else np.array([])
+        c = a[m]
+        c_info = c[mhc1_detected[m]]                        # cells deep enough to detect class-I
         out[t] = {
             "n_cells_measured": int(m.sum()),
+            "n_mhc1_detected": int(len(c_info)),
             "n_datasets_measuring": int(len(set(dataset[m].tolist()))),
-            "n_informative_donors": int(len(dl)),
-            "pooled_low_k1": round(float((c < 1).mean()), 4),
-            "pooled_detect": round(float((c >= 1).mean()), 4),
-            "median_donor_low_k1": round(float(np.median(dl)), 4) if len(dl) else None,
-            "p90_donor_low_k1": round(float(np.percentile(dl, 90)), 4) if len(dl) else None,
-            "worst_donor_low_k1": round(float(dl.max()), 4) if len(dl) else None,
+            "pooled_detect_HLA_A": round(float((c >= 1).mean()), 4),
+            "hla_a_low_UPPER": round(float((c < 1).mean()), 4),                      # all-zero counted as low
+            "hla_a_low_LOWER": round(float((c_info < 1).mean()), 4) if len(c_info) else None,  # among MHC-I+ cells
         }
     return out, meta
 
@@ -294,12 +294,17 @@ def main_run() -> int:
     log(f"dataset coverage: {coverage['n_datasets_excluded_unmeasured']}/{coverage['n_datasets_total']} "
         f"datasets excluded as non-HLA-measuring ({coverage['n_cells_excluded_unmeasured']:,} cells dropped)")
 
-    # headline = the vital type with the highest POOLED HLA-low fraction (among HLA-measuring datasets);
-    # pooled (not single-worst-donor) is the robust, RUNG-7-relevant 'fraction of normal cells HLA-low'.
-    valid = {t: v for t, v in per_type.items() if v.get("n_cells_measured", 0) > 0 and v.get("pooled_low_k1") is not None}
-    worst_type = max(valid, key=lambda t: valid[t]["pooled_low_k1"]) if valid else None
-    worst_pooled = valid[worst_type]["pooled_low_k1"] if worst_type else 0.0
-    coupling = couple_to_rung7(worst_pooled)
+    # headline = the vital type with the highest HLA-A-low UPPER bound (among HLA-measuring datasets),
+    # reported as a [LOWER, UPPER] range; RUNG-7 is coupled at BOTH bounds (the FPR is a range, not a point).
+    valid = {t: v for t, v in per_type.items() if v.get("n_cells_measured", 0) > 0 and v.get("hla_a_low_UPPER") is not None}
+    worst_type = max(valid, key=lambda t: valid[t]["hla_a_low_UPPER"]) if valid else None
+    worst_upper = valid[worst_type]["hla_a_low_UPPER"] if worst_type else 0.0
+    worst_lower = (valid[worst_type]["hla_a_low_LOWER"] or 0.0) if worst_type else 0.0
+    coupling = {"normal_hla_low_frac_range": [round(worst_lower, 4), round(worst_upper, 4)],
+                "data_grounded_FPR_at_lower": couple_to_rung7(worst_lower).get("data_grounded_FPR"),
+                "data_grounded_FPR_at_upper": couple_to_rung7(worst_upper).get("data_grounded_FPR"),
+                "note": "RUNG-7 FPR at the measured HLA-low LOWER (dropout-controlled) and UPPER (raw) bounds. "
+                        "The dropout-robust finding is the per-type RANKING, not the absolute FPR."}
 
     result = {
         "tag": "rung8_hla_heterogeneity",
@@ -310,29 +315,32 @@ def main_run() -> int:
         "dataset_coverage": coverage,
         "per_vital_type": per_type,
         "worst_vital_type": worst_type,
-        "worst_vital_pooled_HLA_low_k1": round(float(worst_pooled), 4),
+        "worst_vital_hla_a_low_range": [round(float(worst_lower), 4), round(float(worst_upper), 4)],
+        "ranking_most_to_least_hla_low": [t for t, _ in sorted(valid.items(), key=lambda kv: -kv[1]["hla_a_low_UPPER"])],
         "rung7_coupling": coupling,
-        "CEILING": "v2 fix: only DATASETS that actually measured HLA are counted (Census returns 0 for "
-                   "'not measured' too -> v1 conflated unmeasured with HLA-low; see dataset_coverage). Residual: "
-                   "mRNA HLA != surface MHC-I protein; scRNA DROPOUT still inflates HLA-low (UPPER BOUND -> "
-                   "conservatively over-estimates toxicity); HLA-I is IFN-gamma inducible (resting atlas may "
-                   "understate induced); HLA-A GENE not the A*02 ALLELE. Headline = POOLED among measuring "
-                   "datasets (robust); per-type worst/p90/median donor also reported. Gold-standard fix = "
-                   "Census feature_dataset_presence_matrix (needs refetch).",
-        "INTERPRETATION": "This replaces RUNG-7's assumed 5% normal HLA-low fraction with a measured, "
-                          "per-vital-tissue number. The worst vital type sets the gate's off-tumour-toxicity "
-                          "floor (data_grounded_FPR). If the measured HLA-low fraction is well below 5%, the "
-                          "blocker is more reliable than assumed (good); if higher, RUNG-7's safety was "
-                          "optimistic and the gate is more toxic than modelled.",
+        "CEILING": "Two corrections from v1: (a) only DATASETS that actually measured HLA are counted "
+                   "(Census returns 0 for 'not measured' too -> v1 conflated unmeasured with HLA-low; see "
+                   "dataset_coverage); (b) HLA-A-low is reported as a RANGE [LOWER among MHC-I-detected cells, "
+                   "UPPER over all cells] because mRNA cannot separate true-low from dropout. RESIDUAL: mRNA != "
+                   "surface protein; HLA-I is IFN-gamma inducible (resting atlas understates induced); HLA-A "
+                   "GENE not the A*02 ALLELE. The DROPOUT-ROBUST deliverable is the per-type RANKING, not the "
+                   "absolute fraction. Gold-standard fix = Census feature_dataset_presence_matrix (needs refetch).",
+        "INTERPRETATION": "The robust, dropout-insensitive finding is the RANKING: HLA-I is lowest in the "
+                          "immune-privileged, non-regenerating tissues (cardiac conduction, cardiomyocytes, "
+                          "neurons) and highest in pancreatic islet / endothelium. That means the Tmod blocker "
+                          "is LEAST reliable exactly where off-tumour killing is most catastrophic and "
+                          "irreversible (heart, brain) -> the gate's real safety risk is concentrated in "
+                          "immune-privileged organs. The ABSOLUTE HLA-low fraction (and the coupled FPR) is a "
+                          "wide dropout-bounded range, NOT a point estimate; do not quote it as a toxicity rate.",
     }
     RESULT_JSON.write_text(json.dumps(result, indent=2))
     log(f"wrote {RESULT_JSON}")
-    log(f"WORST vital type = {worst_type}  pooled HLA-low(k1) = {worst_pooled:.1%}  "
-        f"-> data-grounded gate FPR = {coupling.get('data_grounded_FPR', 'n/a')}")
-    log(f"{'vital type':22} {'n_meas':>8} {'donors':>6} {'pooled_low':>10} {'p90_donor':>9} {'detect':>7}")
-    for t, v in sorted(valid.items(), key=lambda kv: -kv[1]["pooled_low_k1"]):
-        log(f"  {t:22} {v['n_cells_measured']:>8,} {v['n_informative_donors']:>6} "
-            f"{v['pooled_low_k1']:>10.1%} {(v['p90_donor_low_k1'] or 0):>9.1%} {v['pooled_detect']:>7.1%}")
+    log(f"WORST vital type = {worst_type}  HLA-A-low = [{worst_lower:.0%}-{worst_upper:.0%}]  "
+        f"-> gate FPR range [{coupling['data_grounded_FPR_at_lower']}-{coupling['data_grounded_FPR_at_upper']}]")
+    log(f"{'vital type':22} {'n_meas':>8} {'low_LOWER':>9} {'low_UPPER':>9} {'detectA':>8}")
+    for t, v in sorted(valid.items(), key=lambda kv: -kv[1]["hla_a_low_UPPER"]):
+        log(f"  {t:22} {v['n_cells_measured']:>8,} {(v['hla_a_low_LOWER'] or 0):>9.1%} "
+            f"{v['hla_a_low_UPPER']:>9.1%} {v['pooled_detect_HLA_A']:>8.1%}")
     HB.stop()
     _make_figure(valid)
     return 0
@@ -345,22 +353,23 @@ def _make_figure(per_type):
         import matplotlib.pyplot as plt
     except Exception as e:
         log(f"matplotlib unavailable ({e}); skipped figure"); return
-    valid = {t: v for t, v in per_type.items() if v.get("pooled_low_k1") is not None}
+    valid = {t: v for t, v in per_type.items() if v.get("hla_a_low_UPPER") is not None}
     if not valid:
         log("no measured vital types -> no figure"); return
-    items = sorted(valid.items(), key=lambda kv: kv[1]["pooled_low_k1"], reverse=True)
+    items = sorted(valid.items(), key=lambda kv: kv[1]["hla_a_low_UPPER"], reverse=True)
     names = [f"{t} (n={v['n_cells_measured']:,})" for t, v in items]
-    pooled = [v["pooled_low_k1"] * 100 for _, v in items]
-    p90 = [(v["p90_donor_low_k1"] or 0) * 100 for _, v in items]
+    upper = [v["hla_a_low_UPPER"] * 100 for _, v in items]
+    lower = [(v["hla_a_low_LOWER"] or 0) * 100 for _, v in items]
     y = np.arange(len(names))
-    fig, ax = plt.subplots(figsize=(10, max(3, 0.5 * len(names) + 1.5)))
-    ax.barh(y, p90, color="#C1432B", label="p90-donor HLA-low (high-end)")
-    ax.barh(y, pooled, height=0.5, color="#2B6CB0", label="pooled HLA-low (headline)")
+    fig, ax = plt.subplots(figsize=(10.5, max(3, 0.5 * len(names) + 1.5)))
+    # draw the [LOWER, UPPER] range as a band, with markers at each bound
+    ax.barh(y, upper, color="#F0C0B6", label="HLA-A-low UPPER (all cells; dropout-inflated)")
+    ax.barh(y, lower, color="#C1432B", height=0.55, label="HLA-A-low LOWER (among MHC-I-detected)")
     ax.axvline(5, ls="--", color="grey", label="RUNG-7 assumed 5%")
     ax.set_yticks(y); ax.set_yticklabels(names, fontsize=8); ax.invert_yaxis()
-    ax.set_xlabel("% of vital cells HLA-A-low (UMI=0) among HLA-MEASURING datasets — UPPER BOUND (dropout)")
-    ax.set_title("RUNG-8 (v2): normal-tissue HLA-low fraction per vital cell type\n"
-                 "(measuring datasets only; grounds RUNG-7's safety parameter)", fontsize=11)
+    ax.set_xlabel("% of vital cells HLA-A-low (HLA-measuring datasets) — true value lies in the [LOWER, UPPER] band")
+    ax.set_title("RUNG-8: normal-tissue HLA-A-low per vital type (immune-privileged tissues rank highest)\n"
+                 "robust finding = the RANKING; absolute fraction is a dropout-bounded range", fontsize=10)
     ax.legend(fontsize=8); ax.grid(axis="x", alpha=0.3)
     fig.tight_layout(); fig.savefig(FIGURE_PNG, dpi=130)
     log(f"wrote {FIGURE_PNG}")
@@ -376,48 +385,39 @@ def selftest() -> int:
         checks.append((name, bool(cond))); ok += bool(cond)
         print(f"  [{'PASS' if cond else 'FAIL'}] {name}")
 
-    # two HLA-MEASURING donors per type (each has some HLA>0); cardiomyocyte D2 is all-zero (real silence)
+    # explicit (HLA-A, HLA-B, HLA-C) per cell, to test the UPPER/LOWER dropout-vs-real distinction.
     rng = np.random.default_rng(8)
-    rows = []
-    def block(label, donor, n, hla_low):
-        a = np.zeros(n, int) if hla_low else rng.integers(3, 30, n)
-        for i in range(n):
-            rows.append((label, donor, a[i]))
-    block("cardiomyocyte", "dsA::D1", 100, False)    # measuring dataset, HLA-high
-    block("cardiomyocyte", "dsA::D2", 100, True)     # SAME dataset dsA (measuring) but this donor all-zero
-    block("neuron", "dsB::D3", 100, False)
-    block("neuron", "dsB::D4", 100, False)
+    rows = []   # (label, donor, a, b, c)
+    def add(label, donor, n, a0, b0, c0):
+        for _ in range(n):
+            rows.append((label, donor,
+                         0 if a0 == 0 else int(rng.integers(3, 30)),
+                         0 if b0 == 0 else int(rng.integers(3, 30)),
+                         0 if c0 == 0 else int(rng.integers(3, 30))))
+    add("cardiomyocyte", "dsA::D1", 100, 9, 9, 9)    # HLA-A high
+    add("cardiomyocyte", "dsA::D2", 100, 0, 0, 0)    # all-MHC-I-zero = DROPOUT: UPPER counts low, LOWER excludes
+    add("vascular_endothelium", "dsB::De", 100, 9, 9, 9)   # makes dsB an HLA-measuring dataset
+    add("neuron", "dsB::D3", 100, 0, 9, 9)           # A=0 but B/C present = REAL A-low (MHC-I detected)
+    add("kidney_tubule", "dsZ::Dz", 100, 0, 0, 0)    # dsZ never measured HLA anywhere -> excluded
     label = np.array([r[0] for r in rows], object)
     donor = np.array([r[1] for r in rows], object)
-    counts = np.array([[r[2], r[2], r[2]] for r in rows], np.int32)
+    counts = np.array([[r[2], r[3], r[4]] for r in rows], np.int32)
 
     agg, cov = aggregate(counts, label, donor, gene_idx=0)
     check("aggregate returns (per_type, coverage) tuple", isinstance(cov, dict) and "n_datasets_total" in cov)
-    check("both vital types aggregated", set(agg) == {"cardiomyocyte", "neuron"})
-    check("cardiomyocyte pooled HLA-low(k1) == 50% (D2 zero, in a MEASURING dataset -> kept)",
-          abs(agg["cardiomyocyte"]["pooled_low_k1"] - 0.5) < 1e-9)
-    check("cardiomyocyte worst-donor HLA-low(k1) == 100% (the all-zero donor D2)",
-          abs(agg["cardiomyocyte"]["worst_donor_low_k1"] - 1.0) < 1e-9)
-    check("neuron pooled HLA-low ~ 0 (all detected)", agg["neuron"]["pooled_low_k1"] < 0.05)
-    check("worst >= pooled (per type)",
-          all(agg[t]["worst_donor_low_k1"] >= agg[t]["pooled_low_k1"] - 1e-9 for t in agg))
-
-    # THE v2 FIX: a dataset with NO HLA anywhere (unmeasured) is excluded, NOT counted as HLA-low.
-    rows3 = ([("kidney_tubule", "dsMeas::D1", v) for v in rng.integers(3, 30, 80)]   # measuring
-             + [("kidney_tubule", "dsUnmeas::D9", 0) for _ in range(80)])            # never measured -> exclude
-    l3 = np.array([r[0] for r in rows3], object); d3 = np.array([r[1] for r in rows3], object)
-    c3 = np.array([[r[2]] * 3 for r in rows3], np.int32)
-    agg3, cov3 = aggregate(c3, l3, d3, gene_idx=0)
-    check("unmeasured dataset excluded (1 of 2 datasets dropped)", cov3["n_datasets_excluded_unmeasured"] == 1)
-    check("kidney_tubule pooled HLA-low ~ 0 (the unmeasured all-zero dataset was NOT counted as low)",
-          agg3["kidney_tubule"]["pooled_low_k1"] < 0.05)
-
-    # MIN_CELLS gate: a tiny donor must not enter the informative-donor set
-    rows2 = [("neuron", "dsX::tiny", 7)] * 5 + [("neuron", "dsX::big", v) for v in rng.integers(5, 30, 80)]
-    lab2 = np.array([r[0] for r in rows2], object); dn2 = np.array([r[1] for r in rows2], object)
-    cnt2 = np.array([[r[2]] * 3 for r in rows2], np.int32)
-    agg2, _ = aggregate(cnt2, lab2, dn2, gene_idx=0)
-    check("tiny donor (<MIN_CELLS) excluded from informative donors", agg2["neuron"]["n_informative_donors"] == 1)
+    check("dsZ (no HLA anywhere) excluded as unmeasured", cov["n_datasets_excluded_unmeasured"] == 1)
+    check("kidney_tubule has no measured cells (only dataset unmeasured)",
+          agg["kidney_tubule"].get("n_cells_measured", 0) == 0)
+    check("cardiomyocyte UPPER == 50% (D2 all-zero counted as low)",
+          abs(agg["cardiomyocyte"]["hla_a_low_UPPER"] - 0.5) < 1e-9)
+    check("cardiomyocyte LOWER == 0% (D2 zeros are DROPOUT -> excluded from MHC-I+ set)",
+          abs(agg["cardiomyocyte"]["hla_a_low_LOWER"] - 0.0) < 1e-9)
+    check("neuron UPPER == 100% (all HLA-A=0)", abs(agg["neuron"]["hla_a_low_UPPER"] - 1.0) < 1e-9)
+    check("neuron LOWER == 100% (A-specific low w/ MHC-I detected -> REAL, not dropout)",
+          abs(agg["neuron"]["hla_a_low_LOWER"] - 1.0) < 1e-9)
+    check("LOWER <= UPPER for every measured type",
+          all((agg[t].get("hla_a_low_LOWER") or 0) <= agg[t]["hla_a_low_UPPER"] + 1e-9
+              for t in agg if agg[t].get("n_cells_measured")))
 
     # RUNG-7 coupling runs and FPR rises with the measured HLA-low fraction
     c_lo = couple_to_rung7(0.01).get("data_grounded_FPR", None)

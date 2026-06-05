@@ -25,15 +25,24 @@ gene (the deployed blocker senses HLA-A\*02). The measured worst value is plugge
 - **GPU not used, by design** — only 3 genes; the bottleneck is the Census fetch (network/disk) and the
   aggregation is a trivial numpy groupby. Stated honestly rather than bolting on idle GPU code.
 
-## v2 fix (after the first real run, 2026-06)
+## Two fixes after the first real run (2026-06)
 The first run (`colab_runs/20260605T191641Z_ae26e7e/`) had a **methodological bug**: CELLxGENE returns `0`
 for both "measured & truly zero" **and** "this dataset never measured the gene" — so datasets lacking HLA-A
-were scored as 100% HLA-low (adrenal showed an impossible 0% detection; every type hit worst-donor 100% off a
-single artifact donor; the coupled FPR of 29% was fake). **v2 counts only datasets that actually measured HLA**
-(≥1 cell with HLA>0 anywhere), reports the **pooled** fraction among measuring datasets as the headline (robust),
-and keeps per-type median/p90/worst-donor for context. **Re-running is free** (re-aggregates from the cached
-Drive tiles — no refetch). The gold-standard fix (Census `feature_dataset_presence_matrix`) is noted as a
-future refetch option.
+were scored as 100% HLA-low (adrenal showed an impossible 0% detection; the coupled FPR of 29% was fake).
+
+- **Fix 1 — measuring-dataset filter:** count only datasets that actually measured HLA (≥1 cell with HLA>0
+  anywhere); drop the rest (reported in `dataset_coverage`).
+- **Fix 2 — bound the dropout, don't hide it:** mRNA can't separate "truly low" from sequencing dropout, so
+  HLA-A-low is reported as a **RANGE** — `UPPER` = HLA-A==0 over all cells (dropout-inflated); `LOWER` =
+  HLA-A==0 among cells that detected *some* MHC-I (HLA-A/B/C any>0, i.e. deep enough to see class-I). The
+  true value is between. RUNG-7 is coupled at **both** bounds → an FPR *range*, not a point.
+
+**The dropout-robust deliverable is the per-type RANKING** (immune-privileged tissues — cardiac conduction,
+cardiomyocytes, neurons — rank highest; pancreatic islet / endothelium lowest), which matches known biology
+and is the real safety signal: the Tmod blocker is least reliable exactly in heart/brain, where off-tumour
+killing is catastrophic and irreversible. **Re-running is free** (re-aggregates from cached Drive tiles — no
+refetch; Census is opened lazily only if a tile is missing). Gold-standard fix (Census
+`feature_dataset_presence_matrix`) noted as a future refetch option.
 
 ## Honest ceiling
 mRNA HLA ≠ surface MHC-I protein; scRNA **dropout inflates** the HLA-low fraction (headline is an **upper
