@@ -1,0 +1,220 @@
+{
+  "tag": "rung9_ifn_inducibility",
+  "question": "Does the interferon program (which CAR-T therapy induces) turn HLA-A back ON in immune-privileged vital tissue, rescuing the Tmod blocker that RUNG-8 found failing at rest?",
+  "census_version": "2024-07-01",
+  "genes": {
+    "HLA": [
+      "HLA-A",
+      "HLA-B",
+      "HLA-C"
+    ],
+    "ISG": [
+      "STAT1",
+      "IRF1",
+      "GBP1",
+      "IFIT1",
+      "IFIT3",
+      "ISG15",
+      "MX1",
+      "OAS1",
+      "TAP1",
+      "IRF7"
+    ],
+    "HK_depth": [
+      "ACTB",
+      "GAPDH",
+      "RPL13A",
+      "TMSB4X"
+    ]
+  },
+  "isg_high_min": 3,
+  "isg_low_max": 1,
+  "n_cells_total": 699530,
+  "dataset_coverage": {
+    "n_datasets_total": 178,
+    "n_datasets_excluded_unmeasured": 11
+  },
+  "per_vital_type": {
+    "adrenal_cortical": {
+      "n_cells_measured": 0
+    },
+    "cardiac_conduction": {
+      "n_cells_measured": 10115,
+      "n_IFN_low": 10002,
+      "n_IFN_high": 9,
+      "HLA_A_low_IFNlow": {
+        "upper": 0.9743,
+        "lower": 0.501
+      },
+      "HLA_A_low_IFNhigh": {
+        "upper": 0.7778,
+        "lower": 0.0
+      },
+      "HK_detect_IFNlow": 0.3764,
+      "HK_detect_IFNhigh": 0.4722,
+      "ifn_rescue_delta_lower": null,
+      "hk_matched": null
+    },
+    "cardiomyocyte": {
+      "n_cells_measured": 12977,
+      "n_IFN_low": 12087,
+      "n_IFN_high": 208,
+      "HLA_A_low_IFNlow": {
+        "upper": 0.8541,
+        "lower": 0.4465
+      },
+      "HLA_A_low_IFNhigh": {
+        "upper": 0.4808,
+        "lower": 0.2848
+      },
+      "HK_detect_IFNlow": 0.5182,
+      "HK_detect_IFNhigh": 0.8666,
+      "ifn_rescue_delta_lower": 0.1617,
+      "hk_matched": false
+    },
+    "cholangiocyte": {
+      "n_cells_measured": 2957,
+      "n_IFN_low": 2306,
+      "n_IFN_high": 283,
+      "HLA_A_low_IFNlow": {
+        "upper": 0.6409,
+        "lower": 0.3157
+      },
+      "HLA_A_low_IFNhigh": {
+        "upper": 0.1696,
+        "lower": 0.0675
+      },
+      "HK_detect_IFNlow": 0.425,
+      "HK_detect_IFNhigh": 0.8233,
+      "ifn_rescue_delta_lower": 0.2482,
+      "hk_matched": false
+    },
+    "kidney_podocyte": {
+      "n_cells_measured": 4156,
+      "n_IFN_low": 3360,
+      "n_IFN_high": 317,
+      "HLA_A_low_IFNlow": {
+        "upper": 0.6354,
+        "lower": 0.2734
+      },
+      "HLA_A_low_IFNhigh": {
+        "upper": 0.1262,
+        "lower": 0.061
+      },
+      "HK_detect_IFNlow": 0.3856,
+      "HK_detect_IFNhigh": 0.8486,
+      "ifn_rescue_delta_lower": 0.2124,
+      "hk_matched": false
+    },
+    "kidney_tubule": {
+      "n_cells_measured": 15086,
+      "n_IFN_low": 11844,
+      "n_IFN_high": 1470,
+      "HLA_A_low_IFNlow": {
+        "upper": 0.5794,
+        "lower": 0.3358
+      },
+      "HLA_A_low_IFNhigh": {
+        "upper": 0.1497,
+        "lower": 0.1039
+      },
+      "HK_detect_IFNlow": 0.6032,
+      "HK_detect_IFNhigh": 0.9527,
+      "ifn_rescue_delta_lower": 0.2319,
+      "hk_matched": false
+    },
+    "lung_pneumocyte": {
+      "n_cells_measured": 33646,
+      "n_IFN_low": 26085,
+      "n_IFN_high": 3534,
+      "HLA_A_low_IFNlow": {
+        "upper": 0.5681,
+        "lower": 0.2893
+      },
+      "HLA_A_low_IFNhigh": {
+        "upper": 0.0659,
+        "lower": 0.046
+      },
+      "HK_detect_IFNlow": 0.4902,
+      "HK_detect_IFNhigh": 0.9329,
+      "ifn_rescue_delta_lower": 0.2433,
+      "hk_matched": false
+    },
+    "neuron": {
+      "n_cells_measured": 280564,
+      "n_IFN_low": 179722,
+      "n_IFN_high": 41508,
+      "HLA_A_low_IFNlow": {
+        "upper": 0.8581,
+        "lower": 0.4054
+      },
+      "HLA_A_low_IFNhigh": {
+        "upper": 0.7027,
+        "lower": 0.366
+      },
+      "HK_detect_IFNlow": 0.557,
+      "HK_detect_IFNhigh": 0.8283,
+      "ifn_rescue_delta_lower": 0.0394,
+      "hk_matched": false
+    },
+    "pancreatic_islet": {
+      "n_cells_measured": 17825,
+      "n_IFN_low": 10951,
+      "n_IFN_high": 3772,
+      "HLA_A_low_IFNlow": {
+        "upper": 0.2722,
+        "lower": 0.1744
+      },
+      "HLA_A_low_IFNhigh": {
+        "upper": 0.0138,
+        "lower": 0.0125
+      },
+      "HK_detect_IFNlow": 0.9182,
+      "HK_detect_IFNhigh": 0.9924,
+      "ifn_rescue_delta_lower": 0.1619,
+      "hk_matched": true
+    },
+    "skeletal_myocyte": {
+      "n_cells_measured": 33140,
+      "n_IFN_low": 24884,
+      "n_IFN_high": 3700,
+      "HLA_A_low_IFNlow": {
+        "upper": 0.6437,
+        "lower": 0.3465
+      },
+      "HLA_A_low_IFNhigh": {
+        "upper": 0.1616,
+        "lower": 0.099
+      },
+      "HK_detect_IFNlow": 0.6512,
+      "HK_detect_IFNhigh": 0.9808,
+      "ifn_rescue_delta_lower": 0.2475,
+      "hk_matched": false
+    },
+    "vascular_endothelium": {
+      "n_cells_measured": 119321,
+      "n_IFN_low": 80566,
+      "n_IFN_high": 21326,
+      "HLA_A_low_IFNlow": {
+        "upper": 0.4601,
+        "lower": 0.2844
+      },
+      "HLA_A_low_IFNhigh": {
+        "upper": 0.0861,
+        "lower": 0.0645
+      },
+      "HK_detect_IFNlow": 0.5474,
+      "HK_detect_IFNhigh": 0.8466,
+      "ifn_rescue_delta_lower": 0.2199,
+      "hk_matched": false
+    }
+  },
+  "immune_privileged_focus": [
+    "cardiac_conduction",
+    "cardiomyocyte",
+    "neuron"
+  ],
+  "VERDICT": "IFN does NOT rescue much (mean HLA-A-low drop 10%) -> RUNG-8 safety hole is likely REAL even under inflammation",
+  "CEILING": "mRNA != surface protein; ISG-score is a PROXY for IFN exposure (resting atlas has few IFN-high cells -> IFN-high stratum may be small/noisy, n reported); depth confound controlled by HK-score but not perfectly (hk_matched flag); HLA-A GENE not A*02 ALLELE; atlas IFN-high cells reflect the donor's inflammation, not the CAR-T IFN dose. Definitive = IFN-stimulated tissue / surface-protein assay (wet lab).",
+  "INTERPRETATION": "Resolves RUNG-8's open question. ifn_rescue_delta_lower > 0 means IFN reduces the HLA-A-low fraction (blocker re-armed); it is only trustworthy when hk_matched is true (the IFN-high and IFN-low strata have similar sequencing depth). A real, depth-matched rescue in heart/brain would mean the gate is salvageable in the inflamed therapeutic context; no rescue means RUNG-8's hole is real and the genetic NOT-gate is unsafe there."
+}

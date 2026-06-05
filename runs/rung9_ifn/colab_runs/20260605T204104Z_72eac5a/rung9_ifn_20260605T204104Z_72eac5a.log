@@ -1,0 +1,216 @@
+# cancer-recon-apoptosis — run log
+# step          : rung9_ifn
+# utc           : 20260605T204104Z
+# commit_short  : 72eac5a
+# commit_full   : 72eac5ad14dc94735778e79c05cd0b276602a06f
+# branch        : main
+# python        : 3.12.13
+# platform      : Linux-6.6.122+-x86_64-with-glibc2.35
+#================================================================
+
+$ /usr/bin/python3 -u scripts/30_hla_ifn_inducibility.py selftest
+  [PASS] aggregate returns (per_type, coverage)
+  [PASS] IFN strata split correctly (100 low / 100 high)
+  [PASS] HLA-A-low high in IFN-LOW stratum (~100%)
+  [PASS] HLA-A-low ~0 in IFN-HIGH stratum (rescued)
+  [PASS] ifn_rescue_delta_lower ~ +100% (strong rescue)
+  [PASS] hk_matched True (same depth in both strata)
+  [PASS] depth confound flagged: hk_matched False when IFN-high is deeper
+  [PASS] dataset with no HLA anywhere excluded
+[+    0.1s] [rung9] selftest heartbeat
+  [PASS] heartbeat ok
+
+selftest: 9/9 checks passed
+[exit 0]
+
+$ pip install cellxgene-census
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 91.2/91.2 kB 5.2 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 55.6/55.6 kB 1.8 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 203.4/203.4 kB 11.7 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 22.3/22.3 MB 43.1 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 175.3/175.3 kB 15.8 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 89.5/89.5 kB 7.8 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 60.1/60.1 kB 5.3 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 74.7 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.4/12.4 MB 84.2 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 319.6/319.6 kB 26.5 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.0/15.0 MB 82.5 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.2/9.2 MB 76.4 MB/s eta 0:00:00
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+google-colab 1.0.0 requires pandas==2.2.2, but you have pandas 2.3.3 which is incompatible.
+gcsfs 2025.3.0 requires fsspec==2025.3.0, but you have fsspec 2026.4.0 which is incompatible.
+datasets 4.0.0 requires fsspec[http]<=2025.3.0,>=2023.1.0, but you have fsspec 2026.4.0 which is incompatible.
+[exit 0]
+
+$ /usr/bin/python3 -u scripts/30_hla_ifn_inducibility.py run
+[+    0.0s] [rung9] cache/tiles -> /content/drive/MyDrive/cancer-recon/rung9_tiles  (resumable; 17 genes: HLA+ISG+HK)
+[+    8.1s] [rung9] opening CELLxGENE Census 2024-07-01 ...
+[+    9.0s] [rung9] [1/9] heart: reading obs (cell_type, donor) ...
+[+   11.8s] [rung9] [1/9] heart: materialising 17 genes for 61,514 vital cells ...
+/content/cancer-recon-apoptosis/scripts/30_hla_ifn_inducibility.py:156: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+[+   20.3s] [heartbeat] [1/9] heart: materialising 17 genes for 61,514 vital cells ... | RAM 1.1GB
+[+   40.3s] [heartbeat] [1/9] heart: materialising 17 genes for 61,514 vital cells ... | RAM 2.3GB
+[+   60.3s] [heartbeat] [1/9] heart: materialising 17 genes for 61,514 vital cells ... | RAM 2.4GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+   72.4s] [rung9] [1/9] heart: kept 61,514 vital cells RAM 2.4GB
+[+   72.6s] [rung9] [1/9] heart: tile checkpointed -> rung9_heart.npz (safe to disconnect)
+[+   72.6s] [rung9] [2/9] brain: reading obs (cell_type, donor) ...
+[+   88.4s] [heartbeat] [2/9] brain: reading obs (cell_type, donor) ... | RAM 2.4GB
+[+  108.4s] [heartbeat] [2/9] brain: reading obs (cell_type, donor) ... | RAM 2.4GB
+[+  111.5s] [rung9] [2/9] brain: materialising 17 genes for 364,181 vital cells ...
+/content/cancer-recon-apoptosis/scripts/30_hla_ifn_inducibility.py:156: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+[+  128.6s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 5.3GB
+[+  148.6s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  168.7s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  188.7s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  209.1s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  229.6s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  249.7s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  269.7s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  289.7s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  309.8s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  329.8s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  350.0s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  370.0s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  390.0s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  410.1s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  430.1s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  450.1s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  470.3s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  490.3s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  510.3s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  530.4s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  550.4s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  570.4s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  590.4s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  610.4s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  630.4s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  650.4s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  670.5s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  690.5s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  710.5s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  730.5s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  750.5s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  770.5s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  790.5s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  810.5s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+[+  830.5s] [heartbeat] [2/9] brain: materialising 17 genes for 364,181 vital cells ... | RAM 7.7GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+  839.6s] [rung9] [2/9] brain: kept 364,181 vital cells RAM 7.7GB
+[+  840.9s] [rung9] [2/9] brain: tile checkpointed -> rung9_brain.npz (safe to disconnect)
+[+  840.9s] [rung9] [3/9] kidney: reading obs (cell_type, donor) ...
+[+  843.1s] [rung9] [3/9] kidney: materialising 17 genes for 50,274 vital cells ...
+/content/cancer-recon-apoptosis/scripts/30_hla_ifn_inducibility.py:156: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+[+  850.6s] [heartbeat] [3/9] kidney: materialising 17 genes for 50,274 vital cells ... | RAM 7.7GB
+[+  870.6s] [heartbeat] [3/9] kidney: materialising 17 genes for 50,274 vital cells ... | RAM 7.7GB
+[+  890.7s] [heartbeat] [3/9] kidney: materialising 17 genes for 50,274 vital cells ... | RAM 7.7GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+  900.7s] [rung9] [3/9] kidney: kept 50,274 vital cells RAM 7.7GB
+[+  900.9s] [rung9] [3/9] kidney: tile checkpointed -> rung9_kidney.npz (safe to disconnect)
+[+  900.9s] [rung9] [4/9] liver: reading obs (cell_type, donor) ...
+[+  901.9s] [rung9] [4/9] liver: materialising 17 genes for 29,954 vital cells ...
+/content/cancer-recon-apoptosis/scripts/30_hla_ifn_inducibility.py:156: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+[+  910.7s] [heartbeat] [4/9] liver: materialising 17 genes for 29,954 vital cells ... | RAM 7.7GB
+[+  930.7s] [heartbeat] [4/9] liver: materialising 17 genes for 29,954 vital cells ... | RAM 7.7GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+  947.8s] [rung9] [4/9] liver: kept 29,954 vital cells RAM 7.7GB
+[+  948.0s] [rung9] [4/9] liver: tile checkpointed -> rung9_liver.npz (safe to disconnect)
+[+  948.0s] [rung9] [5/9] lung: reading obs (cell_type, donor) ...
+[+  949.9s] [rung9] [5/9] lung: materialising 17 genes for 145,166 vital cells ...
+/content/cancer-recon-apoptosis/scripts/30_hla_ifn_inducibility.py:156: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+[+  950.7s] [heartbeat] [5/9] lung: materialising 17 genes for 145,166 vital cells ... | RAM 7.7GB
+[+  971.0s] [heartbeat] [5/9] lung: materialising 17 genes for 145,166 vital cells ... | RAM 7.7GB
+[+  991.0s] [heartbeat] [5/9] lung: materialising 17 genes for 145,166 vital cells ... | RAM 7.7GB
+[+ 1011.0s] [heartbeat] [5/9] lung: materialising 17 genes for 145,166 vital cells ... | RAM 7.7GB
+[+ 1031.1s] [heartbeat] [5/9] lung: materialising 17 genes for 145,166 vital cells ... | RAM 7.7GB
+[+ 1051.1s] [heartbeat] [5/9] lung: materialising 17 genes for 145,166 vital cells ... | RAM 7.7GB
+[+ 1071.1s] [heartbeat] [5/9] lung: materialising 17 genes for 145,166 vital cells ... | RAM 7.7GB
+[+ 1091.1s] [heartbeat] [5/9] lung: materialising 17 genes for 145,166 vital cells ... | RAM 7.7GB
+[+ 1111.1s] [heartbeat] [5/9] lung: materialising 17 genes for 145,166 vital cells ... | RAM 7.7GB
+[+ 1131.1s] [heartbeat] [5/9] lung: materialising 17 genes for 145,166 vital cells ... | RAM 7.7GB
+[+ 1151.2s] [heartbeat] [5/9] lung: materialising 17 genes for 145,166 vital cells ... | RAM 7.7GB
+[+ 1171.2s] [heartbeat] [5/9] lung: materialising 17 genes for 145,166 vital cells ... | RAM 7.7GB
+[+ 1191.2s] [heartbeat] [5/9] lung: materialising 17 genes for 145,166 vital cells ... | RAM 7.7GB
+[+ 1211.2s] [heartbeat] [5/9] lung: materialising 17 genes for 145,166 vital cells ... | RAM 7.7GB
+[+ 1231.2s] [heartbeat] [5/9] lung: materialising 17 genes for 145,166 vital cells ... | RAM 7.7GB
+[+ 1251.2s] [heartbeat] [5/9] lung: materialising 17 genes for 145,166 vital cells ... | RAM 7.7GB
+[+ 1271.3s] [heartbeat] [5/9] lung: materialising 17 genes for 145,166 vital cells ... | RAM 7.7GB
+[+ 1291.3s] [heartbeat] [5/9] lung: materialising 17 genes for 145,166 vital cells ... | RAM 7.7GB
+[+ 1311.3s] [heartbeat] [5/9] lung: materialising 17 genes for 145,166 vital cells ... | RAM 7.7GB
+[+ 1331.3s] [heartbeat] [5/9] lung: materialising 17 genes for 145,166 vital cells ... | RAM 7.7GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 1350.0s] [rung9] [5/9] lung: kept 145,166 vital cells RAM 7.7GB
+[+ 1350.8s] [rung9] [5/9] lung: tile checkpointed -> rung9_lung.npz (safe to disconnect)
+[+ 1350.8s] [rung9] [6/9] bone marrow: reading obs (cell_type, donor) ...
+[+ 1351.3s] [heartbeat] [6/9] bone marrow: reading obs (cell_type, donor) ... | RAM 7.7GB
+[+ 1352.5s] [rung9] [6/9] bone marrow: materialising 17 genes for 1,164 vital cells ...
+/content/cancer-recon-apoptosis/scripts/30_hla_ifn_inducibility.py:156: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+[+ 1371.4s] [heartbeat] [6/9] bone marrow: materialising 17 genes for 1,164 vital cells ... | RAM 7.7GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 1372.0s] [rung9] [6/9] bone marrow: kept 1,164 vital cells RAM 7.7GB
+[+ 1372.1s] [rung9] [6/9] bone marrow: tile checkpointed -> rung9_bone_marrow.npz (safe to disconnect)
+[+ 1372.1s] [rung9] [7/9] pancreas: reading obs (cell_type, donor) ...
+[+ 1375.4s] [rung9] [7/9] pancreas: materialising 17 genes for 27,458 vital cells ...
+/content/cancer-recon-apoptosis/scripts/30_hla_ifn_inducibility.py:156: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+[+ 1391.4s] [heartbeat] [7/9] pancreas: materialising 17 genes for 27,458 vital cells ... | RAM 7.7GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 1409.0s] [rung9] [7/9] pancreas: kept 27,458 vital cells RAM 7.7GB
+[+ 1409.1s] [rung9] [7/9] pancreas: tile checkpointed -> rung9_pancreas.npz (safe to disconnect)
+[+ 1409.1s] [rung9] [8/9] adrenal gland: reading obs (cell_type, donor) ...
+[+ 1411.4s] [heartbeat] [8/9] adrenal gland: reading obs (cell_type, donor) ... | RAM 7.7GB
+[+ 1412.2s] [rung9] [8/9] adrenal gland: materialising 17 genes for 19,819 vital cells ...
+/content/cancer-recon-apoptosis/scripts/30_hla_ifn_inducibility.py:156: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+[+ 1431.6s] [heartbeat] [8/9] adrenal gland: materialising 17 genes for 19,819 vital cells ... | RAM 7.7GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 1442.4s] [rung9] [8/9] adrenal gland: kept 19,819 vital cells RAM 7.7GB
+[+ 1442.4s] [rung9] [8/9] adrenal gland: tile checkpointed -> rung9_adrenal_gland.npz (safe to disconnect)
+[+ 1442.4s] [rung9] [9/9] skeletal muscle: reading obs (cell_type, donor) ...
+[+ 1442.9s] [rung9] [9/9] skeletal muscle: 0 normal cells
+[+ 1442.9s] [rung9] all tissues done — aggregating IFN strata ...
+[+ 1446.3s] [rung9] wrote /content/cancer-recon-apoptosis/runs/rung9_ifn/rung9_ifn_inducibility.json
+[+ 1446.3s] [rung9] VERDICT: IFN does NOT rescue much (mean HLA-A-low drop 10%) -> RUNG-8 safety hole is likely REAL even under inflammation
+[+ 1446.3s] [rung9] vital type               nLOW  nHIGH lowA(IFNlo) lowA(IFNhi)   delta HKmatch
+[+ 1446.3s] [rung9]   cardiac_conduction     10,002      9       50.1%        0.0%    0.0%    None
+[+ 1446.3s] [rung9]   cardiomyocyte          12,087    208       44.6%       28.5%   16.2%   False
+[+ 1446.3s] [rung9]   neuron                 179,722 41,508       40.5%       36.6%    3.9%   False
+[+ 1446.3s] [rung9]   cholangiocyte           2,306    283       31.6%        6.8%   24.8%   False
+[+ 1446.3s] [rung9]   kidney_podocyte         3,360    317       27.3%        6.1%   21.2%   False
+[+ 1446.3s] [rung9]   kidney_tubule          11,844  1,470       33.6%       10.4%   23.2%   False
+[+ 1446.3s] [rung9]   lung_pneumocyte        26,085  3,534       28.9%        4.6%   24.3%   False
+[+ 1446.3s] [rung9]   pancreatic_islet       10,951  3,772       17.4%        1.2%   16.2%    True
+[+ 1446.3s] [rung9]   skeletal_myocyte       24,884  3,700       34.6%        9.9%   24.8%   False
+[+ 1446.3s] [rung9]   vascular_endothelium   80,566 21,326       28.4%        6.5%   22.0%   False
+[+ 1447.3s] [rung9] wrote /content/cancer-recon-apoptosis/runs/rung9_ifn/rung9_ifn.png
+[exit 0]
