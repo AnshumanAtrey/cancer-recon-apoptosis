@@ -1,0 +1,131 @@
+{
+  "frozen_git_sha": "6ec9d3b",
+  "seed": 20260601,
+  "alpha": 0.05,
+  "n_perm": 120,
+  "n_boot": 150,
+  "signal_fdr": {
+    "n_family": 36,
+    "n_true_safe": 15,
+    "familymax_threshold_cov": 0.217,
+    "n_discoveries": 3,
+    "discoveries": [
+      "POS1 AND POS2",
+      "POS1 AND BROAD",
+      "POS2 AND BROAD"
+    ],
+    "best_true_safe_cov": 0.964,
+    "decoy_max_safe_cov_mean": 0.2,
+    "pergate_cov_p95": 0.026,
+    "familymax_cov_p95": 0.217,
+    "lookelsewhere_inflation": 0.191,
+    "fdr_curve": {
+      "0.05": 0.2,
+      "0.1": 0.231,
+      "0.15": 0.333,
+      "0.2": 0.161,
+      "0.25": 0.0,
+      "0.3": 0.0,
+      "0.35": 0.0,
+      "0.4": 0.0,
+      "0.45": 0.0,
+      "0.5": 0.0,
+      "0.55": 0.0,
+      "0.6": 0.0,
+      "0.65": 0.0,
+      "0.7": 0.0,
+      "0.75": 0.0,
+      "0.8": 0.0,
+      "0.85": 0.0,
+      "0.9": 0.0,
+      "0.95": 0.0
+    }
+  },
+  "null_fdr": {
+    "n_family": 36,
+    "n_true_safe": 0,
+    "familymax_threshold_cov": 0.0,
+    "n_discoveries": 0,
+    "discoveries": [],
+    "best_true_safe_cov": 0.0,
+    "decoy_max_safe_cov_mean": 0.0,
+    "pergate_cov_p95": 0.015,
+    "familymax_cov_p95": 0.476,
+    "lookelsewhere_inflation": 0.461,
+    "fdr_curve": {
+      "0.05": 0.0,
+      "0.1": 0.0,
+      "0.15": 0.0,
+      "0.2": 0.0,
+      "0.25": 0.0,
+      "0.3": 0.0,
+      "0.35": 0.0,
+      "0.4": 0.0,
+      "0.45": 0.0,
+      "0.5": 0.0,
+      "0.55": 0.0,
+      "0.6": 0.0,
+      "0.65": 0.0,
+      "0.7": 0.0,
+      "0.75": 0.0,
+      "0.8": 0.0,
+      "0.85": 0.0,
+      "0.9": 0.0,
+      "0.95": 0.0
+    }
+  },
+  "donor_permutation_null_clean": {
+    "obs_vital_leak": 0.006,
+    "null_mean": 0.006,
+    "null_p95": 0.006,
+    "p_value": 1.0,
+    "donor_structure_dependent": false
+  },
+  "donor_permutation_null_attack": {
+    "obs_vital_leak": 0.0896,
+    "null_mean": 0.0333,
+    "null_p95": 0.0383,
+    "p_value": 0.0,
+    "donor_structure_dependent": true
+  },
+  "winners_curse_bootstrap": {
+    "winner_gate": "DRV AND P2",
+    "naive": {
+      "coverage": 0.162,
+      "vital_leak": 0.006,
+      "strict_leak": 0.0,
+      "regen_leak": 0.006,
+      "safe": true,
+      "selective": true
+    },
+    "optimism": {
+      "coverage": 0.29,
+      "strict_leak": 0.0,
+      "regen_leak": -0.0,
+      "vital_leak": -0.0
+    },
+    "corrected": {
+      "coverage": 0.0,
+      "vital_leak": 0.006,
+      "strict_leak": 0.0,
+      "regen_leak": 0.006
+    },
+    "still_safe_after_shrinkage": true,
+    "still_selective_after_shrinkage": false
+  },
+  "checks": {
+    "SIGNAL: planted clean gate (POS1 AND POS2) SURVIVES family-max FDR": true,
+    "SIGNAL: decoy null is NON-DEGENERATE (family-max threshold > 0.05, not the old vacuous 0)": true,
+    "SIGNAL: family-max FDR REJECTS sub-threshold safe gates (discoveries < safe; noise pairs excluded)": true,
+    "NULL: NO gate survives family-max (no false discovery)": true,
+    "family-max NECESSARY: family-max cov-null p95 > per-gate p95 (look-elsewhere)": true,
+    "decoy family size == true family size N": true,
+    "GUARD B: clean gate NOT flagged AND donor-concentrated lethal gate IS flagged": true,
+    "GUARD C: coverage optimism (in-bag - OOB) > 0 (winner's curse exists)": true,
+    "GUARD C: shrinkage DEMOTES an over-claimed winner (selective -> not)": true
+  },
+  "validated": true,
+  "HARD_RULE": "ranking is lexicographic (no-multiply); decoy family size == true N; the leak we TRUST is the winner's-curse-corrected (pessimistic) one, never the optimistic in-sample one.",
+  "HONEST_NOTE": "the vital-leak estimator is already a max-over-donor Jeffreys UPPER bound, intrinsically winner's-curse-resistant; the curse bites the MAXIMISED coverage and the pooled non-vital leak, which is where the bootstrap correction does its work.",
+  "CEILING": "validates the STATISTICS on synthetic ground truth, not biology. mRNA!=surface protein; a surviving gate is the best NEXT wet-lab experiment, not a cure or a safety proof. 'No gate survives FDR + shrinkage' is a first-class outcome. Real surfaceome run = Colab (scripts/17)."
+}
