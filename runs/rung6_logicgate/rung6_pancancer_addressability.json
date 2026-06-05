@@ -1,0 +1,565 @@
+{
+  "tag": "rung6_pancancer_loh_addressability",
+  "question": "Across all 58 cancer types: which are most addressable by a genetic HLA-LOH recognition gate, and what does ONE universal top-K blocker panel reach per cancer?",
+  "data_source": "Martinez-Jimenez 2023 Nat Genet, MOESM6 'GIE per sample' (6,319 WGS tumours).",
+  "min_n_per_type": 30,
+  "universal_panel_sizes": [
+    6,
+    12
+  ],
+  "universal_panel_alleles": {
+    "6": [
+      "A*01:01",
+      "A*02:01",
+      "A*03:01",
+      "A*11:01",
+      "A*24:02",
+      "C*06:02"
+    ],
+    "12": [
+      "A*01:01",
+      "A*02:01",
+      "A*03:01",
+      "A*11:01",
+      "A*24:02",
+      "A*31:01",
+      "A*32:01",
+      "A*68:01",
+      "C*05:01",
+      "C*06:02",
+      "C*07:02",
+      "C*12:03"
+    ]
+  },
+  "global_greedy_allele_order": [
+    "A*02:01",
+    "A*03:01",
+    "A*01:01",
+    "A*24:02",
+    "A*11:01",
+    "C*06:02",
+    "A*68:01",
+    "A*31:01",
+    "A*32:01",
+    "C*05:01",
+    "C*12:03",
+    "C*07:02"
+  ],
+  "overall": {
+    "n": 6319,
+    "ceiling_any_blocker": 0.1725,
+    "universal_reach": {
+      "top6": 0.1105,
+      "top12": 0.1405
+    }
+  },
+  "n_types_reported": 35,
+  "ranked_by_ceiling": [
+    {
+      "cancer": "KICH",
+      "n": 42,
+      "single_a0201": 0.1667,
+      "ceiling": 0.7381,
+      "ceiling_ci": [
+        0.6168,
+        0.8359
+      ],
+      "panel_for_10pct": 1,
+      "blockers_to_ceiling": 13,
+      "universal_top6_reach": 0.4286,
+      "universal_top12_reach": 0.5952
+    },
+    {
+      "cancer": "PANET",
+      "n": 114,
+      "single_a0201": 0.1053,
+      "ceiling": 0.5439,
+      "ceiling_ci": [
+        0.4669,
+        0.6192
+      ],
+      "panel_for_10pct": 1,
+      "blockers_to_ceiling": 15,
+      "universal_top6_reach": 0.3772,
+      "universal_top12_reach": 0.4825
+    },
+    {
+      "cancer": "CESC",
+      "n": 57,
+      "single_a0201": 0.1754,
+      "ceiling": 0.4035,
+      "ceiling_ci": [
+        0.3018,
+        0.5123
+      ],
+      "panel_for_10pct": 1,
+      "blockers_to_ceiling": 7,
+      "universal_top6_reach": 0.2807,
+      "universal_top12_reach": 0.3158
+    },
+    {
+      "cancer": "ESCA",
+      "n": 224,
+      "single_a0201": 0.0491,
+      "ceiling": 0.3125,
+      "ceiling_ci": [
+        0.2635,
+        0.365
+      ],
+      "panel_for_10pct": 2,
+      "blockers_to_ceiling": 19,
+      "universal_top6_reach": 0.2277,
+      "universal_top12_reach": 0.2679
+    },
+    {
+      "cancer": "CHOL",
+      "n": 76,
+      "single_a0201": 0.0658,
+      "ceiling": 0.3026,
+      "ceiling_ci": [
+        0.2223,
+        0.3938
+      ],
+      "panel_for_10pct": 2,
+      "blockers_to_ceiling": 12,
+      "universal_top6_reach": 0.1711,
+      "universal_top12_reach": 0.25
+    },
+    {
+      "cancer": "NSCLC",
+      "n": 587,
+      "single_a0201": 0.046,
+      "ceiling": 0.2794,
+      "ceiling_ci": [
+        0.2498,
+        0.3106
+      ],
+      "panel_for_10pct": 2,
+      "blockers_to_ceiling": 25,
+      "universal_top6_reach": 0.1857,
+      "universal_top12_reach": 0.2334
+    },
+    {
+      "cancer": "HNSC",
+      "n": 84,
+      "single_a0201": 0.0357,
+      "ceiling": 0.2738,
+      "ceiling_ci": [
+        0.2002,
+        0.3588
+      ],
+      "panel_for_10pct": 2,
+      "blockers_to_ceiling": 10,
+      "universal_top6_reach": 0.1667,
+      "universal_top12_reach": 0.2262
+    },
+    {
+      "cancer": "PAAD",
+      "n": 306,
+      "single_a0201": 0.049,
+      "ceiling": 0.268,
+      "ceiling_ci": [
+        0.228,
+        0.3111
+      ],
+      "panel_for_10pct": 3,
+      "blockers_to_ceiling": 20,
+      "universal_top6_reach": 0.1536,
+      "universal_top12_reach": 0.2124
+    },
+    {
+      "cancer": "LMS",
+      "n": 61,
+      "single_a0201": 0.0984,
+      "ceiling": 0.2623,
+      "ceiling_ci": [
+        0.179,
+        0.3619
+      ],
+      "panel_for_10pct": 2,
+      "blockers_to_ceiling": 6,
+      "universal_top6_reach": 0.2295,
+      "universal_top12_reach": 0.2459
+    },
+    {
+      "cancer": "DLBCL",
+      "n": 114,
+      "single_a0201": 0.0351,
+      "ceiling": 0.2193,
+      "ceiling_ci": [
+        0.1611,
+        0.2879
+      ],
+      "panel_for_10pct": 3,
+      "blockers_to_ceiling": 11,
+      "universal_top6_reach": 0.1316,
+      "universal_top12_reach": 0.1754
+    },
+    {
+      "cancer": "OS",
+      "n": 32,
+      "single_a0201": 0.0312,
+      "ceiling": 0.2188,
+      "ceiling_ci": [
+        0.1191,
+        0.3545
+      ],
+      "panel_for_10pct": 3,
+      "blockers_to_ceiling": 6,
+      "universal_top6_reach": 0.125,
+      "universal_top12_reach": 0.125
+    },
+    {
+      "cancer": "OV",
+      "n": 214,
+      "single_a0201": 0.0467,
+      "ceiling": 0.2056,
+      "ceiling_ci": [
+        0.1632,
+        0.2538
+      ],
+      "panel_for_10pct": 4,
+      "blockers_to_ceiling": 17,
+      "universal_top6_reach": 0.1215,
+      "universal_top12_reach": 0.1589
+    },
+    {
+      "cancer": "COREAD",
+      "n": 662,
+      "single_a0201": 0.0468,
+      "ceiling": 0.1994,
+      "ceiling_ci": [
+        0.1748,
+        0.2259
+      ],
+      "panel_for_10pct": 4,
+      "blockers_to_ceiling": 24,
+      "universal_top6_reach": 0.1329,
+      "universal_top12_reach": 0.1616
+    },
+    {
+      "cancer": "STAD",
+      "n": 96,
+      "single_a0201": 0.0104,
+      "ceiling": 0.1771,
+      "ceiling_ci": [
+        0.1205,
+        0.2479
+      ],
+      "panel_for_10pct": 4,
+      "blockers_to_ceiling": 11,
+      "universal_top6_reach": 0.0833,
+      "universal_top12_reach": 0.1042
+    },
+    {
+      "cancer": "KIRP",
+      "n": 30,
+      "single_a0201": 0.0,
+      "ceiling": 0.1667,
+      "ceiling_ci": [
+        0.0793,
+        0.2995
+      ],
+      "panel_for_10pct": 2,
+      "blockers_to_ceiling": 4,
+      "universal_top6_reach": 0.1333,
+      "universal_top12_reach": 0.1333
+    },
+    {
+      "cancer": "KIRC",
+      "n": 224,
+      "single_a0201": 0.0268,
+      "ceiling": 0.1652,
+      "ceiling_ci": [
+        0.1276,
+        0.2091
+      ],
+      "panel_for_10pct": 4,
+      "blockers_to_ceiling": 13,
+      "universal_top6_reach": 0.0893,
+      "universal_top12_reach": 0.125
+    },
+    {
+      "cancer": "SARC",
+      "n": 135,
+      "single_a0201": 0.0519,
+      "ceiling": 0.1556,
+      "ceiling_ci": [
+        0.1098,
+        0.2121
+      ],
+      "panel_for_10pct": 3,
+      "blockers_to_ceiling": 9,
+      "universal_top6_reach": 0.1185,
+      "universal_top12_reach": 0.1333
+    },
+    {
+      "cancer": "BLCA",
+      "n": 196,
+      "single_a0201": 0.0357,
+      "ceiling": 0.148,
+      "ceiling_ci": [
+        0.1101,
+        0.1934
+      ],
+      "panel_for_10pct": 5,
+      "blockers_to_ceiling": 12,
+      "universal_top6_reach": 0.0867,
+      "universal_top12_reach": 0.1122
+    },
+    {
+      "cancer": "GIST",
+      "n": 68,
+      "single_a0201": 0.0588,
+      "ceiling": 0.1471,
+      "ceiling_ci": [
+        0.0877,
+        0.2282
+      ],
+      "panel_for_10pct": 2,
+      "blockers_to_ceiling": 4,
+      "universal_top6_reach": 0.1176,
+      "universal_top12_reach": 0.1324
+    },
+    {
+      "cancer": "CUP",
+      "n": 108,
+      "single_a0201": 0.0463,
+      "ceiling": 0.1389,
+      "ceiling_ci": [
+        0.0914,
+        0.2005
+      ],
+      "panel_for_10pct": 4,
+      "blockers_to_ceiling": 7,
+      "universal_top6_reach": 0.1111,
+      "universal_top12_reach": 0.1296
+    },
+    {
+      "cancer": "BRCA",
+      "n": 938,
+      "single_a0201": 0.0309,
+      "ceiling": 0.1354,
+      "ceiling_ci": [
+        0.1179,
+        0.1546
+      ],
+      "panel_for_10pct": 9,
+      "blockers_to_ceiling": 22,
+      "universal_top6_reach": 0.08,
+      "universal_top12_reach": 0.1077
+    },
+    {
+      "cancer": "SG",
+      "n": 30,
+      "single_a0201": 0.0333,
+      "ceiling": 0.1333,
+      "ceiling_ci": [
+        0.0572,
+        0.2593
+      ],
+      "panel_for_10pct": 3,
+      "blockers_to_ceiling": 4,
+      "universal_top6_reach": 0.1,
+      "universal_top12_reach": 0.1333
+    },
+    {
+      "cancer": "MESO",
+      "n": 38,
+      "single_a0201": 0.0,
+      "ceiling": 0.1316,
+      "ceiling_ci": [
+        0.0621,
+        0.2411
+      ],
+      "panel_for_10pct": 3,
+      "blockers_to_ceiling": 4,
+      "universal_top6_reach": 0.0789,
+      "universal_top12_reach": 0.1053
+    },
+    {
+      "cancer": "LPS",
+      "n": 41,
+      "single_a0201": 0.0732,
+      "ceiling": 0.122,
+      "ceiling_ci": [
+        0.0574,
+        0.2246
+      ],
+      "panel_for_10pct": 3,
+      "blockers_to_ceiling": 3,
+      "universal_top6_reach": 0.0976,
+      "universal_top12_reach": 0.122
+    },
+    {
+      "cancer": "SKCM",
+      "n": 404,
+      "single_a0201": 0.0297,
+      "ceiling": 0.099,
+      "ceiling_ci": [
+        0.0767,
+        0.1256
+      ],
+      "panel_for_10pct": null,
+      "blockers_to_ceiling": 14,
+      "universal_top6_reach": 0.0644,
+      "universal_top12_reach": 0.0842
+    },
+    {
+      "cancer": "SCLC",
+      "n": 51,
+      "single_a0201": 0.0196,
+      "ceiling": 0.098,
+      "ceiling_ci": [
+        0.0459,
+        0.183
+      ],
+      "panel_for_10pct": null,
+      "blockers_to_ceiling": 5,
+      "universal_top6_reach": 0.0588,
+      "universal_top12_reach": 0.0784
+    },
+    {
+      "cancer": "UCEC",
+      "n": 61,
+      "single_a0201": 0.0164,
+      "ceiling": 0.082,
+      "ceiling_ci": [
+        0.0382,
+        0.1543
+      ],
+      "panel_for_10pct": null,
+      "blockers_to_ceiling": 5,
+      "universal_top6_reach": 0.0656,
+      "universal_top12_reach": 0.0656
+    },
+    {
+      "cancer": "THCA",
+      "n": 65,
+      "single_a0201": 0.0,
+      "ceiling": 0.0769,
+      "ceiling_ci": [
+        0.0358,
+        0.1452
+      ],
+      "panel_for_10pct": null,
+      "blockers_to_ceiling": 4,
+      "universal_top6_reach": 0.0308,
+      "universal_top12_reach": 0.0308
+    },
+    {
+      "cancer": "GINET",
+      "n": 62,
+      "single_a0201": 0.0161,
+      "ceiling": 0.0645,
+      "ceiling_ci": [
+        0.0272,
+        0.1311
+      ],
+      "panel_for_10pct": null,
+      "blockers_to_ceiling": 2,
+      "universal_top6_reach": 0.0484,
+      "universal_top12_reach": 0.0645
+    },
+    {
+      "cancer": "PRAD",
+      "n": 552,
+      "single_a0201": 0.0072,
+      "ceiling": 0.038,
+      "ceiling_ci": [
+        0.0264,
+        0.0533
+      ],
+      "panel_for_10pct": null,
+      "blockers_to_ceiling": 8,
+      "universal_top6_reach": 0.0254,
+      "universal_top12_reach": 0.029
+    },
+    {
+      "cancer": "GBM",
+      "n": 97,
+      "single_a0201": 0.0103,
+      "ceiling": 0.0309,
+      "ceiling_ci": [
+        0.0113,
+        0.0708
+      ],
+      "panel_for_10pct": null,
+      "blockers_to_ceiling": 3,
+      "universal_top6_reach": 0.0206,
+      "universal_top12_reach": 0.0206
+    },
+    {
+      "cancer": "LIHC",
+      "n": 147,
+      "single_a0201": 0.0,
+      "ceiling": 0.0204,
+      "ceiling_ci": [
+        0.0074,
+        0.0471
+      ],
+      "panel_for_10pct": null,
+      "blockers_to_ceiling": 3,
+      "universal_top6_reach": 0.0068,
+      "universal_top12_reach": 0.0204
+    },
+    {
+      "cancer": "MBL",
+      "n": 107,
+      "single_a0201": 0.0,
+      "ceiling": 0.0187,
+      "ceiling_ci": [
+        0.0054,
+        0.0508
+      ],
+      "panel_for_10pct": null,
+      "blockers_to_ceiling": 2,
+      "universal_top6_reach": 0.0,
+      "universal_top12_reach": 0.0
+    },
+    {
+      "cancer": "CLL",
+      "n": 60,
+      "single_a0201": 0.0,
+      "ceiling": 0.0,
+      "ceiling_ci": [
+        0.0,
+        0.0314
+      ],
+      "panel_for_10pct": null,
+      "blockers_to_ceiling": 0,
+      "universal_top6_reach": 0.0,
+      "universal_top12_reach": 0.0
+    },
+    {
+      "cancer": "PIA",
+      "n": 43,
+      "single_a0201": 0.0,
+      "ceiling": 0.0,
+      "ceiling_ci": [
+        0.0,
+        0.0434
+      ],
+      "panel_for_10pct": null,
+      "blockers_to_ceiling": 0,
+      "universal_top6_reach": 0.0,
+      "universal_top12_reach": 0.0
+    }
+  ],
+  "most_addressable_top5": [
+    "KICH",
+    "PANET",
+    "CESC",
+    "ESCA",
+    "CHOL"
+  ],
+  "least_addressable_bottom5": [
+    "GBM",
+    "LIHC",
+    "MBL",
+    "CLL",
+    "PIA"
+  ],
+  "CEILING": "Patient-level NOT clonal (subclonal LOH => true reach LOWER; needs controlled-access TRACERx multi-region WES, absent from public supplements). WGS cohort joined to RUNG-5's scRNA surface conclusion by cancer TYPE, not same individuals. 4-digit blocker unit. Assumes a broad activator exists per type (Tmod premise; the positive arm is not proven free here). Some rare types have small n -> wide CIs (reported).",
+  "INTERPRETATION": "Genetic-NOT-gate addressability is FREQUENCY-BOUNDED and varies widely by cancer (set by each type's HLA-LOH rate). A single universal ~6-12 allele blocker panel captures most of the reachable population in the high-LOH cancers. The ranked list is a concrete indication-prioritisation + reagent-panel spec for a programme."
+}

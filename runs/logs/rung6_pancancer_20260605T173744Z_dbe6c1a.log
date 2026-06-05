@@ -1,0 +1,48 @@
+# cancer-recon-apoptosis — run log
+# step          : rung6_pancancer
+# utc           : 20260605T173744Z
+# commit_short  : dbe6c1a  (+uncommitted changes)
+# commit_full   : dbe6c1a7a993591b738c3dcbe8d5813e07a07575
+# branch        : main
+# python        : 3.12.6
+# platform      : macOS-26.3-arm64-arm-64bit
+#================================================================
+
+$ /Library/Frameworks/Python.framework/Versions/3.12/bin/python3 -u scripts/27_pancancer_loh_addressability.py selftest
+  [PASS] cancer X ceiling = 1/2
+  [PASS] cancer Y ceiling = 1/1
+  [PASS] reach under {A*02:01} on X == 0.5
+  [PASS] reach under {A*02:01} on Y == 0.0
+  [PASS] reach under {A*02:01,B*08:01} on Y == 1.0
+  [PASS] reach is monotone in panel (superset >= subset)
+
+selftest: 6/6 checks passed
+[exit 0]
+
+$ /Library/Frameworks/Python.framework/Versions/3.12/bin/python3 -u scripts/27_pancancer_loh_addressability.py run
+[rung6/pan] loaded 6,319 samples, 58 cancer types
+[rung6/pan] universal greedy allele order (top 12): ['A*02:01', 'A*03:01', 'A*01:01', 'A*24:02', 'A*11:01', 'C*06:02', 'A*68:01', 'A*31:01', 'A*32:01', 'C*05:01', 'C*12:03', 'C*07:02']
+[rung6/pan] wrote /Users/atrey/Desktop/code/side-claude-income/research-papers/cancer-treatment/runs/rung6_logicgate/rung6_pancancer_addressability.json
+
+  overall ceiling (any usable blocker) = 17.2%; universal (6, 12) reach = top6=11.1%, top12=14.1%
+
+  MOST addressable cancers (by HLA-LOH ceiling):
+   cancer    n    A*02:01  ceiling        uTop6   uTop12
+   KICH      42   16.7%  73.8% [62%-84%]  42.9%  59.5%
+   PANET    114   10.5%  54.4% [47%-62%]  37.7%  48.2%
+   CESC      57   17.5%  40.4% [30%-51%]  28.1%  31.6%
+   ESCA     224    4.9%  31.2% [26%-36%]  22.8%  26.8%
+   CHOL      76    6.6%  30.3% [22%-39%]  17.1%  25.0%
+   NSCLC    587    4.6%  27.9% [25%-31%]  18.6%  23.3%
+   HNSC      84    3.6%  27.4% [20%-36%]  16.7%  22.6%
+   PAAD     306    4.9%  26.8% [23%-31%]  15.4%  21.2%
+   LMS       61    9.8%  26.2% [18%-36%]  22.9%  24.6%
+   DLBCL    114    3.5%  21.9% [16%-29%]  13.2%  17.5%
+  LEAST addressable (bottom 5):
+   GBM       97    1.0%   3.1%
+   LIHC     147    0.0%   2.0%
+   MBL      107    0.0%   1.9%
+   CLL       60    0.0%   0.0%
+   PIA       43    0.0%   0.0%
+[rung6/pan] wrote /Users/atrey/Desktop/code/side-claude-income/research-papers/cancer-treatment/runs/rung6_logicgate/rung6_pancancer.png
+[exit 0]
