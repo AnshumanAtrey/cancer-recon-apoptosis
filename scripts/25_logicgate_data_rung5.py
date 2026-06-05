@@ -438,6 +438,30 @@ def run_pipeline(panel, genes, tag, required_vital=REQUIRED_VITAL):
     selective = [r for r in scored if r["selective"]]
     log(f"[{tag}] {len(safe)} SAFE on all audited axes; {len(selective)} also clear coverage (pre-FDR).")
 
+    # EARLY-EXIT (the honest negative): if NO gate passes worst-case safety, the FDR (operates on safe gates)
+    # and the winner's-curse bootstrap (corrects a winning gate) are MOOT — there is nothing to validate or
+    # shrink, and the per-patient addressability gap is TOTAL (no patient has any safe gate). Emit it directly.
+    # This is also what crashed the prior real run: the bootstrap copied the 1.26M-cell panel per resample for
+    # gates that don't exist. Short-circuit is both correct and memory-safe.
+    if not safe:
+        log(f"[{tag}] 0 SAFE gates -> addressability gap is TOTAL (100%); skipping FDR/bootstrap (nothing to validate).")
+        gap = addressability_gap(panel, [])
+        log(f"[{tag}] ADDRESSABILITY GAP: {gap['addressability_gap_overall']:.0%} of {gap['n_patients']} patients "
+            f"have NO safe gate.  best gate leaks: vital={scored[0]['vital_leak']:.3f} strict={scored[0]['strict_leak']:.3f} "
+            f"regen={scored[0]['regen_leak']:.3f} (gate {scored[0]['gate'][:40]})")
+        _figure(scored, gap, 0.0, f"rung5_{tag}.png")
+        return {
+            "tag": tag, "n_cells": int(panel.counts.shape[0]), "n_donors": n_donor, "n_genes": len(genes),
+            "family_size": len(family), "n_activators": len(acts),
+            "donor_split": {"discovery": len(disc_d), "select": len(sel_d), "report": len(rep_d)},
+            "n_safe": 0, "n_selective_preFDR": 0, "n_survivors": 0, "survivors": [],
+            "fdr_skipped": "no safe gate -> FDR/bootstrap moot", "addressability": gap,
+            "pooled_fallback_types": sorted({ct for r in scored for ct in r.get("pooled_fallback", [])}),
+            "top_gates": [{k: r[k] for k in ("gate", "coverage", "vital_leak", "vital_worst", "strict_leak", "regen_leak", "verdict")}
+                          for r in scored[:25]],
+            "no_safe_gate": True, "no_surviving_gate": True,
+        }
+
     # held-out FDR + winner's-curse shrinkage on EXACTLY this family
     log(f"[{tag}] family-max decoy FDR (N_PERM={N_PERM}) + winner's-curse shrinkage (N_BOOT={N_BOOT}) ...")
     fdr = hv.familymax_fdr(panel, family, required_vital, rng, n_perm=N_PERM)
