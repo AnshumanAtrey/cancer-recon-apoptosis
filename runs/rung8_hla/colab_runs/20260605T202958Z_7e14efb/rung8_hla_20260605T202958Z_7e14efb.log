@@ -1,0 +1,57 @@
+# cancer-recon-apoptosis — run log
+# step          : rung8_hla
+# utc           : 20260605T202958Z
+# commit_short  : 7e14efb
+# commit_full   : 7e14efb67d9203ead4ae3af3af644b18beefecbc
+# branch        : main
+# python        : 3.12.13
+# platform      : Linux-6.6.122+-x86_64-with-glibc2.35
+#================================================================
+
+$ /usr/bin/python3 -u scripts/29_hla_heterogeneity.py selftest
+  [PASS] aggregate returns (per_type, coverage) tuple
+  [PASS] dsZ (no HLA anywhere) excluded as unmeasured
+  [PASS] kidney_tubule has no measured cells (only dataset unmeasured)
+  [PASS] cardiomyocyte UPPER == 50% (D2 all-zero counted as low)
+  [PASS] cardiomyocyte LOWER == 0% (D2 zeros are DROPOUT -> excluded from MHC-I+ set)
+  [PASS] neuron UPPER == 100% (all HLA-A=0)
+  [PASS] neuron LOWER == 100% (A-specific low w/ MHC-I detected -> REAL, not dropout)
+  [PASS] LOWER <= UPPER for every measured type
+  [PASS] RUNG-7 coupling returns an FPR
+  [PASS] data-grounded FPR rises with measured HLA-low frac
+[+    1.3s] [rung8] selftest heartbeat
+  [PASS] heartbeat starts and stops without error
+
+selftest: 11/11 checks passed
+[exit 0]
+
+$ /usr/bin/python3 -u scripts/29_hla_heterogeneity.py run
+[+    0.0s] [rung8] cache/tiles -> /content/drive/MyDrive/cancer-recon/rung8_tiles  (resumable: completed tissues are skipped on re-run)
+[+    0.0s] [rung8] [1/9] heart: RESUMED from tile (61,514 cells)
+[+    0.1s] [rung8] [2/9] brain: RESUMED from tile (364,181 cells)
+[+    0.2s] [rung8] [3/9] kidney: RESUMED from tile (50,274 cells)
+[+    0.2s] [rung8] [4/9] liver: RESUMED from tile (29,954 cells)
+[+    0.3s] [rung8] [5/9] lung: RESUMED from tile (145,166 cells)
+[+    0.3s] [rung8] [6/9] bone marrow: RESUMED from tile (1,164 cells)
+[+    0.4s] [rung8] [7/9] pancreas: RESUMED from tile (27,458 cells)
+[+    0.4s] [rung8] [8/9] adrenal gland: RESUMED from tile (19,819 cells)
+[+    3.5s] [rung8] opening CELLxGENE Census 2024-07-01 ...
+[+    4.9s] [rung8] [9/9] skeletal muscle: reading obs metadata (cell_type, donor) ...
+[+    7.9s] [rung8] [9/9] skeletal muscle: 0 normal cells matched
+[+    7.9s] [rung8] all tissues done — aggregating per (vital type, donor) ...
+[+   11.1s] [rung8] dataset coverage: 11/178 datasets excluded as non-HLA-measuring (169,743 cells dropped)
+[+   11.7s] [rung8] wrote /content/cancer-recon-apoptosis/runs/rung8_hla/rung8_hla_heterogeneity.json
+[+   11.7s] [rung8] WORST vital type = cardiac_conduction  HLA-A-low = [50%-97%]  -> gate FPR range [0.1464-0.2838]
+[+   11.7s] [rung8] vital type               n_meas low_LOWER low_UPPER  detectA
+[+   11.7s] [rung8]   cardiac_conduction       10,115     50.4%     97.4%     2.6%
+[+   11.7s] [rung8]   cardiomyocyte            12,977     43.5%     84.0%    16.0%
+[+   11.7s] [rung8]   neuron                  280,564     39.3%     81.7%    18.3%
+[+   11.7s] [rung8]   cholangiocyte             2,957     26.1%     56.9%    43.1%
+[+   11.7s] [rung8]   kidney_podocyte           4,156     22.8%     56.4%    43.6%
+[+   11.7s] [rung8]   skeletal_myocyte         33,140     27.5%     54.2%    45.8%
+[+   11.7s] [rung8]   kidney_tubule            15,086     28.5%     50.6%    49.4%
+[+   11.7s] [rung8]   lung_pneumocyte          33,646     22.6%     47.3%    52.7%
+[+   11.7s] [rung8]   vascular_endothelium    119,321     21.4%     35.5%    64.5%
+[+   11.7s] [rung8]   pancreatic_islet         17,825     11.5%     18.1%    81.9%
+[+   12.4s] [rung8] wrote /content/cancer-recon-apoptosis/runs/rung8_hla/rung8_hla.png
+[exit 0]
