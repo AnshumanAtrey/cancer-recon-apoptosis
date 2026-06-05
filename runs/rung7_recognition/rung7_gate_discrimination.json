@@ -1,7 +1,7 @@
 {
   "tag": "rung7_andnot_gate_discrimination",
   "question": "Does the Tmod AND-NOT gate DISCRIMINATE cancer from normal, and how does it fail? (bar #2 of the gate ladder; couples recognition -> apoptosis commit)",
-  "model": "activator Hill AND-NOT blocker Hill -> kill-license -> bistable apoptosis commit (EARM essence).",
+  "model": "activator Hill AND-NOT blocker Hill -> kill-license -> all-or-none THRESHOLD commit (the hard limit of the EARM bistable switch; the full EARM ODE is RUNG-1/scripts/11, NOT re-coupled here).",
   "params": {
     "Ka": 3.5,
     "na": 2.0,
@@ -12,7 +12,7 @@
     "tum_antigen_sd": 0.5,
     "nrm_antigen_mu": 3.0,
     "nrm_antigen_sd": 0.6,
-    "hla_hi_mu": 4.5,
+    "hla_hi_mu": 4.85,
     "hla_hi_sd": 0.3,
     "hla_lo_mu": 2.0,
     "hla_lo_sd": 0.4,
@@ -25,13 +25,18 @@
     "fpr": 0.0142,
     "failure_A_false_kill_frac": 0.0142,
     "failure_A_share_of_normal_kills": 1.0,
-    "failure_B_escape_antigen_low": 0.0586,
+    "failure_B_escape_antigen_low": 0.0387,
     "failure_B_escape_hla_retained_subclonal": 0.4982,
-    "roc_auc": 0.7473,
-    "normal_antigen_high_frac": 0.2037
+    "roc_auc": 0.8826,
+    "kill_cut_antigen_log10": 3.316,
+    "normal_antigen_above_killcut_frac": 0.3002
   },
-  "structural_claim": "Gate safety is carried ENTIRELY by the blocker (activator is broad). Off-tumour toxicity FLOOR ~= P(normal HLA-low) x P(normal antigen-high). Predicted floor = 1.02%; measured baseline FPR = 1.42%.",
-  "predicted_toxicity_floor": 0.0102,
+  "claim_status": {
+    "by_construction": "Within this model the blocker is the only NOT arm, so a normal cell can ONLY be killed if it is HLA-low; hence 'safety flows through the blocker' and 'FPR is linear in the HLA-low fraction' are DEFINITIONAL, not discoveries.",
+    "computed_non_trivial": "(a) the proportionality constant \u2014 what fraction of HLA-low normal cells also clear the antigen kill-cutoff (~0.29 here, set by the normal-antigen leak); (b) the ORTHOGONALITY of the safety axis (HLA-low) and efficacy axis (clonal-LOH) \u2014 not forced by construction; (c) robustness of FPR's HLA-low dependence across activator Ka."
+  },
+  "structural_relation": "off-tumour toxicity floor = P(normal HLA-low) x P(normal antigen > kill-cutoff) = 5% x 30.0% = 1.50%; measured baseline FPR = 1.42% (now reconciles).",
+  "predicted_toxicity_floor": 0.015,
   "sensitivity_FPR_vs_normal_HLA_low": {
     "0.0": {
       "fpr": 0.0,
@@ -96,8 +101,8 @@
   },
   "FAILURE_MODES": {
     "A_false_kill": "normal cells that downregulate the sensed HLA allele lose blocker protection -> killed. 100% of all normal kills are this. This is the gate's irreducible off-tumour toxicity and scales with normal HLA-low rate.",
-    "B_escape": "antigen-low tumour cells (5.9%) + subclonal HLA-retaining tumour cells (49.8%) slip through. Ties directly to RUNG-6's clonal-LOH haircut."
+    "B_escape": "antigen-low tumour cells (3.9%) + subclonal HLA-retaining tumour cells (49.8%) slip through. Ties directly to RUNG-6's clonal-LOH haircut."
   },
   "CEILING": "Mechanistic circuit model with LITERATURE-GROUNDED parameters + ILLUSTRATIVE per-cell distributions (real joint antigen/HLA per-cell spread needs the scRNA/proteomic atlas -> Colab). STRUCTURAL findings (safety = blocker reliability; the two failure routes) are parameter-robust; exact %s are parameter-dependent (sensitivity sweeps included). binding != agonism is the wet-lab residual.",
-  "INTERPRETATION": "Recognition is ACHIEVABLE but its safety ceiling is set by normal-tissue HLA reliability, NOT by LOH frequency: the gate cannot be safer than the blocker, and the blocker fails wherever normal cells are HLA-low. So the next real constraint on recognition is normal-tissue HLA heterogeneity (measurable on the atlas), and the efficacy ceiling is the clonal-LOH fraction (RUNG-6). The recognition->apoptosis coupling works in silico: HLA-lost antigen-high tumour cells snap to apoptosis; HLA-retaining normal cells do not, even at high antigen."
+  "INTERPRETATION": "The genuinely useful output is that recognition decomposes into TWO ORTHOGONAL frequency bounds (this orthogonality is computed, not assumed): SAFETY scales with the normal-tissue HLA-low fraction (the blocker's reliability) and is robust to the activator threshold; EFFICACY scales with the clonal-LOH fraction (RUNG-6's haircut, live: TPR 19->96% as clonal LOH 0.2->1.0). The headline FPR is CONDITIONAL on the normal HLA-low fraction, which is the single load-bearing parameter and is unsourced for normal tissue -> the concrete next measurement is normal-tissue HLA heterogeneity on the scRNA atlas (Colab). 'Safety is carried by the blocker' is true BY CONSTRUCTION (see claim_status), not a discovery."
 }

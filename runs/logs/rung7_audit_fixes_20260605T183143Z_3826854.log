@@ -1,0 +1,34 @@
+# cancer-recon-apoptosis — run log
+# step          : rung7_audit_fixes
+# utc           : 20260605T183143Z
+# commit_short  : 3826854  (+uncommitted changes)
+# commit_full   : 382685480322888f79e17029b3384842efa1b87d
+# branch        : main
+# python        : 3.12.6
+# platform      : macOS-26.3-arm64-arm-64bit
+#================================================================
+
+$ /Library/Frameworks/Python.framework/Versions/3.12/bin/python3 -u scripts/28_andnot_gate_discrimination.py selftest
+  [PASS] tumour (antigen-high, HLA-lost) -> license high
+  [PASS] tumour commits to apoptosis
+  [PASS] normal (antigen-high, HLA-high) -> license low (blocker protects)
+  [PASS] normal spared even at high antigen
+  [PASS] failure A: normal HLA-low + antigen-high -> killed
+  [PASS] failure B: tumour antigen-low -> escapes (license low)
+  [PASS] license increases with antigen (activator)
+  [PASS] license decreases with HLA (blocker / NOT arm)
+  [PASS] FPR monotone in normal HLA-low fraction (safety=blocker)
+  [PASS] deterministic under fixed seed
+
+selftest: 10/10 checks passed
+[exit 0]
+
+$ /Library/Frameworks/Python.framework/Versions/3.12/bin/python3 -u scripts/28_andnot_gate_discrimination.py run
+[rung7] baseline: TPR(tumour killed)=48.2%  FPR(normal killed)=1.42%  ROC-AUC=0.883
+[rung7] wrote /Users/atrey/Desktop/code/side-claude-income/research-papers/cancer-treatment/runs/rung7_recognition/rung7_gate_discrimination.json
+  structural floor pred = 1.50%  vs baseline FPR 1.42%  (claim holds if ~equal)
+  FPR vs normal HLA-low frac: {'0.0': '0.0%', '0.01': '0.3%', '0.02': '0.5%', '0.05': '1.4%', '0.1': '2.9%', '0.2': '5.8%'}
+  safety robust to activator Ka: {'3.0': '3.0%', '3.5': '1.4%', '4.0': '0.4%'}
+  TPR vs clonal-LOH frac: {'0.2': '19.4%', '0.4': '38.6%', '0.6': '57.8%', '0.8': '77.0%', '1.0': '96.1%'}
+[rung7] wrote /Users/atrey/Desktop/code/side-claude-income/research-papers/cancer-treatment/runs/rung7_recognition/rung7_gate_discrimination.png
+[exit 0]

@@ -7,15 +7,16 @@ THE QUESTION RUNG-6 DID NOT ANSWER
 RUNG-6 counted how many patients have a usable genetic gate (an accounting question). It did NOT ask the
 literal recognition question: given the real spread of antigen density and HLA expression, does the Tmod
 AND-NOT gate actually SEPARATE a cancer cell from a healthy one, and HOW DOES IT FAIL? This models bar #2 of
-the gate ladder (discrimination dynamics) and couples it to the apoptosis commit (RUNG-1 / EARM essence),
-giving the first end-to-end in-silico 'recognise -> commit to apoptosis' demonstration.
+the gate ladder (discrimination geometry). The apoptosis readout is an all-or-none THRESHOLD on the kill-
+license (the hard limit of the EARM bistable switch); the full EARM bistable ODE lives in RUNG-1/scripts/11
+and is NOT re-coupled here (so don't read this as a dynamical apoptosis simulation).
 
 THE GATE (A2 Bio 'Tmod' dual receptor)
 --------------------------------------
   activator signal a = Hill(antigen_A density; Ka, na)         # broad CAR (CEA/MSLN/EGFR), low-affinity
   blocker  signal b = Hill(HLA_B density;     Kb, nb)          # LIR-1, senses a germline allele
   kill-license  L  = a * (1 - b)                               # AND-NOT: fire iff activator high AND blocker low
-  apoptosis commit = bistable all-or-none if L > theta         # EARM essence (snap-action, RUNG-1)
+  apoptosis commit = all-or-none THRESHOLD if L > theta        # hard limit of the EARM switch (full ODE = RUNG-1)
 
 POPULATIONS (densities in log10 molecules/cell)
   TUMOUR  : antigen_A high (some antigen-low tail); HLA_B = 0 for cells with CLONAL LOH, retained for the
@@ -67,7 +68,7 @@ PARAMS = dict(
     # population densities
     tum_antigen_mu=4.2, tum_antigen_sd=0.5,     # tumour antigen-high (~16k/cell)
     nrm_antigen_mu=3.0, nrm_antigen_sd=0.6,     # normal leak (mostly below activator threshold, high tail)
-    hla_hi_mu=4.5, hla_hi_sd=0.3,               # HLA-high cells
+    hla_hi_mu=4.85, hla_hi_sd=0.3,              # HLA-high cells (~71k MHC-I/cell, Edman quant median)
     hla_lo_mu=2.0, hla_lo_sd=0.4,               # downregulated 'HLA-low' cells (blocker fails)
     clonal_loh_frac=0.50,   # fraction of LOH+ tumour cells with CLONAL loss (rest retain HLA_B -> escape B)
     normal_hla_low_frac=0.05,   # fraction of normal cells that are HLA-low (failure route A) -- KEY safety driver
@@ -83,6 +84,21 @@ def hill(x_log10: np.ndarray, K: float, n: float) -> np.ndarray:
     return xn / (xn + np.power(k, n))
 
 
+def _auc_rank(pos: np.ndarray, neg: np.ndarray) -> float:
+    """EXACT ROC-AUC = P(pos > neg), via average-rank Mann-Whitney U (grid-independent, tie-safe).
+    Replaces a coarse threshold-grid trapezoid that under-counted AUC."""
+    pos, neg = np.asarray(pos, float), np.asarray(neg, float)
+    try:
+        from scipy.stats import rankdata
+        ranks = rankdata(np.concatenate([pos, neg]))         # average ranks handle ties correctly
+    except Exception:
+        allv = np.concatenate([pos, neg])
+        order = allv.argsort(kind="mergesort")
+        ranks = np.empty(len(allv)); ranks[order] = np.arange(1, len(allv) + 1)
+    r_pos = ranks[:len(pos)].sum()
+    return float((r_pos - len(pos) * (len(pos) + 1) / 2) / (len(pos) * len(neg)))
+
+
 def kill_license(antigen_log10, hla_log10, p) -> np.ndarray:
     """AND-NOT integration: activator AND NOT blocker."""
     a = hill(antigen_log10, p["Ka"], p["na"])
@@ -91,7 +107,8 @@ def kill_license(antigen_log10, hla_log10, p) -> np.ndarray:
 
 
 def commits(license_vals: np.ndarray, theta: float) -> np.ndarray:
-    """Bistable all-or-none apoptosis commit (EARM essence): license above theta -> committed."""
+    """All-or-none THRESHOLD apoptosis commit (the hard limit of the EARM bistable switch; NOT a dynamical
+    bistable ODE — that is RUNG-1/scripts/11): license above theta -> committed."""
     return license_vals > theta
 
 
@@ -120,20 +137,24 @@ def evaluate(p, rng):
     tpr = float(tum_kill.mean())                         # tumour cells correctly committed to apoptosis
     fpr = float(nrm_kill.mean())                         # normal cells wrongly killed (off-tumour toxicity)
 
+    # antigen kill-cutoff for an HLA-low (b~=0) normal cell: a > theta  =>  antigen_log10 > this.
+    # (Using Ka was the bug: the actual boundary is where a*(1-b) crosses theta, i.e. a>theta for b~=0.)
+    kill_cut = p["Ka"] + (1.0 / p["na"]) * np.log10(p["theta"] / (1 - p["theta"]))
+    nrm_antigen_above_killcut = float((na_ > kill_cut).mean())
+
     # failure-mode attribution
-    nrm_antigen_high = hill(na_, p["Ka"], p["na"]) > 0.5
     fmA = float((nrm_kill & hla_low).mean())             # normal killed BECAUSE HLA-low (blocker failed)
     fmA_of_killed = float((nrm_kill & hla_low).sum() / max(1, nrm_kill.sum()))
     tum_escape = ~tum_kill
-    esc_antigen_low = float((tum_escape & (hill(ta, p["Ka"], p["na"]) <= 0.5)).mean())
+    esc_antigen_low = float((tum_escape & (ta <= kill_cut)).mean())
     esc_hla_retained = float((tum_escape & ~clonal).mean())  # subclonal-retained -> blocker fired -> spared
 
-    # ROC by sweeping the commit threshold
-    thetas = np.linspace(0, 1, 101)
+    # ROC curve (for plotting) + EXACT rank-based AUC (grid-independent)
+    thi = float(max(tum_L.max(), nrm_L.max()))
+    thetas = np.linspace(0, thi, 201)
     roc_tpr = [float((tum_L > t).mean()) for t in thetas]
     roc_fpr = [float((nrm_L > t).mean()) for t in thetas]
-    _trapz = getattr(np, "trapezoid", np.trapz)          # np>=2 renamed trapz -> trapezoid
-    auc = float(_trapz(roc_tpr[::-1], roc_fpr[::-1]))     # integrate TPR over FPR
+    auc = _auc_rank(tum_L, nrm_L)                         # exact AUC = P(tumour license > normal license)
 
     return dict(tpr=round(tpr, 4), fpr=round(fpr, 4),
                 failure_A_false_kill_frac=round(fmA, 4),
@@ -141,7 +162,8 @@ def evaluate(p, rng):
                 failure_B_escape_antigen_low=round(esc_antigen_low, 4),
                 failure_B_escape_hla_retained_subclonal=round(esc_hla_retained, 4),
                 roc_auc=round(auc, 4),
-                normal_antigen_high_frac=round(float(nrm_antigen_high.mean()), 4),
+                kill_cut_antigen_log10=round(float(kill_cut), 4),
+                normal_antigen_above_killcut_frac=round(nrm_antigen_above_killcut, 4),
                 _roc=(thetas.tolist(), roc_tpr, roc_fpr),
                 _samples=((ta, th), (na_, nh)))
 
@@ -173,19 +195,30 @@ def main_run() -> int:
         r = evaluate(p, np.random.default_rng(SEED))
         sens_efficacy[str(f)] = {"tpr": r["tpr"], "escape_hla_retained": r["failure_B_escape_hla_retained_subclonal"]}
 
-    # the structural claim, quantified: off-tumour toxicity floor ~= P(HLA-low) x P(antigen-high|normal)
-    floor_pred = round(PARAMS["normal_hla_low_frac"] * base["normal_antigen_high_frac"], 4)
+    # the structural relation, quantified: off-tumour toxicity floor = P(HLA-low) x P(normal antigen > kill-cutoff)
+    floor_pred = round(PARAMS["normal_hla_low_frac"] * base["normal_antigen_above_killcut_frac"], 4)
 
     result = {
         "tag": "rung7_andnot_gate_discrimination",
         "question": "Does the Tmod AND-NOT gate DISCRIMINATE cancer from normal, and how does it fail? "
                     "(bar #2 of the gate ladder; couples recognition -> apoptosis commit)",
-        "model": "activator Hill AND-NOT blocker Hill -> kill-license -> bistable apoptosis commit (EARM essence).",
+        "model": "activator Hill AND-NOT blocker Hill -> kill-license -> all-or-none THRESHOLD commit (the hard "
+                 "limit of the EARM bistable switch; the full EARM ODE is RUNG-1/scripts/11, NOT re-coupled here).",
         "params": {k: v for k, v in PARAMS.items()},
         "baseline": {k: v for k, v in base.items() if not k.startswith("_")},
-        "structural_claim": "Gate safety is carried ENTIRELY by the blocker (activator is broad). Off-tumour "
-                            "toxicity FLOOR ~= P(normal HLA-low) x P(normal antigen-high). Predicted floor = "
-                            f"{floor_pred:.2%}; measured baseline FPR = {base['fpr']:.2%}.",
+        "claim_status": {
+            "by_construction": "Within this model the blocker is the only NOT arm, so a normal cell can ONLY be "
+                               "killed if it is HLA-low; hence 'safety flows through the blocker' and 'FPR is "
+                               "linear in the HLA-low fraction' are DEFINITIONAL, not discoveries.",
+            "computed_non_trivial": "(a) the proportionality constant — what fraction of HLA-low normal cells "
+                                    "also clear the antigen kill-cutoff (~0.29 here, set by the normal-antigen "
+                                    "leak); (b) the ORTHOGONALITY of the safety axis (HLA-low) and efficacy axis "
+                                    "(clonal-LOH) — not forced by construction; (c) robustness of FPR's HLA-low "
+                                    "dependence across activator Ka.",
+        },
+        "structural_relation": f"off-tumour toxicity floor = P(normal HLA-low) x P(normal antigen > kill-cutoff) "
+                               f"= {PARAMS['normal_hla_low_frac']:.0%} x {base['normal_antigen_above_killcut_frac']:.1%} "
+                               f"= {floor_pred:.2%}; measured baseline FPR = {base['fpr']:.2%} (now reconciles).",
         "predicted_toxicity_floor": floor_pred,
         "sensitivity_FPR_vs_normal_HLA_low": sens_safety,
         "safety_claim_robust_to_activator_Ka": safety_robust,
@@ -203,13 +236,15 @@ def main_run() -> int:
                    "Colab). STRUCTURAL findings (safety = blocker reliability; the two failure routes) are "
                    "parameter-robust; exact %s are parameter-dependent (sensitivity sweeps included). "
                    "binding != agonism is the wet-lab residual.",
-        "INTERPRETATION": "Recognition is ACHIEVABLE but its safety ceiling is set by normal-tissue HLA "
-                          "reliability, NOT by LOH frequency: the gate cannot be safer than the blocker, and "
-                          "the blocker fails wherever normal cells are HLA-low. So the next real constraint on "
-                          "recognition is normal-tissue HLA heterogeneity (measurable on the atlas), and the "
-                          "efficacy ceiling is the clonal-LOH fraction (RUNG-6). The recognition->apoptosis "
-                          "coupling works in silico: HLA-lost antigen-high tumour cells snap to apoptosis; "
-                          "HLA-retaining normal cells do not, even at high antigen.",
+        "INTERPRETATION": "The genuinely useful output is that recognition decomposes into TWO ORTHOGONAL "
+                          "frequency bounds (this orthogonality is computed, not assumed): SAFETY scales with "
+                          "the normal-tissue HLA-low fraction (the blocker's reliability) and is robust to the "
+                          "activator threshold; EFFICACY scales with the clonal-LOH fraction (RUNG-6's haircut, "
+                          "live: TPR 19->96% as clonal LOH 0.2->1.0). The headline FPR is CONDITIONAL on the "
+                          "normal HLA-low fraction, which is the single load-bearing parameter and is unsourced "
+                          "for normal tissue -> the concrete next measurement is normal-tissue HLA heterogeneity "
+                          "on the scRNA atlas (Colab). 'Safety is carried by the blocker' is true BY "
+                          "CONSTRUCTION (see claim_status), not a discovery.",
     }
     RESULT_JSON.write_text(json.dumps(result, indent=2))
     print(f"[rung7] wrote {RESULT_JSON}")
