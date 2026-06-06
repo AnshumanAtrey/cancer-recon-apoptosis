@@ -1,0 +1,643 @@
+{
+  "tag": "rung12pB_gated_relay_percolation",
+  "question": "Does a per-hop-GATED death wave (engineered coupling) clear the tumour while sparing normal tissue, and is its safe q_n region wider than the per-cell gate's (R5 found 0 per-cell surface gates safe)?",
+  "model": "2D site-bond percolation. Cell dies iff connected to a seed via permeable cells (per-hop gate pass prob q_type) + coupled edges (engineered coupling prob c). EARM is the per-cell effector (modular, binarised).",
+  "params": {
+    "L": 121,
+    "tumour_radius": 34,
+    "seed_fraction": 0.03,
+    "coupling_c": 0.85,
+    "q_t_default": 0.9,
+    "lattice_degree": 4,
+    "bond_p_c_approx": 0.5,
+    "n_trials": 12
+  },
+  "per_cell_leak_bar_R5": 0.02,
+  "containment_curve": [
+    {
+      "q_n": 0.0,
+      "c_qn": 0.0,
+      "relay_normal_killed": 0.0,
+      "per_cell_normal_killed": 0.0,
+      "tumour_killed": 0.8926
+    },
+    {
+      "q_n": 0.05,
+      "c_qn": 0.042,
+      "relay_normal_killed": 0.0008,
+      "per_cell_normal_killed": 0.05,
+      "tumour_killed": 0.8927
+    },
+    {
+      "q_n": 0.1,
+      "c_qn": 0.085,
+      "relay_normal_killed": 0.0017,
+      "per_cell_normal_killed": 0.1,
+      "tumour_killed": 0.8928
+    },
+    {
+      "q_n": 0.15,
+      "c_qn": 0.128,
+      "relay_normal_killed": 0.0027,
+      "per_cell_normal_killed": 0.15,
+      "tumour_killed": 0.8929
+    },
+    {
+      "q_n": 0.2,
+      "c_qn": 0.17,
+      "relay_normal_killed": 0.0038,
+      "per_cell_normal_killed": 0.2,
+      "tumour_killed": 0.8934
+    },
+    {
+      "q_n": 0.25,
+      "c_qn": 0.212,
+      "relay_normal_killed": 0.0056,
+      "per_cell_normal_killed": 0.25,
+      "tumour_killed": 0.8935
+    },
+    {
+      "q_n": 0.3,
+      "c_qn": 0.255,
+      "relay_normal_killed": 0.0077,
+      "per_cell_normal_killed": 0.3,
+      "tumour_killed": 0.8937
+    },
+    {
+      "q_n": 0.35,
+      "c_qn": 0.298,
+      "relay_normal_killed": 0.0101,
+      "per_cell_normal_killed": 0.35,
+      "tumour_killed": 0.8937
+    },
+    {
+      "q_n": 0.4,
+      "c_qn": 0.34,
+      "relay_normal_killed": 0.0145,
+      "per_cell_normal_killed": 0.4,
+      "tumour_killed": 0.8939
+    },
+    {
+      "q_n": 0.45,
+      "c_qn": 0.382,
+      "relay_normal_killed": 0.022,
+      "per_cell_normal_killed": 0.45,
+      "tumour_killed": 0.8941
+    },
+    {
+      "q_n": 0.5,
+      "c_qn": 0.425,
+      "relay_normal_killed": 0.0346,
+      "per_cell_normal_killed": 0.5,
+      "tumour_killed": 0.8942
+    },
+    {
+      "q_n": 0.55,
+      "c_qn": 0.468,
+      "relay_normal_killed": 0.0616,
+      "per_cell_normal_killed": 0.55,
+      "tumour_killed": 0.8945
+    },
+    {
+      "q_n": 0.6,
+      "c_qn": 0.51,
+      "relay_normal_killed": 0.12,
+      "per_cell_normal_killed": 0.6,
+      "tumour_killed": 0.8946
+    },
+    {
+      "q_n": 0.65,
+      "c_qn": 0.552,
+      "relay_normal_killed": 0.2932,
+      "per_cell_normal_killed": 0.65,
+      "tumour_killed": 0.8948
+    },
+    {
+      "q_n": 0.7,
+      "c_qn": 0.595,
+      "relay_normal_killed": 0.5906,
+      "per_cell_normal_killed": 0.7,
+      "tumour_killed": 0.8949
+    },
+    {
+      "q_n": 0.75,
+      "c_qn": 0.638,
+      "relay_normal_killed": 0.7072,
+      "per_cell_normal_killed": 0.75,
+      "tumour_killed": 0.8953
+    },
+    {
+      "q_n": 0.8,
+      "c_qn": 0.68,
+      "relay_normal_killed": 0.7804,
+      "per_cell_normal_killed": 0.8,
+      "tumour_killed": 0.8954
+    },
+    {
+      "q_n": 0.85,
+      "c_qn": 0.722,
+      "relay_normal_killed": 0.8404,
+      "per_cell_normal_killed": 0.85,
+      "tumour_killed": 0.8956
+    },
+    {
+      "q_n": 0.9,
+      "c_qn": 0.765,
+      "relay_normal_killed": 0.8961,
+      "per_cell_normal_killed": 0.9,
+      "tumour_killed": 0.8957
+    },
+    {
+      "q_n": 0.95,
+      "c_qn": 0.808,
+      "relay_normal_killed": 0.948,
+      "per_cell_normal_killed": 0.95,
+      "tumour_killed": 0.8958
+    }
+  ],
+  "relay_safe_q_n_ceiling_at_1pct": 0.3,
+  "safety_amplification_vs_percell": 15.0,
+  "operating_region": {
+    "q_t_grid": [
+      0.3,
+      0.37,
+      0.44,
+      0.51,
+      0.58,
+      0.65,
+      0.72,
+      0.79,
+      0.86,
+      0.93,
+      1.0
+    ],
+    "q_n_grid": [
+      0.0,
+      0.095,
+      0.19,
+      0.285,
+      0.38,
+      0.475,
+      0.57,
+      0.665,
+      0.76,
+      0.855,
+      0.95
+    ],
+    "tumour_killed": [
+      [
+        0.029,
+        0.029,
+        0.029,
+        0.029,
+        0.029,
+        0.029,
+        0.03,
+        0.031,
+        0.044,
+        0.048,
+        0.049
+      ],
+      [
+        0.054,
+        0.054,
+        0.054,
+        0.054,
+        0.054,
+        0.054,
+        0.055,
+        0.058,
+        0.078,
+        0.083,
+        0.085
+      ],
+      [
+        0.099,
+        0.099,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.101,
+        0.104,
+        0.135,
+        0.142,
+        0.143
+      ],
+      [
+        0.187,
+        0.187,
+        0.187,
+        0.187,
+        0.187,
+        0.188,
+        0.191,
+        0.203,
+        0.23,
+        0.24,
+        0.242
+      ],
+      [
+        0.344,
+        0.344,
+        0.344,
+        0.345,
+        0.345,
+        0.346,
+        0.352,
+        0.373,
+        0.396,
+        0.404,
+        0.408
+      ],
+      [
+        0.517,
+        0.518,
+        0.519,
+        0.52,
+        0.52,
+        0.521,
+        0.526,
+        0.54,
+        0.553,
+        0.558,
+        0.559
+      ],
+      [
+        0.655,
+        0.655,
+        0.656,
+        0.657,
+        0.658,
+        0.659,
+        0.661,
+        0.668,
+        0.672,
+        0.673,
+        0.674
+      ],
+      [
+        0.762,
+        0.763,
+        0.763,
+        0.764,
+        0.764,
+        0.766,
+        0.766,
+        0.769,
+        0.771,
+        0.771,
+        0.772
+      ],
+      [
+        0.843,
+        0.843,
+        0.844,
+        0.844,
+        0.846,
+        0.846,
+        0.846,
+        0.847,
+        0.848,
+        0.848,
+        0.849
+      ],
+      [
+        0.922,
+        0.922,
+        0.923,
+        0.923,
+        0.923,
+        0.923,
+        0.923,
+        0.923,
+        0.924,
+        0.924,
+        0.924
+      ],
+      [
+        0.999,
+        0.999,
+        0.999,
+        0.999,
+        0.999,
+        0.999,
+        0.999,
+        0.999,
+        0.999,
+        0.999,
+        0.999
+      ]
+    ],
+    "normal_killed": [
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.001,
+        0.002,
+        0.093,
+        0.72,
+        0.846,
+        0.947
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.001,
+        0.002,
+        0.004,
+        0.095,
+        0.72,
+        0.846,
+        0.947
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.001,
+        0.001,
+        0.002,
+        0.008,
+        0.128,
+        0.72,
+        0.846,
+        0.947
+      ],
+      [
+        0.0,
+        0.0,
+        0.001,
+        0.001,
+        0.002,
+        0.005,
+        0.016,
+        0.228,
+        0.721,
+        0.846,
+        0.947
+      ],
+      [
+        0.0,
+        0.0,
+        0.001,
+        0.002,
+        0.004,
+        0.009,
+        0.033,
+        0.329,
+        0.722,
+        0.846,
+        0.947
+      ],
+      [
+        0.0,
+        0.001,
+        0.002,
+        0.004,
+        0.007,
+        0.015,
+        0.044,
+        0.34,
+        0.723,
+        0.846,
+        0.947
+      ],
+      [
+        0.0,
+        0.001,
+        0.002,
+        0.005,
+        0.009,
+        0.02,
+        0.058,
+        0.365,
+        0.723,
+        0.846,
+        0.947
+      ],
+      [
+        0.0,
+        0.001,
+        0.003,
+        0.006,
+        0.011,
+        0.024,
+        0.065,
+        0.38,
+        0.724,
+        0.847,
+        0.948
+      ],
+      [
+        0.0,
+        0.001,
+        0.003,
+        0.007,
+        0.012,
+        0.025,
+        0.067,
+        0.381,
+        0.724,
+        0.847,
+        0.948
+      ],
+      [
+        0.0,
+        0.002,
+        0.004,
+        0.007,
+        0.013,
+        0.026,
+        0.069,
+        0.384,
+        0.724,
+        0.847,
+        0.948
+      ],
+      [
+        0.0,
+        0.002,
+        0.004,
+        0.008,
+        0.014,
+        0.027,
+        0.07,
+        0.386,
+        0.724,
+        0.847,
+        0.948
+      ]
+    ],
+    "frac_safe_and_effective": 0.066
+  },
+  "tumour_clearance_vs_qt": [
+    {
+      "q_t": 0.3,
+      "c_qt": 0.255,
+      "tumour_killed": 0.0307,
+      "normal_killed": 0.0001
+    },
+    {
+      "q_t": 0.35,
+      "c_qt": 0.298,
+      "tumour_killed": 0.0456,
+      "normal_killed": 0.0002
+    },
+    {
+      "q_t": 0.4,
+      "c_qt": 0.34,
+      "tumour_killed": 0.0737,
+      "normal_killed": 0.0002
+    },
+    {
+      "q_t": 0.45,
+      "c_qt": 0.382,
+      "tumour_killed": 0.1096,
+      "normal_killed": 0.0002
+    },
+    {
+      "q_t": 0.5,
+      "c_qt": 0.425,
+      "tumour_killed": 0.1685,
+      "normal_killed": 0.0003
+    },
+    {
+      "q_t": 0.55,
+      "c_qt": 0.468,
+      "tumour_killed": 0.2637,
+      "normal_killed": 0.0004
+    },
+    {
+      "q_t": 0.6,
+      "c_qt": 0.51,
+      "tumour_killed": 0.3873,
+      "normal_killed": 0.0006
+    },
+    {
+      "q_t": 0.65,
+      "c_qt": 0.552,
+      "tumour_killed": 0.5146,
+      "normal_killed": 0.0009
+    },
+    {
+      "q_t": 0.7,
+      "c_qt": 0.595,
+      "tumour_killed": 0.6225,
+      "normal_killed": 0.0011
+    },
+    {
+      "q_t": 0.75,
+      "c_qt": 0.638,
+      "tumour_killed": 0.7112,
+      "normal_killed": 0.0013
+    },
+    {
+      "q_t": 0.8,
+      "c_qt": 0.68,
+      "tumour_killed": 0.7761,
+      "normal_killed": 0.0014
+    },
+    {
+      "q_t": 0.85,
+      "c_qt": 0.722,
+      "tumour_killed": 0.8357,
+      "normal_killed": 0.0016
+    },
+    {
+      "q_t": 0.9,
+      "c_qt": 0.765,
+      "tumour_killed": 0.8928,
+      "normal_killed": 0.0017
+    },
+    {
+      "q_t": 0.95,
+      "c_qt": 0.808,
+      "tumour_killed": 0.9457,
+      "normal_killed": 0.0018
+    },
+    {
+      "q_t": 1.0,
+      "c_qt": 0.85,
+      "tumour_killed": 0.9988,
+      "normal_killed": 0.0018
+    }
+  ],
+  "sensitivity_3D": {
+    "L": 41,
+    "tumour_radius": 12,
+    "bond_p_c_approx": 0.249,
+    "containment_curve": [
+      {
+        "q_n": 0.0,
+        "relay_normal_killed": 0.0,
+        "tumour_killed": 0.8982
+      },
+      {
+        "q_n": 0.086,
+        "relay_normal_killed": 0.0023,
+        "tumour_killed": 0.8982
+      },
+      {
+        "q_n": 0.173,
+        "relay_normal_killed": 0.0063,
+        "tumour_killed": 0.8984
+      },
+      {
+        "q_n": 0.259,
+        "relay_normal_killed": 0.0147,
+        "tumour_killed": 0.8986
+      },
+      {
+        "q_n": 0.345,
+        "relay_normal_killed": 0.0806,
+        "tumour_killed": 0.8987
+      },
+      {
+        "q_n": 0.432,
+        "relay_normal_killed": 0.3489,
+        "tumour_killed": 0.8988
+      },
+      {
+        "q_n": 0.518,
+        "relay_normal_killed": 0.4876,
+        "tumour_killed": 0.8989
+      },
+      {
+        "q_n": 0.605,
+        "relay_normal_killed": 0.5926,
+        "tumour_killed": 0.899
+      },
+      {
+        "q_n": 0.691,
+        "relay_normal_killed": 0.686,
+        "tumour_killed": 0.8991
+      },
+      {
+        "q_n": 0.777,
+        "relay_normal_killed": 0.7755,
+        "tumour_killed": 0.8991
+      },
+      {
+        "q_n": 0.864,
+        "relay_normal_killed": 0.8637,
+        "tumour_killed": 0.8991
+      },
+      {
+        "q_n": 0.95,
+        "relay_normal_killed": 0.9502,
+        "tumour_killed": 0.8991
+      }
+    ],
+    "safe_q_n_ceiling_at_1pct": 0.173,
+    "amplification_vs_percell": 8.6,
+    "note": "3D simple-cubic (z=6) percolates EASIER (p_c~0.249 << 2D 0.5) -> safe q_n window is NARROWER than 2D. This is the conservative, realistic-tissue direction."
+  },
+  "DECISIVE": "POSITIVE (architecture rescues leaky recognition): a per-hop-gated relay tolerates per-hop false-positive up to q_n~0.30 while keeping normal-tissue kill <=1% -- ~15.0x the per-cell worst-donor bar (0.02). Below the percolation threshold (c*q_n<0.5) a false-positive normal cell starts a wave that DIES OUT (sub-critical, bounded rind) instead of cascading, while the tumour (c*q_t=0.77>0.5) clears from 3% seeds. A 7% slice of (q_t,q_n) space is both cleared (>90%) and spared (<1%). 3D SENSITIVITY (realistic, conservative): 3D tissue percolates easier (p_c~0.25), so the 3D safe q_n ceiling is 0.17 (~8.6x the per-cell bar) -- still well above 0.02. => propagation can convert a recognition signal TOO LEAKY for R5's per-cell gate into a safe therapy -- IF coupling is engineered and gating re-checked per hop. The recognition bottleneck is RELAXED, not removed (still need q_n below the percolation threshold; mapping to a molecular gate + coupling efficiency is the wet-lab residual).",
+  "CEILING": "ABSTRACTION (2D site-bond percolation): q_t/q_n/c are swept PARAMETERS not measured molecular fidelities; mapping them to a real gate (RUNG-11 neoantigen / synNotch) + engineered coupling is the wet-lab residual. No 3D/diffusion/immune/graded-signal. The robust parameter-free claim is the RELATIONSHIP: relay leak is sub-critical-BOUNDED vs per-cell leak LINEAR -> threshold-protected safety margin."
+}
