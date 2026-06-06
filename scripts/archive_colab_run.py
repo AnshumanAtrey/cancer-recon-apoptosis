@@ -31,7 +31,7 @@ DOWNLOADS = Path(os.path.expanduser("~/Downloads"))
 # rung-agnostic: any  <rungN>_run_<UTC-timestamp>_<git-sha>.zip  is archived to that rung's runs/ dir.
 BUNDLE_RE = re.compile(r"(rung\d+[a-z]?)_run_(\d{8}T\d{6}Z)_([0-9a-f]+)\.zip$")
 # map a bundle prefix -> the rung's results directory under runs/ (fallback: runs/<prefix>)
-RUNG_DIRS = {"rung5": "rung5_logicgate", "rung8": "rung8_hla", "rung9": "rung9_ifn", "rung10": "rung10_andnot3", "rung10b": "rung10b_blocker"}
+RUNG_DIRS = {"rung5": "rung5_logicgate", "rung8": "rung8_hla", "rung9": "rung9_ifn", "rung10": "rung10_andnot3", "rung10b": "rung10b_blocker", "rung12p": "rung12p_connexin"}
 
 
 def _rung_dir(prefix: str) -> Path:
