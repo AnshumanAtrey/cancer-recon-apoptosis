@@ -36,36 +36,42 @@ Open it, **Runtime → Run all**, same Google account as before. Stages:
 4. **analyze** → `rung12_pmhc.json` + `rung12_pmhc.png` (ranked targets + measured-β bridge coverage).
 Bundle with `python scripts/archive_colab_run.py --commit`.
 
-## Result (real T4 run `89c7dfb`, 32 handles) — with two honest corrections
-**The structural arm did NOT execute.** ESMFold's `openfold` extras failed to build on Colab (the fragility
-flagged up front) → **0/32 structures**; exposure `E` fell back to a position prior throughout. And the ESM-2
-`Z` signal, min-max normalized, initially over-claimed (the single biggest-change handle got `Z=1 → β=0`); the
-scoring now **caps `Z`** (commit fix) so a relative-max embedding can't alone declare a handle perfectly
-discriminable. So this result is a **binding (M) + physicochemical (P) + ESM-2 (Z, capped)** per-handle β —
-**structural exposure is unmeasured.** (The raw run is preserved bit-for-bit in `colab_runs/`; the mirror here
-is the Z-corrected re-derivation on the run's own signals.)
+## Result — STRUCTURE-CERTIFIED (real T4 run `b416b0b`, ColabFold 24/32 folded)
+The structural arm **executed**: ColabFold/AF2-multimer folded **24 of 32** handles (all non-`clean`; the 8
+clean ones are β=0 regardless), and the **measured TCR-facing exposure `E`** (RSA from the real poses) replaced
+the position prior for every one. (The earlier ESMFold attempt failed to build — superseded.) Most poses are
+confident (pep pLDDT 70–95); a few are low (47–54 → their exposure is less certain, flagged).
 
-**With per-handle β (not swept), the picture is more sober than the bridge's optimistic swept-β estimate:**
-- **9 per-cell-safe, 11 relay-safe, 2 unlocked by the relay** (vs the bridge's broad +5–30% at a uniform β=0.5).
-- Most safe coverage sits in **`clean` handles** (WT not presented → genuinely safe today): PDAC 26%, glioma
-  22% (IDH1 R132H), melanoma 11%.
-- The relay still gives a **real melanoma unlock: 10.8% → 19.1%** (BRAF V600E handles that are relay-safe but
-  not per-cell-safe). Elsewhere the marginal unlock is small.
-- Notable: **KRAS-G12D/C\*08:02** (the proven clinical TCR target) sits at q_n ≈ 0.19, just *above* the relay
-  ceiling → flagged borderline-risky. This is exactly where real structure (not available here) or the known
-  exquisite clinical TCR would correct the generic estimate — an honest "we can't certify it from sequence alone."
+**The real poses make the answer SHARPER and more honest — and temper the bridge's optimism hard:**
+- **9 per-cell-safe, 11 relay-safe, only 2 unlocked by the relay.** Most `tcr_dependent` handles fall to
+  **risky** once the measured exposure + binding differential are in — the WT pMHC is genuinely cross-reactive.
+- The **robustly-safe core is the `clean` handles** (WT not presented, structure-independent): they carry
+  **PDAC 26%, glioma 22% (IDH1 R132H), melanoma 11%, CRC 11%**.
+- **Structure *promoted* one handle:** `KRAS-G12D/C*08:01` (`C0501`) — the pose shows the G→D **buried**
+  (E=0.04, pLDDT 78) *and* the WT binds far worse (M=0.85) → MHC-level discrimination → **per-cell-safe**
+  (q_n=0.018). A genuinely clean target the sequence-only pass underrated.
+- **Relay unlock survives only for melanoma: 10.8% → 19.1%** (BRAF V600E on A\*68:01 & C\*06:02 — exposed
+  enough + big V→E change → relay-safe but not per-cell-safe). Elsewhere the marginal unlock is ~0.
+- **The bridge's optimistic glioma/IDH1-R132H relay unlock did NOT survive structure:** those handles' mutated
+  residue is buried with no binding differential (E low, M≈0) → genuinely hard → **risky**. Honest downgrade.
+- **KRAS-G12D/C\*08:02** (the *proven* clinical TCR target) flags **risky** by the generic proxy (E=0.03 buried,
+  q_n=0.30). That's the key honest limitation: a generic β **cannot** capture a specifically-engineered exquisite
+  TCR — and the clinical win for this exact handle took years of dedicated TCR discovery. **"Risky by proxy" ≠
+  "impossible" — it means "needs an exceptional TCR,"** which is precisely what reality required. The pipeline is
+  a *prioritiser*, not a verdict.
 
-**Takeaway:** the robust, fold-independent signals (binding + physicochemistry) already tier the targets and
-temper the bridge's optimism. True *structural* discriminability needs heavier tooling than a robust 4h run
-allows (ColabFold-multimer with MSAs, or PANDORA homology modelling) — single-sequence ESMFold can't reliably
-dock a 9-mer into the groove even when it builds.
+**Takeaway:** structure didn't inflate the story — it disciplined it. The safe, generalisable targets are the
+`clean` handles (tumour-exclusive *and* WT-off-MHC); the relay buys a real but modest melanoma extension; and
+the famously hard `tcr_dependent` handles are correctly flagged hard. That is the honest map a wet lab needs.
 
 ## Honest ceiling
-ESMFold is a single-sequence **model** — short-peptide docking into the MHC groove is unreliable, so **E is
-the softest signal**; pLDDT is reported and the β estimate leans on the fold-independent M + P + Z. **β is a
-proxy, not a measured TCR Kd** — a top-ranked handle is a *prioritised hypothesis for wet-lab TCR isolation*,
-not a validated target. Inherits RUNG-11 (population frequencies, mRNA→presentation) and RUNG-12P
-(percolation-abstraction relay ceiling) caveats.
+ColabFold/AF2-multimer docks pMHC-I reasonably (it gets the peptide register/anchors right — validated vs the
+1HHK crystal), but a 1-residue mut/WT change barely moves the backbone, so the signal is the mutated residue's
+**exposure**, not RMSD; low-pLDDT poses (a few here, 47–54) make their `E` less certain. **β is a proxy, not a
+measured TCR Kd** — a generic structural+binding+physicochem β *cannot* model a specifically-engineered exquisite
+TCR (see KRAS-G12D/C\*08:02, clinically real yet proxy-risky). A top-ranked handle is a **prioritised hypothesis
+for wet-lab TCR isolation**, not a validated target. Inherits RUNG-11 (population frequencies, mRNA→presentation)
+and RUNG-12P (percolation-abstraction relay ceiling) caveats.
 
 ## Provenance
 `scripts/37_pmhc_discriminability.py` (selftest 16/16; `prep` validated end-to-end against IPD-IMGT/HLA —
