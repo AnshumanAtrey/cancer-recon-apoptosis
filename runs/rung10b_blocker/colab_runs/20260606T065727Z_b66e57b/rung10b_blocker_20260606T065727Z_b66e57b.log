@@ -1,0 +1,543 @@
+# cancer-recon-apoptosis — run log
+# step          : rung10b_blocker
+# utc           : 20260606T065727Z
+# commit_short  : b66e57b
+# commit_full   : b66e57b01d793bb634e10e67eb1e09b90dbc710c
+# branch        : main
+# python        : 3.12.13
+# platform      : Linux-6.6.122+-x86_64-with-glibc2.35
+#================================================================
+
+$ /usr/bin/python3 -u scripts/32_surface_blocker_discovery.py selftest
+  [PASS] cardiomyocyte blockers = BLOCK_ALL,BLOCK_CARD (WEAK_ONE_DONOR fails worst-donor)
+  [PASS] WEAK_ONE_DONOR rejected (high in D1 but 0 in D2 -> worst-donor low)
+  [PASS] neuron blockers = only BLOCK_ALL
+  [PASS] ABSENT never a blocker
+  [PASS] universal (all powered vital) = BLOCK_ALL
+  [PASS] under-powered kidney_tubule donor excluded -> not in vital_types
+  [PASS] vital type with all-zero -> NO blocker flagged
+  [PASS] accumulate_tile counts detected cells per gene
+
+selftest: 8/8 checks passed
+[exit 0]
+
+$ pip cellxgene-census
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 91.2/91.2 kB 1.3 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 55.6/55.6 kB 3.1 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 203.4/203.4 kB 2.9 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 22.3/22.3 MB 47.1 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 175.3/175.3 kB 14.4 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 89.5/89.5 kB 7.9 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 60.1/60.1 kB 5.3 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 85.0 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.4/12.4 MB 55.9 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 319.6/319.6 kB 27.9 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.0/15.0 MB 50.5 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.2/9.2 MB 58.7 MB/s eta 0:00:00
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+google-colab 1.0.0 requires pandas==2.2.2, but you have pandas 2.3.3 which is incompatible.
+gcsfs 2025.3.0 requires fsspec==2025.3.0, but you have fsspec 2026.4.0 which is incompatible.
+datasets 4.0.0 requires fsspec[http]<=2025.3.0,>=2023.1.0, but you have fsspec 2026.4.0 which is incompatible.
+[exit 0]
+
+$ /usr/bin/python3 -u scripts/32_surface_blocker_discovery.py run
+[+    0.1s] [rung5] surfaceome from cache surfaceome_genes.txt: 5007 genes
+[+    2.5s] [rung5] RESUMING from /content/drive/MyDrive/cancer-recon/rung5_cache.r5.tumour.npz
+[+    9.1s] [rung9] surfaceome 5007; tumour-absent (<0.02) = 4325 -> streaming their vital-normal expression (the only candidate single-blocker NOT-markers)
+[+   13.2s] [rung9] cache/tiles -> /content/drive/MyDrive/cancer-recon/rung10b_tiles (resumable; 4325 genes, cell-chunked materialise, cap 300/donor, chunk 40000)
+[+   13.2s] [rung9] opening CELLxGENE Census 2024-07-01 ...
+[+   14.4s] [rung9] [1/9] heart: scouting vital cells ...
+[+   20.1s] [heartbeat] [1/9] heart: scouting vital cells ... | RAM 1.5GB
+[+   22.6s] [rung9] [1/9] heart: materialise chunk 1/1 (35,047 vital cells x 4325 genes)
+/content/cancer-recon-apoptosis/scripts/32_surface_blocker_discovery.py:107: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+[+   40.1s] [heartbeat] [1/9] heart: materialise chunk 1/1 (35,047 vital cells x 4325 genes) | RAM 2.4GB
+[+   60.2s] [heartbeat] [1/9] heart: materialise chunk 1/1 (35,047 vital cells x 4325 genes) | RAM 2.4GB
+[+   80.2s] [heartbeat] [1/9] heart: materialise chunk 1/1 (35,047 vital cells x 4325 genes) | RAM 2.4GB
+[+  100.2s] [heartbeat] [1/9] heart: materialise chunk 1/1 (35,047 vital cells x 4325 genes) | RAM 2.4GB
+[+  120.2s] [heartbeat] [1/9] heart: materialise chunk 1/1 (35,047 vital cells x 4325 genes) | RAM 2.4GB
+[+  140.2s] [heartbeat] [1/9] heart: materialise chunk 1/1 (35,047 vital cells x 4325 genes) | RAM 2.4GB
+[+  160.3s] [heartbeat] [1/9] heart: materialise chunk 1/1 (35,047 vital cells x 4325 genes) | RAM 2.4GB
+[+  180.3s] [heartbeat] [1/9] heart: materialise chunk 1/1 (35,047 vital cells x 4325 genes) | RAM 2.4GB
+[+  200.3s] [heartbeat] [1/9] heart: materialise chunk 1/1 (35,047 vital cells x 4325 genes) | RAM 2.4GB
+[+  220.3s] [heartbeat] [1/9] heart: materialise chunk 1/1 (35,047 vital cells x 4325 genes) | RAM 2.4GB
+[+  240.3s] [heartbeat] [1/9] heart: materialise chunk 1/1 (35,047 vital cells x 4325 genes) | RAM 2.4GB
+[+  260.3s] [heartbeat] [1/9] heart: materialise chunk 1/1 (35,047 vital cells x 4325 genes) | RAM 3.4GB
+[+  280.3s] [heartbeat] [1/9] heart: materialise chunk 1/1 (35,047 vital cells x 4325 genes) | RAM 3.7GB
+[+  300.3s] [heartbeat] [1/9] heart: materialise chunk 1/1 (35,047 vital cells x 4325 genes) | RAM 3.7GB
+[+  320.4s] [heartbeat] [1/9] heart: materialise chunk 1/1 (35,047 vital cells x 4325 genes) | RAM 3.7GB
+[+  340.4s] [heartbeat] [1/9] heart: materialise chunk 1/1 (35,047 vital cells x 4325 genes) | RAM 3.7GB
+[+  360.4s] [heartbeat] [1/9] heart: materialise chunk 1/1 (35,047 vital cells x 4325 genes) | RAM 3.7GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+  377.4s] [rung9] [1/9] heart: acc-tile checkpointed -> rung10b_acc_heart.npz (35,047 cells, safe to disconnect)
+[+  377.5s] [rung9] [2/9] brain: scouting vital cells ...
+[+  380.4s] [heartbeat] [2/9] brain: scouting vital cells ... | RAM 3.7GB
+[+  404.8s] [heartbeat] [2/9] brain: scouting vital cells ... | RAM 3.7GB
+[+  414.8s] [rung9] [2/9] brain: materialise chunk 1/5 (199,908 vital cells x 4325 genes)
+/content/cancer-recon-apoptosis/scripts/32_surface_blocker_discovery.py:107: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+[+  424.8s] [heartbeat] [2/9] brain: materialise chunk 1/5 (199,908 vital cells x 4325 genes) | RAM 3.7GB
+[+  444.8s] [heartbeat] [2/9] brain: materialise chunk 1/5 (199,908 vital cells x 4325 genes) | RAM 3.7GB
+[+  464.9s] [heartbeat] [2/9] brain: materialise chunk 1/5 (199,908 vital cells x 4325 genes) | RAM 3.7GB
+[+  484.9s] [heartbeat] [2/9] brain: materialise chunk 1/5 (199,908 vital cells x 4325 genes) | RAM 3.7GB
+[+  504.9s] [heartbeat] [2/9] brain: materialise chunk 1/5 (199,908 vital cells x 4325 genes) | RAM 3.7GB
+[+  524.9s] [heartbeat] [2/9] brain: materialise chunk 1/5 (199,908 vital cells x 4325 genes) | RAM 3.7GB
+[+  544.9s] [heartbeat] [2/9] brain: materialise chunk 1/5 (199,908 vital cells x 4325 genes) | RAM 3.7GB
+[+  564.9s] [heartbeat] [2/9] brain: materialise chunk 1/5 (199,908 vital cells x 4325 genes) | RAM 3.7GB
+[+  585.0s] [heartbeat] [2/9] brain: materialise chunk 1/5 (199,908 vital cells x 4325 genes) | RAM 3.7GB
+[+  605.0s] [heartbeat] [2/9] brain: materialise chunk 1/5 (199,908 vital cells x 4325 genes) | RAM 3.7GB
+[+  625.0s] [heartbeat] [2/9] brain: materialise chunk 1/5 (199,908 vital cells x 4325 genes) | RAM 3.7GB
+[+  645.0s] [heartbeat] [2/9] brain: materialise chunk 1/5 (199,908 vital cells x 4325 genes) | RAM 3.7GB
+[+  665.0s] [heartbeat] [2/9] brain: materialise chunk 1/5 (199,908 vital cells x 4325 genes) | RAM 3.7GB
+[+  685.0s] [heartbeat] [2/9] brain: materialise chunk 1/5 (199,908 vital cells x 4325 genes) | RAM 3.8GB
+[+  705.0s] [heartbeat] [2/9] brain: materialise chunk 1/5 (199,908 vital cells x 4325 genes) | RAM 3.8GB
+[+  725.0s] [heartbeat] [2/9] brain: materialise chunk 1/5 (199,908 vital cells x 4325 genes) | RAM 3.8GB
+[+  745.0s] [heartbeat] [2/9] brain: materialise chunk 1/5 (199,908 vital cells x 4325 genes) | RAM 3.9GB
+[+  765.0s] [heartbeat] [2/9] brain: materialise chunk 1/5 (199,908 vital cells x 4325 genes) | RAM 3.9GB
+[+  785.1s] [heartbeat] [2/9] brain: materialise chunk 1/5 (199,908 vital cells x 4325 genes) | RAM 3.9GB
+[+  805.1s] [heartbeat] [2/9] brain: materialise chunk 1/5 (199,908 vital cells x 4325 genes) | RAM 3.9GB
+[+  825.1s] [heartbeat] [2/9] brain: materialise chunk 1/5 (199,908 vital cells x 4325 genes) | RAM 3.9GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+  843.6s] [rung9] [2/9] brain: materialise chunk 2/5 (199,908 vital cells x 4325 genes)
+/content/cancer-recon-apoptosis/scripts/32_surface_blocker_discovery.py:107: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+[+  845.1s] [heartbeat] [2/9] brain: materialise chunk 2/5 (199,908 vital cells x 4325 genes) | RAM 4.1GB
+[+  865.1s] [heartbeat] [2/9] brain: materialise chunk 2/5 (199,908 vital cells x 4325 genes) | RAM 4.1GB
+[+  885.1s] [heartbeat] [2/9] brain: materialise chunk 2/5 (199,908 vital cells x 4325 genes) | RAM 4.1GB
+[+  905.1s] [heartbeat] [2/9] brain: materialise chunk 2/5 (199,908 vital cells x 4325 genes) | RAM 4.1GB
+[+  925.1s] [heartbeat] [2/9] brain: materialise chunk 2/5 (199,908 vital cells x 4325 genes) | RAM 4.1GB
+[+  945.2s] [heartbeat] [2/9] brain: materialise chunk 2/5 (199,908 vital cells x 4325 genes) | RAM 4.1GB
+[+  965.2s] [heartbeat] [2/9] brain: materialise chunk 2/5 (199,908 vital cells x 4325 genes) | RAM 4.1GB
+[+  985.2s] [heartbeat] [2/9] brain: materialise chunk 2/5 (199,908 vital cells x 4325 genes) | RAM 4.1GB
+[+ 1005.2s] [heartbeat] [2/9] brain: materialise chunk 2/5 (199,908 vital cells x 4325 genes) | RAM 4.1GB
+[+ 1025.2s] [heartbeat] [2/9] brain: materialise chunk 2/5 (199,908 vital cells x 4325 genes) | RAM 4.1GB
+[+ 1045.2s] [heartbeat] [2/9] brain: materialise chunk 2/5 (199,908 vital cells x 4325 genes) | RAM 4.1GB
+[+ 1065.3s] [heartbeat] [2/9] brain: materialise chunk 2/5 (199,908 vital cells x 4325 genes) | RAM 4.1GB
+[+ 1085.3s] [heartbeat] [2/9] brain: materialise chunk 2/5 (199,908 vital cells x 4325 genes) | RAM 4.1GB
+[+ 1105.3s] [heartbeat] [2/9] brain: materialise chunk 2/5 (199,908 vital cells x 4325 genes) | RAM 4.1GB
+[+ 1125.3s] [heartbeat] [2/9] brain: materialise chunk 2/5 (199,908 vital cells x 4325 genes) | RAM 4.1GB
+[+ 1145.3s] [heartbeat] [2/9] brain: materialise chunk 2/5 (199,908 vital cells x 4325 genes) | RAM 4.1GB
+[+ 1165.3s] [heartbeat] [2/9] brain: materialise chunk 2/5 (199,908 vital cells x 4325 genes) | RAM 4.1GB
+[+ 1185.3s] [heartbeat] [2/9] brain: materialise chunk 2/5 (199,908 vital cells x 4325 genes) | RAM 4.1GB
+[+ 1205.3s] [heartbeat] [2/9] brain: materialise chunk 2/5 (199,908 vital cells x 4325 genes) | RAM 4.1GB
+[+ 1225.3s] [heartbeat] [2/9] brain: materialise chunk 2/5 (199,908 vital cells x 4325 genes) | RAM 4.1GB
+[+ 1245.3s] [heartbeat] [2/9] brain: materialise chunk 2/5 (199,908 vital cells x 4325 genes) | RAM 4.1GB
+[+ 1265.4s] [heartbeat] [2/9] brain: materialise chunk 2/5 (199,908 vital cells x 4325 genes) | RAM 4.1GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 1275.2s] [rung9] [2/9] brain: materialise chunk 3/5 (199,908 vital cells x 4325 genes)
+/content/cancer-recon-apoptosis/scripts/32_surface_blocker_discovery.py:107: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+[+ 1285.4s] [heartbeat] [2/9] brain: materialise chunk 3/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1305.4s] [heartbeat] [2/9] brain: materialise chunk 3/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1325.4s] [heartbeat] [2/9] brain: materialise chunk 3/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1345.4s] [heartbeat] [2/9] brain: materialise chunk 3/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1365.4s] [heartbeat] [2/9] brain: materialise chunk 3/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1385.5s] [heartbeat] [2/9] brain: materialise chunk 3/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1405.5s] [heartbeat] [2/9] brain: materialise chunk 3/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1425.5s] [heartbeat] [2/9] brain: materialise chunk 3/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1445.5s] [heartbeat] [2/9] brain: materialise chunk 3/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1465.5s] [heartbeat] [2/9] brain: materialise chunk 3/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1485.5s] [heartbeat] [2/9] brain: materialise chunk 3/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1505.5s] [heartbeat] [2/9] brain: materialise chunk 3/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1525.6s] [heartbeat] [2/9] brain: materialise chunk 3/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1545.6s] [heartbeat] [2/9] brain: materialise chunk 3/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1565.6s] [heartbeat] [2/9] brain: materialise chunk 3/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1585.6s] [heartbeat] [2/9] brain: materialise chunk 3/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1605.6s] [heartbeat] [2/9] brain: materialise chunk 3/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1625.6s] [heartbeat] [2/9] brain: materialise chunk 3/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1645.6s] [heartbeat] [2/9] brain: materialise chunk 3/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1665.6s] [heartbeat] [2/9] brain: materialise chunk 3/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 1674.4s] [rung9] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes)
+/content/cancer-recon-apoptosis/scripts/32_surface_blocker_discovery.py:107: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+[+ 1685.7s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1705.7s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1725.7s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1745.7s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1765.7s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1785.7s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1805.8s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1825.8s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1845.8s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1865.8s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1885.8s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1905.8s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1925.8s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1945.9s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1965.9s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 1985.9s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2005.9s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2025.9s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2045.9s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2065.9s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2085.9s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2105.9s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2125.9s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2145.9s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2165.9s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2185.9s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2206.0s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2226.0s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2246.0s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2266.0s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2286.0s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2306.0s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2326.0s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2346.0s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2366.0s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2386.0s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2406.0s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2426.1s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2446.1s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2466.1s] [heartbeat] [2/9] brain: materialise chunk 4/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 2484.9s] [rung9] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes)
+/content/cancer-recon-apoptosis/scripts/32_surface_blocker_discovery.py:107: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+[+ 2486.1s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2506.1s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2526.1s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2546.1s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2566.2s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2586.2s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2606.2s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2626.2s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2646.2s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2666.3s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2686.3s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2706.3s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2726.3s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2746.3s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2766.3s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2786.3s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2806.4s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2826.4s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2846.4s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2866.4s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2886.4s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2906.4s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2926.4s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2946.4s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2966.4s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 2986.5s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3006.5s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3026.5s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3046.5s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3066.5s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3086.5s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3106.5s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3126.5s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3146.5s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3166.5s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3186.5s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3206.5s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3226.5s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3246.5s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3266.5s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3286.6s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3306.6s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3326.6s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3346.6s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3366.6s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3386.6s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3406.6s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3426.6s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3446.6s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3466.6s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3486.6s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3506.6s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3526.6s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3546.6s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3566.7s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3586.7s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3606.7s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3626.7s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3646.7s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3666.7s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3686.7s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3706.7s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3726.7s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3746.7s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3766.7s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3786.7s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3806.7s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3826.8s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3846.8s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3866.8s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3886.8s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3906.8s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3926.8s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3946.8s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3966.8s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 3986.8s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 4006.8s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 4026.8s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 4046.8s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 4066.8s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 4086.9s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 4106.9s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 4126.9s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 4146.9s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 4166.9s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 4186.9s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 4206.9s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 4226.9s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 4246.9s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 4266.9s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 4286.9s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 4306.9s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 4326.9s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+[+ 4347.0s] [heartbeat] [2/9] brain: materialise chunk 5/5 (199,908 vital cells x 4325 genes) | RAM 4.2GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 4361.0s] [rung9] [2/9] brain: acc-tile checkpointed -> rung10b_acc_brain.npz (199,908 cells, safe to disconnect)
+[+ 4361.1s] [rung9] [3/9] kidney: scouting vital cells ...
+[+ 4364.9s] [rung9] [3/9] kidney: materialise chunk 1/1 (38,595 vital cells x 4325 genes)
+/content/cancer-recon-apoptosis/scripts/32_surface_blocker_discovery.py:107: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+[+ 4367.0s] [heartbeat] [3/9] kidney: materialise chunk 1/1 (38,595 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4387.0s] [heartbeat] [3/9] kidney: materialise chunk 1/1 (38,595 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4407.0s] [heartbeat] [3/9] kidney: materialise chunk 1/1 (38,595 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4427.1s] [heartbeat] [3/9] kidney: materialise chunk 1/1 (38,595 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4447.1s] [heartbeat] [3/9] kidney: materialise chunk 1/1 (38,595 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4467.1s] [heartbeat] [3/9] kidney: materialise chunk 1/1 (38,595 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4487.1s] [heartbeat] [3/9] kidney: materialise chunk 1/1 (38,595 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4507.1s] [heartbeat] [3/9] kidney: materialise chunk 1/1 (38,595 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4527.1s] [heartbeat] [3/9] kidney: materialise chunk 1/1 (38,595 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4547.2s] [heartbeat] [3/9] kidney: materialise chunk 1/1 (38,595 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4567.2s] [heartbeat] [3/9] kidney: materialise chunk 1/1 (38,595 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4587.2s] [heartbeat] [3/9] kidney: materialise chunk 1/1 (38,595 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4607.2s] [heartbeat] [3/9] kidney: materialise chunk 1/1 (38,595 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4627.2s] [heartbeat] [3/9] kidney: materialise chunk 1/1 (38,595 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4647.2s] [heartbeat] [3/9] kidney: materialise chunk 1/1 (38,595 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4667.2s] [heartbeat] [3/9] kidney: materialise chunk 1/1 (38,595 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4687.3s] [heartbeat] [3/9] kidney: materialise chunk 1/1 (38,595 vital cells x 4325 genes) | RAM 4.3GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 4707.3s] [heartbeat] [3/9] kidney: materialise chunk 1/1 (38,595 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4709.8s] [rung9] [3/9] kidney: acc-tile checkpointed -> rung10b_acc_kidney.npz (38,595 cells, safe to disconnect)
+[+ 4709.8s] [rung9] [4/9] liver: scouting vital cells ...
+[+ 4713.5s] [rung9] [4/9] liver: materialise chunk 1/1 (19,685 vital cells x 4325 genes)
+/content/cancer-recon-apoptosis/scripts/32_surface_blocker_discovery.py:107: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+[+ 4727.3s] [heartbeat] [4/9] liver: materialise chunk 1/1 (19,685 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4747.3s] [heartbeat] [4/9] liver: materialise chunk 1/1 (19,685 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4767.3s] [heartbeat] [4/9] liver: materialise chunk 1/1 (19,685 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4787.3s] [heartbeat] [4/9] liver: materialise chunk 1/1 (19,685 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4807.3s] [heartbeat] [4/9] liver: materialise chunk 1/1 (19,685 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4827.3s] [heartbeat] [4/9] liver: materialise chunk 1/1 (19,685 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4847.4s] [heartbeat] [4/9] liver: materialise chunk 1/1 (19,685 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4867.4s] [heartbeat] [4/9] liver: materialise chunk 1/1 (19,685 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4887.4s] [heartbeat] [4/9] liver: materialise chunk 1/1 (19,685 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4907.4s] [heartbeat] [4/9] liver: materialise chunk 1/1 (19,685 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4927.4s] [heartbeat] [4/9] liver: materialise chunk 1/1 (19,685 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4947.4s] [heartbeat] [4/9] liver: materialise chunk 1/1 (19,685 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4967.4s] [heartbeat] [4/9] liver: materialise chunk 1/1 (19,685 vital cells x 4325 genes) | RAM 4.3GB
+[+ 4987.4s] [heartbeat] [4/9] liver: materialise chunk 1/1 (19,685 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5007.4s] [heartbeat] [4/9] liver: materialise chunk 1/1 (19,685 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5027.5s] [heartbeat] [4/9] liver: materialise chunk 1/1 (19,685 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5047.5s] [heartbeat] [4/9] liver: materialise chunk 1/1 (19,685 vital cells x 4325 genes) | RAM 4.3GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 5066.6s] [rung9] [4/9] liver: acc-tile checkpointed -> rung10b_acc_liver.npz (19,685 cells, safe to disconnect)
+[+ 5066.6s] [rung9] [5/9] lung: scouting vital cells ...
+[+ 5067.5s] [heartbeat] [5/9] lung: scouting vital cells ... | RAM 4.3GB
+[+ 5070.4s] [rung9] [5/9] lung: materialise chunk 1/3 (91,466 vital cells x 4325 genes)
+/content/cancer-recon-apoptosis/scripts/32_surface_blocker_discovery.py:107: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+[+ 5087.6s] [heartbeat] [5/9] lung: materialise chunk 1/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5107.6s] [heartbeat] [5/9] lung: materialise chunk 1/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5127.6s] [heartbeat] [5/9] lung: materialise chunk 1/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5147.6s] [heartbeat] [5/9] lung: materialise chunk 1/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5167.7s] [heartbeat] [5/9] lung: materialise chunk 1/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5187.7s] [heartbeat] [5/9] lung: materialise chunk 1/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5207.7s] [heartbeat] [5/9] lung: materialise chunk 1/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5227.7s] [heartbeat] [5/9] lung: materialise chunk 1/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5247.7s] [heartbeat] [5/9] lung: materialise chunk 1/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5267.8s] [heartbeat] [5/9] lung: materialise chunk 1/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5287.8s] [heartbeat] [5/9] lung: materialise chunk 1/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5307.8s] [heartbeat] [5/9] lung: materialise chunk 1/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5327.8s] [heartbeat] [5/9] lung: materialise chunk 1/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5347.8s] [heartbeat] [5/9] lung: materialise chunk 1/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5367.8s] [heartbeat] [5/9] lung: materialise chunk 1/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5387.8s] [heartbeat] [5/9] lung: materialise chunk 1/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5407.8s] [heartbeat] [5/9] lung: materialise chunk 1/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 5427.6s] [rung9] [5/9] lung: materialise chunk 2/3 (91,466 vital cells x 4325 genes)
+/content/cancer-recon-apoptosis/scripts/32_surface_blocker_discovery.py:107: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+[+ 5427.8s] [heartbeat] [5/9] lung: materialise chunk 2/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5447.9s] [heartbeat] [5/9] lung: materialise chunk 2/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5467.9s] [heartbeat] [5/9] lung: materialise chunk 2/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5487.9s] [heartbeat] [5/9] lung: materialise chunk 2/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5507.9s] [heartbeat] [5/9] lung: materialise chunk 2/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5527.9s] [heartbeat] [5/9] lung: materialise chunk 2/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5548.0s] [heartbeat] [5/9] lung: materialise chunk 2/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5568.0s] [heartbeat] [5/9] lung: materialise chunk 2/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5588.0s] [heartbeat] [5/9] lung: materialise chunk 2/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5608.0s] [heartbeat] [5/9] lung: materialise chunk 2/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5628.0s] [heartbeat] [5/9] lung: materialise chunk 2/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5648.0s] [heartbeat] [5/9] lung: materialise chunk 2/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5668.0s] [heartbeat] [5/9] lung: materialise chunk 2/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5688.1s] [heartbeat] [5/9] lung: materialise chunk 2/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5708.1s] [heartbeat] [5/9] lung: materialise chunk 2/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5728.1s] [heartbeat] [5/9] lung: materialise chunk 2/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5748.1s] [heartbeat] [5/9] lung: materialise chunk 2/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5768.1s] [heartbeat] [5/9] lung: materialise chunk 2/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5788.1s] [heartbeat] [5/9] lung: materialise chunk 2/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5808.1s] [heartbeat] [5/9] lung: materialise chunk 2/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5828.1s] [heartbeat] [5/9] lung: materialise chunk 2/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5848.2s] [heartbeat] [5/9] lung: materialise chunk 2/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5868.2s] [heartbeat] [5/9] lung: materialise chunk 2/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5888.2s] [heartbeat] [5/9] lung: materialise chunk 2/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5908.2s] [heartbeat] [5/9] lung: materialise chunk 2/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5928.2s] [heartbeat] [5/9] lung: materialise chunk 2/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 5937.2s] [rung9] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes)
+/content/cancer-recon-apoptosis/scripts/32_surface_blocker_discovery.py:107: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+[+ 5948.3s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5968.3s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 5988.3s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6008.3s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6028.3s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6048.3s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6068.4s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6088.4s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6108.4s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6128.4s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6148.4s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6168.4s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6188.4s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6208.5s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6228.5s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6248.5s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6268.5s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6288.5s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6308.5s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6328.5s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6348.5s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6368.5s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6388.5s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6408.5s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6428.6s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6448.6s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6468.6s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6488.6s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6508.6s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6528.6s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6548.7s] [heartbeat] [5/9] lung: materialise chunk 3/3 (91,466 vital cells x 4325 genes) | RAM 4.3GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 6558.2s] [rung9] [5/9] lung: acc-tile checkpointed -> rung10b_acc_lung.npz (91,466 cells, safe to disconnect)
+[+ 6558.2s] [rung9] [6/9] bone marrow: scouting vital cells ...
+[+ 6561.3s] [rung9] [6/9] bone marrow: materialise chunk 1/1 (993 vital cells x 4325 genes)
+/content/cancer-recon-apoptosis/scripts/32_surface_blocker_discovery.py:107: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+[+ 6568.7s] [heartbeat] [6/9] bone marrow: materialise chunk 1/1 (993 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6588.7s] [heartbeat] [6/9] bone marrow: materialise chunk 1/1 (993 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6608.8s] [heartbeat] [6/9] bone marrow: materialise chunk 1/1 (993 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6628.8s] [heartbeat] [6/9] bone marrow: materialise chunk 1/1 (993 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6648.8s] [heartbeat] [6/9] bone marrow: materialise chunk 1/1 (993 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6668.8s] [heartbeat] [6/9] bone marrow: materialise chunk 1/1 (993 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6688.8s] [heartbeat] [6/9] bone marrow: materialise chunk 1/1 (993 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6708.9s] [heartbeat] [6/9] bone marrow: materialise chunk 1/1 (993 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6728.9s] [heartbeat] [6/9] bone marrow: materialise chunk 1/1 (993 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6748.9s] [heartbeat] [6/9] bone marrow: materialise chunk 1/1 (993 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6768.9s] [heartbeat] [6/9] bone marrow: materialise chunk 1/1 (993 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6788.9s] [heartbeat] [6/9] bone marrow: materialise chunk 1/1 (993 vital cells x 4325 genes) | RAM 4.3GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 6790.2s] [rung9] [6/9] bone marrow: acc-tile checkpointed -> rung10b_acc_bone_marrow.npz (993 cells, safe to disconnect)
+[+ 6790.2s] [rung9] [7/9] pancreas: scouting vital cells ...
+[+ 6796.2s] [rung9] [7/9] pancreas: materialise chunk 1/1 (16,030 vital cells x 4325 genes)
+/content/cancer-recon-apoptosis/scripts/32_surface_blocker_discovery.py:107: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+[+ 6808.9s] [heartbeat] [7/9] pancreas: materialise chunk 1/1 (16,030 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6828.9s] [heartbeat] [7/9] pancreas: materialise chunk 1/1 (16,030 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6849.0s] [heartbeat] [7/9] pancreas: materialise chunk 1/1 (16,030 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6869.0s] [heartbeat] [7/9] pancreas: materialise chunk 1/1 (16,030 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6889.0s] [heartbeat] [7/9] pancreas: materialise chunk 1/1 (16,030 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6909.0s] [heartbeat] [7/9] pancreas: materialise chunk 1/1 (16,030 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6929.1s] [heartbeat] [7/9] pancreas: materialise chunk 1/1 (16,030 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6949.1s] [heartbeat] [7/9] pancreas: materialise chunk 1/1 (16,030 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6969.1s] [heartbeat] [7/9] pancreas: materialise chunk 1/1 (16,030 vital cells x 4325 genes) | RAM 4.3GB
+[+ 6989.1s] [heartbeat] [7/9] pancreas: materialise chunk 1/1 (16,030 vital cells x 4325 genes) | RAM 4.3GB
+[+ 7009.1s] [heartbeat] [7/9] pancreas: materialise chunk 1/1 (16,030 vital cells x 4325 genes) | RAM 4.3GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 7029.1s] [heartbeat] [7/9] pancreas: materialise chunk 1/1 (16,030 vital cells x 4325 genes) | RAM 4.3GB
+[+ 7031.6s] [rung9] [7/9] pancreas: acc-tile checkpointed -> rung10b_acc_pancreas.npz (16,030 cells, safe to disconnect)
+[+ 7031.6s] [rung9] [8/9] adrenal gland: scouting vital cells ...
+[+ 7035.7s] [rung9] [8/9] adrenal gland: materialise chunk 1/1 (11,542 vital cells x 4325 genes)
+/content/cancer-recon-apoptosis/scripts/32_surface_blocker_discovery.py:107: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+[+ 7049.1s] [heartbeat] [8/9] adrenal gland: materialise chunk 1/1 (11,542 vital cells x 4325 genes) | RAM 4.3GB
+[+ 7069.1s] [heartbeat] [8/9] adrenal gland: materialise chunk 1/1 (11,542 vital cells x 4325 genes) | RAM 4.3GB
+[+ 7089.2s] [heartbeat] [8/9] adrenal gland: materialise chunk 1/1 (11,542 vital cells x 4325 genes) | RAM 4.3GB
+[+ 7109.2s] [heartbeat] [8/9] adrenal gland: materialise chunk 1/1 (11,542 vital cells x 4325 genes) | RAM 4.3GB
+[+ 7129.2s] [heartbeat] [8/9] adrenal gland: materialise chunk 1/1 (11,542 vital cells x 4325 genes) | RAM 4.3GB
+[+ 7149.2s] [heartbeat] [8/9] adrenal gland: materialise chunk 1/1 (11,542 vital cells x 4325 genes) | RAM 4.3GB
+[+ 7169.2s] [heartbeat] [8/9] adrenal gland: materialise chunk 1/1 (11,542 vital cells x 4325 genes) | RAM 4.3GB
+[+ 7189.2s] [heartbeat] [8/9] adrenal gland: materialise chunk 1/1 (11,542 vital cells x 4325 genes) | RAM 4.3GB
+[+ 7209.3s] [heartbeat] [8/9] adrenal gland: materialise chunk 1/1 (11,542 vital cells x 4325 genes) | RAM 4.3GB
+[+ 7229.3s] [heartbeat] [8/9] adrenal gland: materialise chunk 1/1 (11,542 vital cells x 4325 genes) | RAM 4.3GB
+[+ 7249.3s] [heartbeat] [8/9] adrenal gland: materialise chunk 1/1 (11,542 vital cells x 4325 genes) | RAM 4.3GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 7259.8s] [rung9] [8/9] adrenal gland: acc-tile checkpointed -> rung10b_acc_adrenal_gland.npz (11,542 cells, safe to disconnect)
+[+ 7259.8s] [rung9] [9/9] skeletal muscle: scouting vital cells ...
+[+ 7260.6s] [rung9] [9/9] skeletal muscle: no vital cells
+[+ 7260.6s] [rung9] all tissues streamed — worst-donor screen for tumour-absent + vital-high blockers ...
+[+ 7260.9s] [rung9] wrote /content/cancer-recon-apoptosis/runs/rung10b_blocker/rung10b_blocker.json
+[+ 7260.9s] [rung9] DECISIVE: DECISIVE NEGATIVE: NO tumour-absent surface gene is worst-donor vital-high for ['adrenal_cortical', 'cardiomyocyte', 'cholangiocyte', 'kidney_tubule', 'lung_pneumocyte', 'neuron', 'pancreatic_islet', 'skeletal_myocyte', 'vascular_endothelium'] -> a SINGLE-BLOCKER 3-input AND-NOT surface gate CANNOT spare them -> the NOT-slot must be genetic for those tissues. (Out of scope: panel-NOT / OR-gates / >=4-input surface logic.)
+[+ 7260.9s] [rung9]   adrenal_cortical       n=  2,100 donors=  7  blockers=   0  e.g. []
+[+ 7260.9s] [rung9]   cardiac_conduction     n=  6,901 donors= 24  blockers=   4  e.g. ['NRXN1', 'CNTNAP2', 'NRXN3', 'TENM2']
+[+ 7260.9s] [rung9]   cardiomyocyte          n=  9,567 donors= 32  blockers=   0  e.g. []
+[+ 7260.9s] [rung9]   cholangiocyte          n=  1,967 donors= 16  blockers=   0  e.g. []
+[+ 7260.9s] [rung9]   kidney_podocyte        n=  3,788 donors= 33  blockers=   1  e.g. ['MME']
+[+ 7260.9s] [rung9]   kidney_tubule          n= 13,185 donors= 75  blockers=   0  e.g. []
+[+ 7260.9s] [rung9]   lung_pneumocyte        n= 40,966 donors=166  blockers=   0  e.g. []
+[+ 7260.9s] [rung9]   neuron                 n=179,701 donors=660  blockers=   0  e.g. []
+[+ 7260.9s] [rung9]   pancreatic_islet       n= 10,317 donors= 41  blockers=   0  e.g. []
+[+ 7260.9s] [rung9]   skeletal_myocyte       n= 26,760 donors=142  blockers=   0  e.g. []
+[+ 7260.9s] [rung9]   vascular_endothelium   n=110,499 donors=552  blockers=   0  e.g. []
+[+ 7260.9s] [rung9]   universal (worst-donor-high in ALL vital): 0 -> []
+[rung10b] wrote /content/cancer-recon-apoptosis/runs/rung10b_blocker/rung10b_blocker.png
+[exit 0]

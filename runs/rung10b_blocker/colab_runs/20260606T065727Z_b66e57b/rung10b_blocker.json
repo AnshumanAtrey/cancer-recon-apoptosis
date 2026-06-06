@@ -1,0 +1,101 @@
+{
+  "tag": "rung10b_surface_blocker_discovery",
+  "question": "Does a surface gene exist that is TUMOUR-ABSENT but reliably (worst-donor) VITAL-HIGH \u2014 the only possible good single AND-NOT blocker? Asked of the atlas, per vital cell type.",
+  "census_version": "2024-07-01",
+  "surfaceome_source": "cache",
+  "tum_floor": 0.02,
+  "vital_high_worstdonor": 0.5,
+  "min_donor_cells": 30,
+  "DECISIVE": "DECISIVE NEGATIVE: NO tumour-absent surface gene is worst-donor vital-high for ['adrenal_cortical', 'cardiomyocyte', 'cholangiocyte', 'kidney_tubule', 'lung_pneumocyte', 'neuron', 'pancreatic_islet', 'skeletal_myocyte', 'vascular_endothelium'] -> a SINGLE-BLOCKER 3-input AND-NOT surface gate CANNOT spare them -> the NOT-slot must be genetic for those tissues. (Out of scope: panel-NOT / OR-gates / >=4-input surface logic.)",
+  "n_tumour_absent_genes_screened": 4325,
+  "per_vital_type": {
+    "adrenal_cortical": {
+      "n_powered_donors": 7,
+      "n_cells": 2100,
+      "n_candidate_blockers": 0,
+      "top_blockers": []
+    },
+    "cardiac_conduction": {
+      "n_powered_donors": 24,
+      "n_cells": 6901,
+      "n_candidate_blockers": 4,
+      "top_blockers": [
+        "NRXN1",
+        "CNTNAP2",
+        "NRXN3",
+        "TENM2"
+      ]
+    },
+    "cardiomyocyte": {
+      "n_powered_donors": 32,
+      "n_cells": 9567,
+      "n_candidate_blockers": 0,
+      "top_blockers": []
+    },
+    "cholangiocyte": {
+      "n_powered_donors": 16,
+      "n_cells": 1967,
+      "n_candidate_blockers": 0,
+      "top_blockers": []
+    },
+    "kidney_podocyte": {
+      "n_powered_donors": 33,
+      "n_cells": 3788,
+      "n_candidate_blockers": 1,
+      "top_blockers": [
+        "MME"
+      ]
+    },
+    "kidney_tubule": {
+      "n_powered_donors": 75,
+      "n_cells": 13185,
+      "n_candidate_blockers": 0,
+      "top_blockers": []
+    },
+    "lung_pneumocyte": {
+      "n_powered_donors": 166,
+      "n_cells": 40966,
+      "n_candidate_blockers": 0,
+      "top_blockers": []
+    },
+    "neuron": {
+      "n_powered_donors": 660,
+      "n_cells": 179701,
+      "n_candidate_blockers": 0,
+      "top_blockers": []
+    },
+    "pancreatic_islet": {
+      "n_powered_donors": 41,
+      "n_cells": 10317,
+      "n_candidate_blockers": 0,
+      "top_blockers": []
+    },
+    "skeletal_myocyte": {
+      "n_powered_donors": 142,
+      "n_cells": 26760,
+      "n_candidate_blockers": 0,
+      "top_blockers": []
+    },
+    "vascular_endothelium": {
+      "n_powered_donors": 552,
+      "n_cells": 110499,
+      "n_candidate_blockers": 0,
+      "top_blockers": []
+    }
+  },
+  "universal_blockers_high_in_ALL_vital": [],
+  "n_vital_types_with_NO_surface_blocker": 9,
+  "vital_types_with_no_blocker": [
+    "adrenal_cortical",
+    "cardiomyocyte",
+    "cholangiocyte",
+    "kidney_tubule",
+    "lung_pneumocyte",
+    "neuron",
+    "pancreatic_islet",
+    "skeletal_myocyte",
+    "vascular_endothelium"
+  ],
+  "CEILING": "mRNA != surface protein; dropout DEFLATES worst-donor vital-high -> CONSERVATIVE for finding a blocker (a 'no blocker' result is strong; 'blocker found' still needs the strict non-vital-normal leak check + protein confirmation). Tumour coverage from cached RUNG-5 tumour panel (full 5007 surfaceome). SCOPE: single-blocker 3-input AND-NOT only.",
+  "INTERPRETATION": "Replaces speculation with the atlas's own answer. If even ONE vital tissue has no tumour-absent worst-donor-vital-high surface gene, no single-blocker surface AND-NOT gate can protect it -> the genetic NOT-slot is a necessity, not a choice (for this gate class). If candidates exist, they are the exact blockers for the GPU gate sweep."
+}
