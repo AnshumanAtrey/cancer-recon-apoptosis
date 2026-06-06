@@ -263,27 +263,41 @@ def main_run() -> int:
     HB.set("all tissues streamed — worst-donor leak/containment screen ...")
     report, vtypes = find_leak_channels(acc, CONNEXINS)
 
-    # cross with tumour: which connexins are tumour-expressed, and (for those) which vital tissues they leak into
-    tumour_expressed = sorted([g for g, v in tum_cov.items() if v is not None and v > TUM_HIGH],
-                              key=lambda g: -tum_cov[g])
-    usable_passive = [g for g in report["vital_silent_connexins_ALL_types"] if tum_cov.get(g, 0) and tum_cov[g] > TUM_HIGH]
-    n_silent = report["n_vital_silent_connexins"]
+    # cross with tumour. TWO containment requirements: (1) the tumour must COUPLE (express a connexin) so a wave
+    # can spread through it; (2) that connexin must be vital-silent so the wave can't leak out.
+    EYE_RESTRICTED = {"GJA8": "Cx50 lens", "GJA10": "Cx62 lens/retina", "GJD3": "Cx31.9 rare", "GJD4": "Cx40.1 rare"}
+    measured = {g: v for g, v in tum_cov.items() if v is not None}
+    best_tum_g = max(measured, key=measured.get) if measured else None
+    best_tum_cov = measured.get(best_tum_g, 0.0) if best_tum_g else 0.0
+    tumour_couples = best_tum_cov > TUM_HIGH                    # does the tumour express ANY connexin > floor?
+    tumour_expressed = sorted([g for g, v in measured.items() if v > TUM_HIGH], key=lambda g: -measured[g])
 
-    if n_silent == 0:
-        decisive = (f"DECISIVE NEGATIVE: NO connexin is vital-silent across all {report['n_vital_types']} vital "
-                    f"cell types — every coupling channel leaks into some vital tissue (e.g. tumour-expressed "
-                    f"{[f'{g}/{COMMON.get(g,g)}->{report['leak_map'][g]}' for g in tumour_expressed[:3]]}). "
-                    f"A PASSIVE gap-junctional death wave CANNOT be contained -> propagation MUST be "
-                    f"RECOGNITION-GATED per hop (synNotch-style AND-gate), not passive. (Scope: connexin/pannexin "
-                    f"channels, mRNA-level; doesn't rule out non-junctional gated relays — that's Part B.)")
-    elif usable_passive:
+    silent = report["vital_silent_connexins_ALL_types"]
+    silent_measured = [g for g in silent if g in measured]      # vital-silent AND we measured tumour expression
+    silent_unknown = [g for g in silent if g not in measured]   # vital-silent but tumour expression UNKNOWN (not in panel)
+    usable_passive = [g for g in silent_measured if measured[g] > TUM_HIGH]  # the only true candidate channels
+
+    top_leak = (best_tum_g, report["leak_map"].get(best_tum_g, [])) if best_tum_g else (None, [])
+    if usable_passive:
         decisive = (f"SURPRISE +: vital-silent AND tumour-expressed connexin(s) {usable_passive} — a candidate "
-                    f"PASSIVE containable channel. Route to Part B percolation sim to test if a wave on it clears "
-                    f"the tumour. Verify against protein/coupling (mRNA != functional channel).")
+                    f"PASSIVE containable channel. Route to Part B to test if a wave on it clears the tumour. "
+                    f"Verify against protein/coupling (mRNA != functional channel).")
     else:
-        decisive = (f"PARTIAL: {n_silent} vital-silent connexin(s) {report['vital_silent_connexins_ALL_types']} "
-                    f"exist but none are tumour-expressed (>{TUM_HIGH}) — no USABLE passive channel; gated relay "
-                    f"still required. (Tumour side from cached surfaceome; connexins absent there are unknown.)")
+        # the honest DECISIVE NEGATIVE: passive route fails for up to TWO independent reasons.
+        r1 = (f"(1) the tumour barely couples — its most-expressed gap-junction connexin {best_tum_g}/"
+              f"{COMMON.get(best_tum_g, best_tum_g)} is in only {best_tum_cov:.1%} of malignant cells and NO "
+              f"connexin clears {TUM_HIGH:.0%} (consistent with the known loss of gap-junctional communication "
+              f"in cancer) -> a passive wave can't even spread THROUGH the tumour") if not tumour_couples else \
+             (f"(1) the tumour's expressed connexins {tumour_expressed} all leak into vital tissue")
+        r2 = (f"(2) the connexin the tumour does express most ({top_leak[0]}/{COMMON.get(top_leak[0], top_leak[0])}) "
+              f"is worst-case-donor high in {len(top_leak[1])}/{report['n_vital_types']} vital types {top_leak[1]}")
+        r3 = (f"the only vital-silent channels are {silent_unknown or 'none'} (eye-restricted lens/retina connexins, "
+              f"absent from the tumour surfaceome -> biologically irrelevant as a tumour coupling channel)"
+              if silent_unknown else f"no vital-silent channel is tumour-expressed")
+        decisive = (f"DECISIVE NEGATIVE: a PASSIVE gap-junctional death wave CANNOT be tumour-contained. {r1}; "
+                    f"{r2}; {r3}. => propagation MUST be (a) RECOGNITION-GATED per hop AND (b) use ENGINEERED "
+                    f"coupling (synNotch / engineered ligand-receptor), NOT native gap junctions. That is Part B. "
+                    f"(Scope: connexin/pannexin channels, mRNA-level.)")
 
     result = {
         "tag": "rung12p_connexin_containment",
@@ -296,8 +310,15 @@ def main_run() -> int:
         "K": K, "min_deep_cells": MIN_DEEP, "leak_floor": LEAK_FLOOR, "silent_floor": SILENT_FLOOR,
         "tum_high": TUM_HIGH, "hk_depth_control": HK_PANEL,
         "tumour_connexin_coverage": {g: (round(v, 4) if v is not None else None) for g, v in tum_cov.items()},
+        "tumour_couples_best": {"connexin": best_tum_g, "common": COMMON.get(best_tum_g, best_tum_g),
+                                "malignant_coverage": round(best_tum_cov, 4), "above_floor": tumour_couples,
+                                "note": "if low -> tumour loses gap-junctional communication (cancer hallmark) -> "
+                                        "a passive wave can't propagate even before the containment question"},
         "tumour_expressed_connexins": tumour_expressed,
+        "vital_silent_tumour_measured": silent_measured,
+        "vital_silent_tumour_unknown_or_eye_restricted": {g: EYE_RESTRICTED.get(g, "not in surfaceome panel") for g in silent_unknown},
         "usable_passive_channels": usable_passive,
+        "top_connexin_leak": {"connexin": top_leak[0], "leaks_into_n_vital": len(top_leak[1]), "leaks_into": top_leak[1]},
         "DECISIVE": decisive, **report,
         "CEILING": "mRNA != functional gap-junction coupling (connexin transcript != open channel); HK-deep "
                    "filter mitigates but doesn't erase dropout; LOW calls are the anti-conservative direction so "

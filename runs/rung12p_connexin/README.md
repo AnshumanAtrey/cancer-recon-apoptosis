@@ -41,6 +41,22 @@ load-bearing; tumour-side connexin coverage comes from the cached RUNG-5 surface
 from that panel are reported "unknown," not "absent." Scope: passive connexin/pannexin channels (doesn't rule
 out engineered gated relays — that's Part B).
 
+## Result (real run, 11 vital cell types across 9 tissues)
+**DECISIVE NEGATIVE — a passive gap-junctional death wave cannot be tumour-contained, for two independent reasons:**
+1. **The tumour barely couples.** Its most-expressed gap-junction connexin, **Cx43/GJA1, is in only 5.6% of
+   malignant cells** and *no* connexin clears 10% — the textbook **loss of gap-junctional communication in
+   cancer**. A passive wave can't even spread *through* the tumour.
+2. **The one channel it has leaks.** Cx43 is worst-case-donor-high in **8 of 11 vital cell types** (neuron 82%,
+   lung 70%, vascular endothelium 68%, cardiomyocyte 31%, kidney 41%).
+
+The only connexins that are vital-silent everywhere (GJA8/Cx50, GJA10/Cx62, GJD3, GJD4) are **eye-restricted
+lens/retina channels absent from the tumour surfaceome** — biologically irrelevant as a tumour coupling channel
+(their tumour status is formally *unmeasured*, not measured-absent — an honest residual).
+
+**Implication → Part B design is now sharper:** propagation must be **(a) recognition-gated per hop** *and*
+**(b) use ENGINEERED coupling** (synNotch / engineered ligand–receptor such as TRAIL-relay), **not native gap
+junctions** — because the tumour doesn't natively couple. The passive bystander route is dead.
+
 ## Provenance
 `scripts/34_connexin_containment.py` (selftest 11/11). Reuses RUNG-10b/RUNG-8 Census machinery (`scripts/32`,
 `scripts/30`, `scripts/25`). Census `2024-07-01`. Outputs: `rung12p_connexin.json`, `rung12p_connexin.png`.
