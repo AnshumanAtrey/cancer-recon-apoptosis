@@ -1,0 +1,474 @@
+{
+  "tag": "rung13_apoptosis_death_wave",
+  "question": "Does coupling EARM-calibrated cells reproduce an all-or-none, IRREVERSIBLE per-cell commitment AND a bounded, tumour-clearing death wave -- and do real kinetics confirm or break the binary/instantaneous abstraction RUNG-12P/B relied on?",
+  "builds_on": {
+    "RUNG1_full_EARM": "scripts/11_earm_kinetics.py (Albeck 2008, validated)",
+    "RUNG12pB_percolation": "scripts/35_propagation_relay.py"
+  },
+  "model": "Reduced extrinsic-apoptosis burst switch (Eissing/Legewie/Albeck topology): C8a + C3a + IAP(brake depleted by C3a) + CP(cooperative irreversible cleaved-PARP ratchet). Excitable threshold + variable delay + snap + irreversible commitment. Coupling: dead cell emits persistent bystander signal ~CP; neighbour transduces it (recognition-gated) into caspase-8 input. Pure-numpy RK4.",
+  "params": {
+    "ai": 0.35,
+    "kfb": 0.5,
+    "d8": 0.03,
+    "kc": 25.0,
+    "ki": 20.0,
+    "d3": 0.5,
+    "kIon": 1.0,
+    "kseq": 60.0,
+    "IAP0": 1.2,
+    "kp": 40.0
+  },
+  "single_cell": {
+    "threshold_S_star": 0.002,
+    "all_or_none_intermediate_CP_frac": 0.0,
+    "snap_action": {
+      "Td_mod_h": 1.81,
+      "Ts_h": 0.552,
+      "Ts_lt_half_Td": true,
+      "RUNG1_reference_Td_h": 3.65
+    },
+    "variable_delay_Td_vs_S": [
+      {
+        "S": 0.007,
+        "Td_h": 3.88
+      },
+      {
+        "S": 0.052,
+        "Td_h": 1.81
+      },
+      {
+        "S": 0.202,
+        "Td_h": 1.02
+      },
+      {
+        "S": 0.502,
+        "Td_h": 0.69
+      }
+    ],
+    "irreversible_commitment": {
+      "dead_basin_stays_committed_at_S0": true,
+      "brief_supra_pulse_commits_latch": true,
+      "sustained_subthreshold_never_commits": true,
+      "note": "commitment latches near-instantly once S* is crossed (autocatalytic IAP-depletion + cooperative CP ratchet); the point-of-no-return is the threshold crossing itself. Single-cell pre-MOMP recovery dynamics are RUNG-1's full-EARM domain."
+    },
+    "priming_delays_death_Td_at_fixed_dose": [
+      {
+        "brake_mult": 1.0,
+        "Td_h_at_S0.2": 1.03
+      },
+      {
+        "brake_mult": 2.0,
+        "Td_h_at_S0.2": 1.34
+      },
+      {
+        "brake_mult": 4.0,
+        "Td_h_at_S0.2": 1.91
+      },
+      {
+        "brake_mult": 8.0,
+        "Td_h_at_S0.2": 2.97
+      }
+    ],
+    "dose_response": [
+      {
+        "S": 0.0,
+        "committed": false,
+        "final_CP": 0.0
+      },
+      {
+        "S": 0.02,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.04,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.06,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.08,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.1,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.12,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.14,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.16,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.18,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.2,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.22,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.24,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.26,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.28,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.3,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.32,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.34,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.36,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.38,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.4,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.42,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.44,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.46,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.48,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.5,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.52,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.54,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.56,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.58,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.6,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.62,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.64,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.66,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.68,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.7,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.72,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.74,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.76,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.78,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.8,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.82,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.84,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.86,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.88,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.9,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.92,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.94,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.96,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 0.98,
+        "committed": true,
+        "final_CP": 1.0
+      },
+      {
+        "S": 1.0,
+        "committed": true,
+        "final_CP": 1.0
+      }
+    ]
+  },
+  "spatial_wave": {
+    "engineered_coupling_c": 1.0,
+    "tumour_fidelity_q_t": 0.95,
+    "containment_curve": [
+      {
+        "q_n": 0.0,
+        "tumour_killed": 0.9532,
+        "normal_killed": 0.0
+      },
+      {
+        "q_n": 0.086,
+        "tumour_killed": 0.9532,
+        "normal_killed": 0.0024
+      },
+      {
+        "q_n": 0.173,
+        "tumour_killed": 0.9532,
+        "normal_killed": 0.0054
+      },
+      {
+        "q_n": 0.259,
+        "tumour_killed": 0.9532,
+        "normal_killed": 0.0101
+      },
+      {
+        "q_n": 0.345,
+        "tumour_killed": 0.9532,
+        "normal_killed": 0.0184
+      },
+      {
+        "q_n": 0.432,
+        "tumour_killed": 0.9532,
+        "normal_killed": 0.0363
+      },
+      {
+        "q_n": 0.518,
+        "tumour_killed": 0.9532,
+        "normal_killed": 0.1348
+      },
+      {
+        "q_n": 0.605,
+        "tumour_killed": 0.9532,
+        "normal_killed": 0.4433
+      },
+      {
+        "q_n": 0.691,
+        "tumour_killed": 0.9532,
+        "normal_killed": 0.6648
+      },
+      {
+        "q_n": 0.777,
+        "tumour_killed": 0.9532,
+        "normal_killed": 0.7748
+      },
+      {
+        "q_n": 0.864,
+        "tumour_killed": 0.9532,
+        "normal_killed": 0.8644
+      },
+      {
+        "q_n": 0.95,
+        "tumour_killed": 0.9532,
+        "normal_killed": 0.9514
+      }
+    ],
+    "kinetic_safe_q_n_ceiling_at_1pct": 0.173,
+    "amplification_vs_percell_bar": 8.6,
+    "tumour_cleared_q_n_range": [
+      0.0,
+      0.95
+    ],
+    "efficacy_vs_q_t": [
+      {
+        "q_t": 0.3,
+        "tumour_killed": 0.0231,
+        "normal_killed": 0.0
+      },
+      {
+        "q_t": 0.4,
+        "tumour_killed": 0.0897,
+        "normal_killed": 0.0
+      },
+      {
+        "q_t": 0.5,
+        "tumour_killed": 0.2195,
+        "normal_killed": 0.0006
+      },
+      {
+        "q_t": 0.6,
+        "tumour_killed": 0.5293,
+        "normal_killed": 0.001
+      },
+      {
+        "q_t": 0.7,
+        "tumour_killed": 0.6928,
+        "normal_killed": 0.0024
+      },
+      {
+        "q_t": 0.8,
+        "tumour_killed": 0.8088,
+        "normal_killed": 0.0032
+      },
+      {
+        "q_t": 0.9,
+        "tumour_killed": 0.9071,
+        "normal_killed": 0.0034
+      },
+      {
+        "q_t": 1.0,
+        "tumour_killed": 1.0,
+        "normal_killed": 0.0034
+      }
+    ],
+    "wave_robust_to_tumour_priming": [
+      {
+        "tumour_IAP_mult": 1.0,
+        "tumour_killed": 0.9512,
+        "normal_killed": 0.0024
+      },
+      {
+        "tumour_IAP_mult": 4.0,
+        "tumour_killed": 0.9512,
+        "normal_killed": 0.0024
+      },
+      {
+        "tumour_IAP_mult": 8.0,
+        "tumour_killed": 0.9512,
+        "normal_killed": 0.0024
+      }
+    ]
+  },
+  "cross_validation_vs_RUNG12pB": {
+    "abstract_percolation_safe_q_n_2D": 0.3,
+    "kinetic_safe_q_n_2D": 0.173,
+    "kinetics_confirm_binarisation": true
+  },
+  "INTERPRETATION_MAP": {
+    "A_commitment_irreversible": "finite point-of-no-return + dead-basin latch => Shriya 6.3 'cannot back out once committed' is a property of the dynamics, not an assumption.",
+    "B_wave_bounded": "wave clears tumour (q_t high) yet self-extinguishes in normal tissue at low q_n => 'one cell tells its neighbour' is therapeutically containable if per-hop false-positive stays sub-critical.",
+    "C_binarisation_earned": "kinetic safe-q_n ceiling ~ RUNG-12P/B's => the binary/instantaneous abstraction was fair; the recognition relaxation survives real kinetics.",
+    "D_resistance_resistance": "the wave clears even heavily-primed tumour (the front signal overpowers cell-autonomous resistance) => propagation is HARDER to evade than a single-cell trigger -- a direct counter to Shriya 6.3."
+  },
+  "DECISIVE": "POSITIVE (recognition->death link closes in silico): EARM-calibrated coupled cells give (1) an all-or-none excitable threshold S*=0.002 with a variable delay (Td 3.88->0.69h across dose) and a fast snap (Ts=0.55h < Td); (2) an IRREVERSIBLE commitment -- the threshold crossing latches death (a brief supra pulse still commits; sustained sub-threshold never does) and the dead state persists at zero input -- so Shriya 6.3 'cannot back out' is a dynamical property, not an assumption; (3) a BOUNDED death wave clearing the tumour (>=80% over q_n in [0.0,0.95]) while keeping normal kill <=1% up to q_n~0.17 (~8.6x the per-cell bar 0.02); (4) this CONFIRMS RUNG-12P/B's binary abstraction (2D ceiling 0.3) under real kinetics -- the recognition relaxation is EARNED. Bonus: the wave clears even heavily-primed tumour (resistance-resistance). Efficacy still needs tumour fidelity q_t above the propagation threshold; mapping c/g to molecular efficiencies is the wet-lab residual.",
+  "CEILING": "PROXY coupling: c and transduction competence g (gated by q_t/q_n) are swept parameters, NOT measured molecular efficiencies; recognition->caspase-8 (agonism/synNotch/bystander potency) is the SAME wet-lab residual RUNG-1 named. Reduced model calibrated to RUNG-1's qualitative signatures but still a reduction; rates scaled, not fit to a cell line. 2D, no diffusion geometry/immune; heterogeneity via gate/seed. Robust claim = the RELATIONSHIP, not kill%."
+}

@@ -1,0 +1,898 @@
+{
+  "tag": "rung14_mechanism_arena",
+  "question": "Across many regimes (time, dose, recognition leak q_n), which cancer-killing STRATEGY clears tumour while sparing normal -- which hits, which is close, which is far?",
+  "death_effector": "validated EARM-burst switch (RUNG-13 / scripts/38), shared by all dynamical arms",
+  "safe_effective_def": {
+    "tumour_killed_min": 0.8,
+    "normal_killed_max": 0.01
+  },
+  "regimes_tested": [
+    {
+      "T": 30.0,
+      "q_n": 0.05,
+      "strength": 0.5
+    },
+    {
+      "T": 30.0,
+      "q_n": 0.05,
+      "strength": 1.0
+    },
+    {
+      "T": 30.0,
+      "q_n": 0.2,
+      "strength": 0.5
+    },
+    {
+      "T": 30.0,
+      "q_n": 0.2,
+      "strength": 1.0
+    },
+    {
+      "T": 30.0,
+      "q_n": 0.5,
+      "strength": 0.5
+    },
+    {
+      "T": 30.0,
+      "q_n": 0.5,
+      "strength": 1.0
+    },
+    {
+      "T": 80.0,
+      "q_n": 0.05,
+      "strength": 0.5
+    },
+    {
+      "T": 80.0,
+      "q_n": 0.05,
+      "strength": 1.0
+    },
+    {
+      "T": 80.0,
+      "q_n": 0.2,
+      "strength": 0.5
+    },
+    {
+      "T": 80.0,
+      "q_n": 0.2,
+      "strength": 1.0
+    },
+    {
+      "T": 80.0,
+      "q_n": 0.5,
+      "strength": 0.5
+    },
+    {
+      "T": 80.0,
+      "q_n": 0.5,
+      "strength": 1.0
+    }
+  ],
+  "mechanisms": {
+    "per_cell": {
+      "kind": "rigorous",
+      "regimes": [
+        {
+          "T": 30.0,
+          "q_n": 0.05,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0461,
+          "safe_effective": false
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.05,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0461,
+          "safe_effective": false
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.2,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.206,
+          "safe_effective": false
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.2,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.206,
+          "safe_effective": false
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.5,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.5053,
+          "safe_effective": false
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.5,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.5053,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.05,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0461,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.05,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0461,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.2,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.206,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.2,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.206,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.5,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.5053,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.5,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.5053,
+          "safe_effective": false
+        }
+      ],
+      "safe_fraction": 0.0,
+      "best": {
+        "T": 30.0,
+        "q_n": 0.05,
+        "strength": 0.5,
+        "tumour_killed": 0.9434,
+        "normal_killed": 0.0461,
+        "safe_effective": false
+      }
+    },
+    "wave": {
+      "kind": "rigorous",
+      "regimes": [
+        {
+          "T": 30.0,
+          "q_n": 0.05,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0011,
+          "safe_effective": true
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.05,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0011,
+          "safe_effective": true
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.2,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0142,
+          "safe_effective": false
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.2,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0142,
+          "safe_effective": false
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.5,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.1046,
+          "safe_effective": false
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.5,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.1053,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.05,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0011,
+          "safe_effective": true
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.05,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0011,
+          "safe_effective": true
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.2,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0142,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.2,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0142,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.5,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.1053,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.5,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.1053,
+          "safe_effective": false
+        }
+      ],
+      "safe_fraction": 0.333,
+      "best": {
+        "T": 30.0,
+        "q_n": 0.05,
+        "strength": 0.5,
+        "tumour_killed": 0.9434,
+        "normal_killed": 0.0011,
+        "safe_effective": true
+      }
+    },
+    "quorum": {
+      "kind": "rigorous",
+      "regimes": [
+        {
+          "T": 30.0,
+          "q_n": 0.05,
+          "strength": 0.5,
+          "tumour_killed": 0.8879,
+          "normal_killed": 0.0,
+          "safe_effective": true
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.05,
+          "strength": 1.0,
+          "tumour_killed": 0.8879,
+          "normal_killed": 0.0,
+          "safe_effective": true
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.2,
+          "strength": 0.5,
+          "tumour_killed": 0.9156,
+          "normal_killed": 0.0043,
+          "safe_effective": true
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.2,
+          "strength": 1.0,
+          "tumour_killed": 0.9156,
+          "normal_killed": 0.0043,
+          "safe_effective": true
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.5,
+          "strength": 0.5,
+          "tumour_killed": 0.9356,
+          "normal_killed": 0.1479,
+          "safe_effective": false
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.5,
+          "strength": 1.0,
+          "tumour_killed": 0.9356,
+          "normal_killed": 0.1479,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.05,
+          "strength": 0.5,
+          "tumour_killed": 0.8879,
+          "normal_killed": 0.0,
+          "safe_effective": true
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.05,
+          "strength": 1.0,
+          "tumour_killed": 0.8879,
+          "normal_killed": 0.0,
+          "safe_effective": true
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.2,
+          "strength": 0.5,
+          "tumour_killed": 0.9156,
+          "normal_killed": 0.0043,
+          "safe_effective": true
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.2,
+          "strength": 1.0,
+          "tumour_killed": 0.9156,
+          "normal_killed": 0.0043,
+          "safe_effective": true
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.5,
+          "strength": 0.5,
+          "tumour_killed": 0.9356,
+          "normal_killed": 0.1479,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.5,
+          "strength": 1.0,
+          "tumour_killed": 0.9356,
+          "normal_killed": 0.1479,
+          "safe_effective": false
+        }
+      ],
+      "safe_fraction": 0.667,
+      "best": {
+        "T": 30.0,
+        "q_n": 0.2,
+        "strength": 0.5,
+        "tumour_killed": 0.9156,
+        "normal_killed": 0.0043,
+        "safe_effective": true
+      }
+    },
+    "diffusible": {
+      "kind": "rigorous",
+      "regimes": [
+        {
+          "T": 30.0,
+          "q_n": 0.05,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0149,
+          "safe_effective": false
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.05,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0195,
+          "safe_effective": false
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.2,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0993,
+          "safe_effective": false
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.2,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.1163,
+          "safe_effective": false
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.5,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.2759,
+          "safe_effective": false
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.5,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.3387,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.05,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0443,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.05,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0461,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.2,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.206,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.2,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.206,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.5,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.5053,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.5,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.5053,
+          "safe_effective": false
+        }
+      ],
+      "safe_fraction": 0.0,
+      "best": {
+        "T": 30.0,
+        "q_n": 0.05,
+        "strength": 0.5,
+        "tumour_killed": 0.9434,
+        "normal_killed": 0.0149,
+        "safe_effective": false
+      }
+    },
+    "oncolytic": {
+      "kind": "rigorous",
+      "regimes": [
+        {
+          "T": 30.0,
+          "q_n": 0.05,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0213,
+          "safe_effective": false
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.05,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0216,
+          "safe_effective": false
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.2,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.1149,
+          "safe_effective": false
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.2,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.1177,
+          "safe_effective": false
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.5,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.3433,
+          "safe_effective": false
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.5,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.3525,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.05,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0461,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.05,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0461,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.2,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.206,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.2,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.206,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.5,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.5053,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.5,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.5053,
+          "safe_effective": false
+        }
+      ],
+      "safe_fraction": 0.0,
+      "best": {
+        "T": 30.0,
+        "q_n": 0.05,
+        "strength": 0.5,
+        "tumour_killed": 0.9434,
+        "normal_killed": 0.0213,
+        "safe_effective": false
+      }
+    },
+    "alt_death": {
+      "kind": "rigorous",
+      "regimes": [
+        {
+          "T": 30.0,
+          "q_n": 0.05,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0011,
+          "safe_effective": true
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.05,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0011,
+          "safe_effective": true
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.2,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0142,
+          "safe_effective": false
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.2,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0142,
+          "safe_effective": false
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.5,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.1053,
+          "safe_effective": false
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.5,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.1053,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.05,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0011,
+          "safe_effective": true
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.05,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0011,
+          "safe_effective": true
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.2,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0142,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.2,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0142,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.5,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.1053,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.5,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.1053,
+          "safe_effective": false
+        }
+      ],
+      "safe_fraction": 0.333,
+      "best": {
+        "T": 30.0,
+        "q_n": 0.05,
+        "strength": 0.5,
+        "tumour_killed": 0.9434,
+        "normal_killed": 0.0011,
+        "safe_effective": true
+      }
+    },
+    "combo": {
+      "kind": "rigorous",
+      "regimes": [
+        {
+          "T": 30.0,
+          "q_n": 0.05,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0011,
+          "safe_effective": true
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.05,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0011,
+          "safe_effective": true
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.2,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0142,
+          "safe_effective": false
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.2,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0142,
+          "safe_effective": false
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.5,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.105,
+          "safe_effective": false
+        },
+        {
+          "T": 30.0,
+          "q_n": 0.5,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.1053,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.05,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0011,
+          "safe_effective": true
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.05,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0011,
+          "safe_effective": true
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.2,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0142,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.2,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.0142,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.5,
+          "strength": 0.5,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.1053,
+          "safe_effective": false
+        },
+        {
+          "T": 80.0,
+          "q_n": 0.5,
+          "strength": 1.0,
+          "tumour_killed": 0.9434,
+          "normal_killed": 0.1053,
+          "safe_effective": false
+        }
+      ],
+      "safe_fraction": 0.333,
+      "best": {
+        "T": 30.0,
+        "q_n": 0.05,
+        "strength": 0.5,
+        "tumour_killed": 0.9434,
+        "normal_killed": 0.0011,
+        "safe_effective": true
+      }
+    },
+    "oncotripsy": {
+      "kind": "toy_future",
+      "result": {
+        "drive_freq": 0.7,
+        "tumour_killed": 0.292,
+        "normal_killed": 0.0,
+        "score": 0.292
+      },
+      "note": "TOY mechanical-resonance cartoon; real test = mechanics/wet-lab (Heyden-Ortiz 2016)"
+    },
+    "ttfields": {
+      "kind": "toy_future",
+      "result": {
+        "tumour_killed": 0.959,
+        "normal_killed": 0.274
+      },
+      "note": "TOY mitosis-disruption cartoon; real = FDA Optune physics/clinic"
+    }
+  },
+  "leaderboard_rigorous": [
+    {
+      "mechanism": "quorum",
+      "safe_fraction": 0.667
+    },
+    {
+      "mechanism": "wave",
+      "safe_fraction": 0.333
+    },
+    {
+      "mechanism": "alt_death",
+      "safe_fraction": 0.333
+    },
+    {
+      "mechanism": "combo",
+      "safe_fraction": 0.333
+    },
+    {
+      "mechanism": "per_cell",
+      "safe_fraction": 0.0
+    },
+    {
+      "mechanism": "diffusible",
+      "safe_fraction": 0.0
+    },
+    {
+      "mechanism": "oncolytic",
+      "safe_fraction": 0.0
+    }
+  ],
+  "INTERPRETATION_MAP": {
+    "hits": "safe_fraction high across regimes -> robust strategy concept worth wet-lab prioritisation.",
+    "close": "safe in some regimes only -> works in a window; needs the right dose/time/leak (tune).",
+    "far": "safe_fraction ~0 -> concept does not contain itself in silico; deprioritise or redesign."
+  },
+  "DECISIVE": "In-silico containment leaderboard (safe&effective fraction): quorum=0.67, wave=0.33, alt_death=0.33, combo=0.33, per_cell=0.00, diffusible=0.00, oncolytic=0.00. Strategies that HIT across >=50% of regimes: ['quorum']. per_cell (no propagation) is the baseline whose normal-leak scales LINEARLY with q_n; propagation/quorum/gated arms that beat it convert that into bounded leak. Toy physics arms reported separately (future). Coupling/delivery efficiency is the wet-lab residual.",
+  "CEILING": "Every arm's recognition->effector coupling is a PROXY parameter; mapping it to a real molecular/delivery efficiency is the wet-lab residual (agonism, since RUNG-1). Dynamical arms share one reduced death model (RUNG-13), 2D, no immune/real-diffusion-geometry. TOY physics arms (oncotripsy/ttfields) are cartoons for triage, NOT validated physics. Leaderboard ranks in-silico containment robustness, NOT clinical efficacy."
+}
