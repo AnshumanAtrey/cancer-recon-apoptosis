@@ -1,0 +1,72 @@
+[
+  {
+    "id": "IDH1_R132H_A0101",
+    "gene": "IDH1",
+    "mut_label": "R132H",
+    "allele": "HLA-A*01:01",
+    "pep_mut": "IIGHHAYGDQY",
+    "pep_wt": "IIGRHAYGDQY",
+    "p_in_pep": 4,
+    "wt_rank": 2.277,
+    "mut_rank": 1.182,
+    "max_prev": 0.7,
+    "esmfold_D": 1.0,
+    "esmfold_per_cell_safe": true
+  },
+  {
+    "id": "IDH1_R132H_B1501",
+    "gene": "IDH1",
+    "mut_label": "R132H",
+    "allele": "HLA-B*15:01",
+    "pep_mut": "IIIGHHAY",
+    "pep_wt": "IIIGRHAY",
+    "p_in_pep": 5,
+    "wt_rank": 2.288,
+    "mut_rank": 1.391,
+    "max_prev": 0.7,
+    "esmfold_D": 1.0,
+    "esmfold_per_cell_safe": true
+  },
+  {
+    "id": "BRAF_V600E_A0101",
+    "gene": "BRAF",
+    "mut_label": "V600E",
+    "allele": "HLA-A*01:01",
+    "pep_mut": "ATEKSRWSGSH",
+    "pep_wt": "ATVKSRWSGSH",
+    "p_in_pep": 3,
+    "wt_rank": 7.256,
+    "mut_rank": 1.822,
+    "max_prev": 0.45,
+    "esmfold_D": 1.0,
+    "esmfold_per_cell_safe": true
+  },
+  {
+    "id": "KRAS_G12D_A0101",
+    "gene": "KRAS",
+    "mut_label": "G12D",
+    "allele": "HLA-A*01:01",
+    "pep_mut": "VVVGADGVGK",
+    "pep_wt": "VVVGAGGVGK",
+    "p_in_pep": 6,
+    "wt_rank": 2.629,
+    "mut_rank": 1.902,
+    "max_prev": 0.4,
+    "esmfold_D": 1.0,
+    "esmfold_per_cell_safe": true
+  },
+  {
+    "id": "KRAS_G12D_B0801",
+    "gene": "KRAS",
+    "mut_label": "G12D",
+    "allele": "HLA-B*08:01",
+    "pep_mut": "DGVGKSAL",
+    "pep_wt": "GGVGKSAL",
+    "p_in_pep": 1,
+    "wt_rank": 3.869,
+    "mut_rank": 0.822,
+    "max_prev": 0.4,
+    "esmfold_D": 1.0,
+    "esmfold_per_cell_safe": true
+  }
+]
