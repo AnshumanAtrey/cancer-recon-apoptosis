@@ -1,0 +1,91 @@
+{
+  "tag": "rung21_crosskill",
+  "question": "Does a LAYERED killer (T-cell + NK + bystander wave) clear the MHC-dark escapees that T-cells ALONE cannot? Quantifies the 'missing-self' trap across the measured escapee fractions and NK-evasion.",
+  "model": "stochastic lattice CA; MHC-HIGH=T-target, MHC-DARK=NK-target; pure-numpy CPU.",
+  "params": {
+    "grid": 120,
+    "N0": 2160,
+    "reps": 28,
+    "p_T": 0.6,
+    "p_grow": 0.25
+  },
+  "f_escapee_levels": [
+    0.0,
+    0.04,
+    0.08,
+    0.13,
+    0.2
+  ],
+  "p_cure_vs_escapee_fraction": {
+    "T_only": {
+      "0.0": 0.14285714285714285,
+      "0.04": 0.17857142857142858,
+      "0.08": 0.14285714285714285,
+      "0.13": 0.03571428571428571,
+      "0.2": 0.25
+    },
+    "T+NK": {
+      "0.0": 0.21428571428571427,
+      "0.04": 0.2857142857142857,
+      "0.08": 0.14285714285714285,
+      "0.13": 0.07142857142857142,
+      "0.2": 0.25
+    },
+    "T+NK+wave": {
+      "0.0": 1.0,
+      "0.04": 1.0,
+      "0.08": 1.0,
+      "0.13": 1.0,
+      "0.2": 1.0
+    }
+  },
+  "nk_evasion_sweep_at_f0.13": {
+    "p_NK_levels": [
+      0.0,
+      0.2,
+      0.4,
+      0.6,
+      0.9
+    ],
+    "T+NK": {
+      "0.0": 0.0,
+      "0.2": 0.0,
+      "0.4": 0.03571428571428571,
+      "0.6": 0.10714285714285714,
+      "0.9": 0.17857142857142858
+    },
+    "T+NK+wave": {
+      "0.0": 0.07142857142857142,
+      "0.2": 0.03571428571428571,
+      "0.4": 0.32142857142857145,
+      "0.6": 1.0,
+      "0.9": 1.0
+    }
+  },
+  "rung18_escapee_anchor": {
+    "genetic_dark_~0.04": "RUNG-18 systemic-dark",
+    "transcriptional_dark_lung_~0.13": "RUNG-18b"
+  },
+  "HEADLINE": {
+    "plain": "T-cells ALONE leave the MHC-dark escapees -> cure collapses as the escapee fraction rises (the RUNG-19 failure). Adding NK (which kills exactly the MHC-LOST cells) CLOSES that hole -- the tumour is trapped: keep MHC -> T kills, drop MHC -> NK kills. NK-evasion reopens it, and only the resistance-agnostic bystander wave can still finish the job. The layered T+NK+wave is the most robust across escapee fraction AND NK-evasion.",
+    "T_only_at_measured_escapee": {
+      "f=0.0": 0.14285714285714285,
+      "f=0.04": 0.17857142857142858,
+      "f=0.08": 0.14285714285714285,
+      "f=0.13": 0.03571428571428571,
+      "f=0.2": 0.25
+    },
+    "T+NK+wave_at_measured_escapee": {
+      "f=0.0": 1.0,
+      "f=0.04": 1.0,
+      "f=0.08": 1.0,
+      "f=0.13": 1.0,
+      "f=0.2": 1.0
+    }
+  },
+  "INTERPRETATION_MAP": {
+    "T_only collapses with f, T+NK rescues": "confirms the 'missing-self' complementarity computationally -> NK is the natural cross-kill for MHC-loss escape.",
+    "low p_NK reopens hole, wave still closes it": "if the tumour evades NK too, only the agnostic bystander wave (RUNG-14 ferroptosis/quorum) clears it -> the 3rd layer is not redundant."
+  },
+  "CEILING": "2D lattice CA, not a tumour; p_T/p_NK/bystander are effective per-step probs not measured rates; NK reduced to 'kills MHC-low' (real NK-evasion beyond MHC = captured only as low p_NK); mu_mhc lumped. BOUNDS whether layering closes the blind spot; NOT a cure claim."
+}

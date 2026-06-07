@@ -162,7 +162,18 @@ axis (instant, from RUNG-12 handles) + surface axis (CELLxGENE Census).
 > escape (~4–8% genetic + ~13% transcriptional in lung) means real tumours already carry escapees → the bare wave is insufficient; the
 > ferroptosis_wave/quorum cross-kill (or a 2nd orthogonal handle) is the lever that beats evolutionary escape. Ceiling: 2D lattice CA, μ is
 > a lumped effective escape rate, clinical extrapolation assumes LD scaling holds past simulated sizes — BOUNDS the curable size, not a cure.
-
+>
+> **RUNG-21 (cross-kill — does a LAYERED killer close the MHC blind spot?, stochastic lattice, T-cell + NK + bystander wave):**
+> the operational close of RUNG-18/18b/19. Tumour cells are MHC-HIGH (T-target) or MHC-DARK (NK-target, "missing-self"). **Result —
+> POSITIVE but it corrected my hypothesis:** the full **T+NK+wave layer cures 100% across ALL measured escapee fractions (0–20%, incl.
+> RUNG-18/18b's 4–13%)** → layering closes the blind spot. **All three layers are LOAD-BEARING — remove any one and escape reopens:**
+> (a) drop the wave → T-only AND T+NK both FAIL (≤0.29 cure — per-cell kills can't outpace regrowth at tumour scale; my pre-registered
+> "NK rescues T-only" was WRONG without the wave); (b) drop NK (NK-evasion p_NK→0) → even WITH the wave, cure **collapses 1.00 → 0.07**
+> at 13% escapees → the MHC-dark cells survive. So **NK's necessity for the dark escapees is demonstrated by the evasion collapse** (the
+> "missing-self" complementarity, computationally). HONEST caveat: the wave's dominance is partly parameter-dependent (per-cell kill weak
+> vs regrowth at this scale — higher p_T/p_NK might let T+NK clear without it); the mechanism-robust finding is **NK ⟂ T on the MHC-dark
+> subpopulation**, not "the wave is the only thing that matters". Ceiling: 2D CA, effective kill probs not measured rates, NK reduced to
+> "kills MHC-low". Net: a layered T+NK+wave defence clears the measured escapee range; each layer covers another's blind spot.
 **Status legend** — ✅ built + tested · 🟢 testable now with our tools · 🔮 future (physics/delivery, kept safe)
 **The one rule:** every "kill" claim is a HYPOTHESIS with a stated wet-lab residual. β / kill% are proxies, never verdicts.
 
@@ -176,6 +187,7 @@ axis (instant, from RUNG-12 handles) + surface axis (CELLxGENE Census).
 ### Tier B — Self-recognition & propagation: *one cell tells its neighbour* (Shriya's core + my idea)
 - **B1 Bystander death wave** — seed a few, let death spread cell→cell; per-hop recognition-gated. *Basis: HSV-TK bystander, synNotch.* `Test:` coupled-EARM lattice. **Status: ✅ RUNG-13 — bounded wave, confirms percolation, resistance-resistant *up to L≈0.1 alone*.**
 - **B3 Evolutionary escape race** — does the wave clear before resistance mutates & sweeps? `Test:` stochastic lattice vs Luria-Delbrück. **Status: ✅ RUNG-19 — cure collapses at L=μ·N₀≈1; bystander cross-kill (B1+ferroptosis/quorum) shifts curable size ~10×; clinical tumours (L≫1) NEED a resistance-agnostic 2nd mechanism — the bare recognition-gated wave can't cure established disease.**
+- **B4 Cross-kill — layered T + NK + wave** — close the MHC blind spot: T-cells kill MHC+, NK kill MHC-lost (missing-self), wave is agnostic. `Test:` stochastic lattice, 3 arms × escapee fraction × NK-evasion. **Status: ✅ RUNG-21 — full T+NK+wave layer cures 100% across measured escapee fractions (4–13%); ALL THREE layers load-bearing (remove the wave → fail; remove NK → cure collapses 1.00→0.07 on the dark escapees). NK necessity demonstrated. Honest: wave-dominance partly parameter-dependent.**
 - **B2 Quorum / density gate** — die only where the *local density* of recognised cells is high (cancer is clonal & dense; scattered normal false-positives lack quorum). *Basis: bacterial quorum sensing ported to mammalian synthetic circuits.* `Test:` arena `quorum`. **Status: 🟢 arena — currently the LEADER (spares isolated false-positives entirely).**
 - **B3 Diffusible-factor relay (GDEPT)** — dying cell releases a *diffusing* death factor (HSV-TK/GCV, cytosine-deaminase/5-FC). *Basis: the bystander route that does NOT need gap junctions — relevant because tumours barely gap-couple (RUNG-12P/A, Cx43 in ~6%).* `Test:` arena `diffusible` (reaction-diffusion). **Status: 🟢 arena — leaks at high q_n unless gated tighter.**
 - **B4 Oncolytic self-amplifying signal** — the death trigger *replicates* in tumour cells before firing (oncolytic-virus / self-amplifying-RNA analogue) → super-critical spread in tumour, dies out in normal. `Test:` arena `oncolytic`. **Status: 🟢 arena.**

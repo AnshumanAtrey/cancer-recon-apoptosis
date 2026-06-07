@@ -57,7 +57,7 @@ Single surface windows leak (proven). Inside windows are richer/more specific. P
       addressability vs false-positive on vital tissue. *Answers:* does stacking windows push normal-cell
       false-positives toward zero while keeping tumour coverage? (the precision multiplier).
 
-- [ ] **CROSS-KILL CLEARANCE — T-cell + NK + bystander combined** (RUNG-19's required 2nd mechanism). 💻 M2,
+- [x] **CROSS-KILL CLEARANCE — T-cell + NK + bystander combined** ✅ RUNG-21 (T+NK+wave cures 100% across measured escapee 4-13%; all 3 layers load-bearing; NK necessity shown by evasion collapse 1.00→0.07) (RUNG-19's required 2nd mechanism). 💻 M2,
       extend the escape-race lattice. Real tumours already carry MHC-dark "escapee" cells (RUNG-18/18b), so a
       T-cell-only therapy *cannot* clear them — RUNG-19 proved the bare wave needs a **resistance-agnostic
       cross-kill**. Model two killers together: **T-cells** kill MHC+ cells (recognition-gated) + **NK cells**
