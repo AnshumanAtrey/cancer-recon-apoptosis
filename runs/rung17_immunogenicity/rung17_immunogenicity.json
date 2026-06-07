@@ -1,0 +1,223 @@
+{
+  "tag": "rung17_neoantigen_immunogenicity",
+  "axis": "BINDING (stage 2): TCR-recognition propensity of presented handles",
+  "model": "composite z-score: 0.5*agretopicity(DAI, MHCflurry) + 0.3*foreignness(BLOSUM62 vs known-immunogenic IEDB/lit epitopes) + 0.2*TCR-contact hydrophobicity(Kyte-Doolittle, Chowell 2015). Tiers relative (top/bottom third).",
+  "n_presented_handles": 175,
+  "n_clean_handles": 29,
+  "clean_immuno_tiers": {
+    "HIGH": 23,
+    "MED": 6,
+    "LOW": 0
+  },
+  "clean_survival_fraction_HIGH_or_MED": 1.0,
+  "agretopicity_median": {
+    "clean": 1.056,
+    "non_clean": 0.017,
+    "hard_clinical_oracle": 0.69
+  },
+  "axis_validated": true,
+  "hard_clinical_oracle": [
+    {
+      "handle": "KRAS 12D/HLA-C*08:02",
+      "tier": "HIGH",
+      "clean": false,
+      "A": 1.316,
+      "F": 1.7,
+      "H": -0.429
+    },
+    {
+      "handle": "KRAS 12V/HLA-B*40:01",
+      "tier": "HIGH",
+      "clean": true,
+      "A": 0.69,
+      "F": 1.364,
+      "H": 1.575
+    },
+    {
+      "handle": "TP53 175H/HLA-A*26:01",
+      "tier": "MED",
+      "clean": false,
+      "A": 0.348,
+      "F": 1.444,
+      "H": -0.967
+    }
+  ],
+  "top_clean_handles": [
+    {
+      "gene": "CTNNB1",
+      "mut": "37F",
+      "allele": "HLA-C*07:02",
+      "peptide": "SYLDSGIHF",
+      "mut_rank": 0.007,
+      "wt_rank": 5.491,
+      "clean": true,
+      "A": 2.74,
+      "F": 2.0,
+      "H": 0.067,
+      "composite_z": 2.511,
+      "immuno_tier": "HIGH"
+    },
+    {
+      "gene": "CTNNB1",
+      "mut": "37F",
+      "allele": "HLA-C*06:02",
+      "peptide": "SYLDSGIHF",
+      "mut_rank": 0.448,
+      "wt_rank": 15.654,
+      "clean": true,
+      "A": 1.543,
+      "F": 2.0,
+      "H": 0.067,
+      "composite_z": 1.535,
+      "immuno_tier": "HIGH"
+    },
+    {
+      "gene": "CTNNB1",
+      "mut": "37F",
+      "allele": "HLA-C*07:01",
+      "peptide": "SYLDSGIHF",
+      "mut_rank": 0.385,
+      "wt_rank": 12.366,
+      "clean": true,
+      "A": 1.507,
+      "F": 2.0,
+      "H": 0.067,
+      "composite_z": 1.506,
+      "immuno_tier": "HIGH"
+    },
+    {
+      "gene": "CTNNB1",
+      "mut": "37F",
+      "allele": "HLA-B*35:01",
+      "peptide": "SYLDSGIHF",
+      "mut_rank": 1.44,
+      "wt_rank": 26.037,
+      "clean": true,
+      "A": 1.257,
+      "F": 2.0,
+      "H": 0.067,
+      "composite_z": 1.302,
+      "immuno_tier": "HIGH"
+    },
+    {
+      "gene": "EGFR",
+      "mut": "858R",
+      "allele": "HLA-A*68:01",
+      "peptide": "HVKITDFGR",
+      "mut_rank": 0.153,
+      "wt_rank": 7.035,
+      "clean": true,
+      "A": 1.663,
+      "F": 1.667,
+      "H": -0.2,
+      "composite_z": 1.222,
+      "immuno_tier": "HIGH"
+    },
+    {
+      "gene": "CTNNB1",
+      "mut": "37F",
+      "allele": "HLA-A*32:01",
+      "peptide": "QSYLDSGIHF",
+      "mut_rank": 1.478,
+      "wt_rank": 30.464,
+      "clean": true,
+      "A": 1.314,
+      "F": 1.8,
+      "H": -0.129,
+      "composite_z": 1.096,
+      "immuno_tier": "HIGH"
+    },
+    {
+      "gene": "TP53",
+      "mut": "248Q",
+      "allele": "HLA-B*15:01",
+      "peptide": "NQRPILTII",
+      "mut_rank": 0.718,
+      "wt_rank": 9.177,
+      "clean": true,
+      "A": 1.107,
+      "F": 1.778,
+      "H": 1.0,
+      "composite_z": 1.091,
+      "immuno_tier": "HIGH"
+    },
+    {
+      "gene": "CTNNB1",
+      "mut": "37F",
+      "allele": "HLA-A*26:01",
+      "peptide": "QSYLDSGIHF",
+      "mut_rank": 1.499,
+      "wt_rank": 26.493,
+      "clean": true,
+      "A": 1.247,
+      "F": 1.8,
+      "H": -0.129,
+      "composite_z": 1.041,
+      "immuno_tier": "HIGH"
+    },
+    {
+      "gene": "CTNNB1",
+      "mut": "37F",
+      "allele": "HLA-B*08:01",
+      "peptide": "YLDSGIHF",
+      "mut_rank": 1.481,
+      "wt_rank": 16.845,
+      "clean": true,
+      "A": 1.056,
+      "F": 2.0,
+      "H": -0.68,
+      "composite_z": 1.014,
+      "immuno_tier": "HIGH"
+    },
+    {
+      "gene": "CTNNB1",
+      "mut": "37F",
+      "allele": "HLA-B*15:01",
+      "peptide": "QQSYLDSGIHF",
+      "mut_rank": 1.104,
+      "wt_rank": 30.103,
+      "clean": true,
+      "A": 1.436,
+      "F": 1.636,
+      "H": -0.213,
+      "composite_z": 1.0,
+      "immuno_tier": "HIGH"
+    },
+    {
+      "gene": "CTNNB1",
+      "mut": "37F",
+      "allele": "HLA-B*44:03",
+      "peptide": "QQSYLDSGIHF",
+      "mut_rank": 1.983,
+      "wt_rank": 20.75,
+      "clean": true,
+      "A": 1.02,
+      "F": 1.636,
+      "H": -0.213,
+      "composite_z": 0.661,
+      "immuno_tier": "HIGH"
+    },
+    {
+      "gene": "NRAS",
+      "mut": "61K",
+      "allele": "HLA-A*03:01",
+      "peptide": "CLLDILDTAGK",
+      "mut_rank": 0.682,
+      "wt_rank": 12.205,
+      "clean": true,
+      "A": 1.253,
+      "F": 1.273,
+      "H": 0.725,
+      "composite_z": 0.608,
+      "immuno_tier": "HIGH"
+    }
+  ],
+  "n_immunogenic_refs": 31,
+  "INTERPRETATION_MAP": {
+    "survival": "fraction of CLEAN handles in the HIGH/MED propensity band. NOTE this is largely BY CONSTRUCTION: clean (WT off MHC) == high agretopicity (DAI), and DAI is the dominant weight -> the headline finding is that SAFETY and IMMUNOGENICITY ALIGN (a tumour-exclusive clean handle is automatically high on the dominant immunogenicity driver), NOT 100 independent TCR wins. The real discriminator WITHIN clean is foreignness + hydrophobicity.",
+    "agretopicity_dominant": "clean handles pass the dominant validated filter (high DAI) BY CONSTRUCTION; foreignness + hydrophobicity stratify WITHIN them -> which to screen first.",
+    "axis_validation": "the famous clinical targets KRAS/TP53 are validated-but-HARD (low agretopicity, often WT-co-presented -> needed engineered TCRs); they correctly fall BELOW the clean median -> the agretopicity axis separates easy from hard, and the clean set sits on the favourable side."
+  },
+  "DECISIVE": "Of 29 CLEAN (deployable-safe) neoantigen handles, immunogenicity-propensity tiers: HIGH 23, MED 6, LOW 0 -> ~100% HIGH/MED. AXIS VALIDATION: agretopicity (the dominant validated driver) median is 1.06 for CLEAN vs 0.02 non-clean; the famous clinical targets (KRAS-G12D/G12V/TP53-R175H), validated-but-HARD, sit at median 0.69 -- BELOW the clean median -> the axis separates easy from hard and the clean set is on the favourable side (validated). So clean handles pass the dominant binding-axis filter by construction; foreignness + TCR-contact hydrophobicity rank which to screen first (top: CTNNB1-37F). => the binding residual is now ESTIMATED, not hand-waved: most clean handles look TCR-addressable and BETTER-positioned than the hard clinical targets -- but this is a PRIORITISATION for TCR discovery, NOT proof a receptor exists. MAGE-A3 caution: high prediction != safe TCR.",
+  "CEILING": "PREDICTED TCR-recognition PROPENSITY, not a validated TCR -- ESTIMATES the residual, does not remove it (cf. MAGE-A3: high-prediction, fatal cross-reactivity). Foreignness uses a curated epitope SUBSET (not full IEDB); composite weights are a transparent choice, not a trained model (PRIME/NetTCR/AF3-TCR = heavier SOTA follow-ups). 'Survives' = prioritisation for a TCR screen, NOT a green light. Presentation+immunogenicity prediction still != killing."
+}

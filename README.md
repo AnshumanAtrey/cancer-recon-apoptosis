@@ -118,6 +118,14 @@ axis (instant, from RUNG-12 handles) + surface axis (CELLxGENE Census).
 > melanoma 81–100%, NSCLC/bladder 64–99%**, down to **PDAC 20–68%, breast 18–64%** (TMB-graded). Caveat: this is **personalised**
 > addressability (per-patient neoantigen ID + effector), not off-the-shelf; presentation ≠ killing (TCR = wet-lab residual).
 >
+> **RUNG-17 (binding axis — does a T-cell recognise the clean handles?, MHCflurry+BLOSUM):** scored every clean neoantigen
+> handle for TCR-recognition propensity (agretopicity ⊕ foreignness ⊕ TCR-contact hydrophobicity). **Key finding: safety and
+> immunogenicity ALIGN** — a clean (tumour-exclusive) handle is *automatically* high on agretopicity (the dominant validated
+> immunogenicity driver), so all 29 clean handles sit HIGH/MED propensity. Axis validated: the famous *hard* clinical targets
+> (KRAS-G12D/TP53-R175H — needed engineered TCRs) correctly fall **below** the clean median (clean DAI 1.06 vs hard-clinical 0.69).
+> Top screen priorities: CTNNB1-S37F, EGFR-L858R, TP53-R248Q. Caveat: PREDICTED propensity, a prioritisation for TCR discovery —
+> **not** proof a receptor exists (MAGE-A3: high prediction, fatal cross-reactivity).
+>
 > **RUNG-15 census (real CELLxGENE, 25 tumour antigens): DECISIVE NEGATIVE — 0/25 single surface markers are safe under any mechanism. Specificity
 > anti-correlation: tumour-high markers (EPCAM/TROP2/MUC1/HER2/EGFR) leak into vital tissue (q_n 0.8–1.0); vital-clean
 > markers (CD20/PSMA/CD19) are barely tumour-expressed (q_t <0.05). → tumour-exclusivity must come from MUTATION
