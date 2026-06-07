@@ -1,0 +1,186 @@
+{
+  "tag": "rung20_boltz_specificity",
+  "axis": "BINDING (Shriya stage 2) \u2014 structural mut-vs-WT presentation discrimination, independent model",
+  "model": "Boltz-2 (co-folding; interface pLDDT / ipTM), diffusion_samples=1",
+  "iplddt_min": 0.7,
+  "n_handles": 5,
+  "results": [
+    {
+      "id": "IDH1_R132H_A0101",
+      "gene": "IDH1",
+      "mut_label": "R132H",
+      "allele": "HLA-A*01:01",
+      "pep_mut": "IIGHHAYGDQY",
+      "pep_wt": "IIGRHAYGDQY",
+      "p_in_pep": 4,
+      "wt_rank": 2.277,
+      "mut_rank": 1.182,
+      "max_prev": 0.7,
+      "esmfold_D": 1.0,
+      "esmfold_per_cell_safe": true,
+      "boltz": {
+        "D_boltz": 0.021,
+        "presents_mut": true,
+        "mut_iplddt": 0.95,
+        "wt_iplddt": 0.944,
+        "iplddt_gap": 0.006,
+        "mut_iptm": 0.95,
+        "wt_iptm": 0.962
+      },
+      "mhcflurry_M": 0.035,
+      "agreement": {
+        "votes": {
+          "boltz": false,
+          "esmfold": true,
+          "mhcflurry": false
+        },
+        "n_methods_discriminating": 1,
+        "verdict": "FLAGGED_1of3"
+      }
+    },
+    {
+      "id": "IDH1_R132H_B1501",
+      "gene": "IDH1",
+      "mut_label": "R132H",
+      "allele": "HLA-B*15:01",
+      "pep_mut": "IIIGHHAY",
+      "pep_wt": "IIIGRHAY",
+      "p_in_pep": 5,
+      "wt_rank": 2.288,
+      "mut_rank": 1.391,
+      "max_prev": 0.7,
+      "esmfold_D": 1.0,
+      "esmfold_per_cell_safe": true,
+      "boltz": {
+        "D_boltz": 0.0,
+        "presents_mut": true,
+        "mut_iplddt": 0.984,
+        "wt_iplddt": 0.985,
+        "iplddt_gap": -0.001,
+        "mut_iptm": 0.985,
+        "wt_iptm": 0.979
+      },
+      "mhcflurry_M": 0.036,
+      "agreement": {
+        "votes": {
+          "boltz": false,
+          "esmfold": true,
+          "mhcflurry": false
+        },
+        "n_methods_discriminating": 1,
+        "verdict": "FLAGGED_1of3"
+      }
+    },
+    {
+      "id": "BRAF_V600E_A0101",
+      "gene": "BRAF",
+      "mut_label": "V600E",
+      "allele": "HLA-A*01:01",
+      "pep_mut": "ATEKSRWSGSH",
+      "pep_wt": "ATVKSRWSGSH",
+      "p_in_pep": 3,
+      "wt_rank": 7.256,
+      "mut_rank": 1.822,
+      "max_prev": 0.45,
+      "esmfold_D": 1.0,
+      "esmfold_per_cell_safe": true,
+      "boltz": {
+        "D_boltz": 0.031,
+        "presents_mut": true,
+        "mut_iplddt": 0.976,
+        "wt_iplddt": 0.967,
+        "iplddt_gap": 0.009,
+        "mut_iptm": 0.952,
+        "wt_iptm": 0.956
+      },
+      "mhcflurry_M": 0.657,
+      "agreement": {
+        "votes": {
+          "boltz": false,
+          "esmfold": true,
+          "mhcflurry": true
+        },
+        "n_methods_discriminating": 2,
+        "verdict": "SUPPORTED_2of3"
+      }
+    },
+    {
+      "id": "KRAS_G12D_A0101",
+      "gene": "KRAS",
+      "mut_label": "G12D",
+      "allele": "HLA-A*01:01",
+      "pep_mut": "VVVGADGVGK",
+      "pep_wt": "VVVGAGGVGK",
+      "p_in_pep": 6,
+      "wt_rank": 2.629,
+      "mut_rank": 1.902,
+      "max_prev": 0.4,
+      "esmfold_D": 1.0,
+      "esmfold_per_cell_safe": true,
+      "boltz": {
+        "D_boltz": 0.013,
+        "presents_mut": true,
+        "mut_iplddt": 0.98,
+        "wt_iplddt": 0.976,
+        "iplddt_gap": 0.004,
+        "mut_iptm": 0.95,
+        "wt_iptm": 0.957
+      },
+      "mhcflurry_M": 0.079,
+      "agreement": {
+        "votes": {
+          "boltz": false,
+          "esmfold": true,
+          "mhcflurry": false
+        },
+        "n_methods_discriminating": 1,
+        "verdict": "FLAGGED_1of3"
+      }
+    },
+    {
+      "id": "KRAS_G12D_B0801",
+      "gene": "KRAS",
+      "mut_label": "G12D",
+      "allele": "HLA-B*08:01",
+      "pep_mut": "DGVGKSAL",
+      "pep_wt": "GGVGKSAL",
+      "p_in_pep": 1,
+      "wt_rank": 3.869,
+      "mut_rank": 0.822,
+      "max_prev": 0.4,
+      "esmfold_D": 1.0,
+      "esmfold_per_cell_safe": true,
+      "boltz": {
+        "D_boltz": 0.023,
+        "presents_mut": true,
+        "mut_iplddt": 0.987,
+        "wt_iplddt": 0.98,
+        "iplddt_gap": 0.007,
+        "mut_iptm": 0.992,
+        "wt_iptm": 0.992
+      },
+      "mhcflurry_M": 0.234,
+      "agreement": {
+        "votes": {
+          "boltz": false,
+          "esmfold": true,
+          "mhcflurry": false
+        },
+        "n_methods_discriminating": 1,
+        "verdict": "FLAGGED_1of3"
+      }
+    }
+  ],
+  "summary": {
+    "certified_3of3": 0,
+    "supported_2of3": 1,
+    "flagged_or_failed": 4
+  },
+  "HEADLINE": "Boltz-2 (independent SOTA) cross-checked 5 top clean handles: 0 CERTIFIED (3/3 methods agree mut presents & self-WT doesn't), 1 SUPPORTED (2/3), 4 flagged/failed. Agreement RAISES confidence in the RUNG-11/12 calls; disagreement marks model-dependent handles for wet validation first.",
+  "INTERPRETATION_MAP": {
+    "CERTIFIED_3of3": "Boltz + ESMFold + MHCflurry all agree mut presents & WT doesn't -> highest-confidence in-silico binding-axis pass; top of the TCR-discovery shortlist.",
+    "SUPPORTED_2of3": "two independent methods agree -> credible; the dissenting method's blind spot is noted (MHCflurry=sequence-only, ESMFold=single-seq docking, Boltz=1 sample).",
+    "FLAGGED/REJECTED/FAIL": "Boltz disagrees or mut doesn't present structurally -> do NOT advance on prediction alone; needs wet pMHC stability / TCR data."
+  },
+  "CEILING": "Boltz confidence = structural plausibility, NOT measured affinity (affinity head is small-molecule only). pMHC-I peptide docking is hard for any model; 1 diffusion sample for cost. MUT-vs-WT (self-tolerance) only, NOT proteome-wide mimicry (the MAGE-A3 failure mode is a separate test). A third in-silico opinion that raises/lowers confidence; NOT a wet result."
+}

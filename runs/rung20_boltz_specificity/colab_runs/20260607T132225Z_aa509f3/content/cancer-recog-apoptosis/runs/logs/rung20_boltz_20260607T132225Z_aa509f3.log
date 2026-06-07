@@ -1,0 +1,803 @@
+# cancer-recog-apoptosis — run log
+# step          : rung20_boltz
+# utc           : 20260607T132225Z
+# commit_short  : aa509f3
+# commit_full   : aa509f3103f900bcaba2887809c7dfe478c6d603
+# branch        : main
+# python        : 3.12.13
+# platform      : Linux-6.6.122+-x86_64-with-glibc2.35
+#================================================================
+
+$ /usr/bin/python3 -u scripts/46_boltz_pmhc_specificity.py selftest
+  [PASS] select returns clean handles only
+  [PASS] select returns up to N with mut+wt peptides
+  [PASS] mut vs WT differ at exactly the mutated position
+  [PASS] YAML has groove (A) + peptide (B)
+  [PASS] mut presents, WT doesn't => D_boltz high + presents_mut True
+  [PASS] mut and WT both present => D_boltz low (not discriminable)
+  [PASS] mut below credible interface => presents_mut False
+  [PASS] missing iplddt => None
+  [PASS] clean (mut strong, WT weak) => M high
+  [PASS] WT also strong => M ~ 0
+  [PASS] mut not presented (rank>2) => M 0
+  [PASS] 3/3 discriminate + presents => CERTIFIED_3of3
+  [PASS] 2/3 => SUPPORTED_2of3
+  [PASS] mut doesn't present => FAIL regardless of votes
+  [PASS] 1/3 => FLAGGED_1of3
+
+  selftest: 15/15 passed
+[exit 0]
+
+$ /usr/bin/python3 -u scripts/46_boltz_pmhc_specificity.py prepare
+[rung20] prepared 5 handles (10 Boltz jobs) -> /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/inputs
+  IDH1_R132H_A0101         IDH1-R132H   HLA-A*01:01  mut=IIGHHAYGDQY wt=IIGRHAYGDQY ESMfold_D=1.0
+  IDH1_R132H_B1501         IDH1-R132H   HLA-B*15:01  mut=IIIGHHAY wt=IIIGRHAY ESMfold_D=1.0
+  BRAF_V600E_A0101         BRAF-V600E   HLA-A*01:01  mut=ATEKSRWSGSH wt=ATVKSRWSGSH ESMfold_D=1.0
+  KRAS_G12D_A0101          KRAS-G12D    HLA-A*01:01  mut=VVVGADGVGK wt=VVVGAGGVGK ESMfold_D=1.0
+  KRAS_G12D_B0801          KRAS-G12D    HLA-B*08:01  mut=DGVGKSAL wt=GGVGKSAL ESMfold_D=1.0
+[exit 0]
+
+$ pip boltz
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 61.0/61.0 kB 3.8 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 266.3/266.3 kB 16.8 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 114.4/114.4 kB 11.4 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 66.8/66.8 kB 7.0 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 60.6/60.6 kB 6.3 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 414.3/414.3 kB 33.0 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 268.4/268.4 kB 25.4 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.2/3.2 MB 107.0 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 97.9/97.9 kB 9.8 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 152.8/152.8 kB 14.9 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.2/43.2 kB 3.8 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 103.0/103.0 kB 9.8 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.2/3.2 MB 113.2 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 154.5/154.5 kB 14.7 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 92.2/92.2 kB 8.9 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.9/3.9 MB 104.7 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 819.4/819.4 kB 51.3 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 767.5/767.5 kB 48.9 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 64.9/64.9 kB 6.1 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 38.2/38.2 MB 31.0 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.1/16.1 MB 90.1 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 18.0/18.0 MB 96.1 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 37.2/37.2 MB 20.2 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 42.4/42.4 MB 12.9 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 983.4/983.4 kB 57.1 MB/s eta 0:00:00
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+google-colab 1.0.0 requires requests==2.32.4, but you have requests 2.32.3 which is incompatible.
+opencv-contrib-python 4.13.0.92 requires numpy>=2; python_version >= "3.9", but you have numpy 1.26.4 which is incompatible.
+tobler 0.14.0 requires numpy>=2.0, but you have numpy 1.26.4 which is incompatible.
+jaxlib 0.7.2 requires numpy>=2.0, but you have numpy 1.26.4 which is incompatible.
+cupy-cuda12x 14.0.1 requires numpy<2.6,>=2.0, but you have numpy 1.26.4 which is incompatible.
+access 1.1.10.post3 requires scipy>=1.14.1, but you have scipy 1.13.1 which is incompatible.
+tsfresh 0.21.2 requires scipy>=1.14.0; python_version >= "3.10", but you have scipy 1.13.1 which is incompatible.
+opencv-python 4.13.0.92 requires numpy>=2; python_version >= "3.9", but you have numpy 1.26.4 which is incompatible.
+tifffile 2026.4.11 requires numpy>=2.0, but you have numpy 1.26.4 which is incompatible.
+typer 0.25.1 requires click>=8.2.1, but you have click 8.1.7 which is incompatible.
+xarray-einstats 0.10.0 requires numpy>=2.0, but you have numpy 1.26.4 which is incompatible.
+rasterio 1.5.0 requires numpy>=2, but you have numpy 1.26.4 which is incompatible.
+huggingface-hub 1.17.0 requires click>=8.4.0, but you have click 8.1.7 which is incompatible.
+google-adk 1.29.0 requires click<9.0.0,>=8.1.8, but you have click 8.1.7 which is incompatible.
+google-adk 1.29.0 requires requests<3.0.0,>=2.32.4, but you have requests 2.32.3 which is incompatible.
+shap 0.52.0 requires numpy>=2, but you have numpy 1.26.4 which is incompatible.
+pytensor 2.38.3 requires numpy>=2.0, but you have numpy 1.26.4 which is incompatible.
+opencv-python-headless 4.13.0.92 requires numpy>=2; python_version >= "3.9", but you have numpy 1.26.4 which is incompatible.
+jax 0.7.2 requires numpy>=2.0, but you have numpy 1.26.4 which is incompatible.
+[exit 0]
+
+$ /usr/bin/python3 -u scripts/46_boltz_pmhc_specificity.py run
+[rung20] prepared 5 handles (10 Boltz jobs) -> /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/inputs
+  IDH1_R132H_A0101         IDH1-R132H   HLA-A*01:01  mut=IIGHHAYGDQY wt=IIGRHAYGDQY ESMfold_D=1.0
+  IDH1_R132H_B1501         IDH1-R132H   HLA-B*15:01  mut=IIIGHHAY wt=IIIGRHAY ESMfold_D=1.0
+  BRAF_V600E_A0101         BRAF-V600E   HLA-A*01:01  mut=ATEKSRWSGSH wt=ATVKSRWSGSH ESMfold_D=1.0
+  KRAS_G12D_A0101          KRAS-G12D    HLA-A*01:01  mut=VVVGADGVGK wt=VVVGAGGVGK ESMfold_D=1.0
+  KRAS_G12D_B0801          KRAS-G12D    HLA-B*08:01  mut=DGVGKSAL wt=GGVGKSAL ESMfold_D=1.0
+[rung20] [1/5] folding IDH1_R132H_A0101_mut ...
+[rung20] invoking: boltz predict /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/inputs/IDH1_R132H_A0101_mut.yaml --use_msa_server --diffusion_samples 1 --out_dir /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/preds/IDH1_R132H_A0101_mut
+MSA server enabled: https://api.colabfold.com
+MSA server authentication: no credentials provided
+Downloading the CCD data to /root/.boltz/mols.tar. This may take a bit of time. You may change the cache directory with the --cache flag.
+Extracting the CCD data to /root/.boltz/mols. This may take a bit of time. You may change the cache directory with the --cache flag.
+Downloading the Boltz-2 weights to /root/.boltz/boltz2_conf.ckpt. You may change the cache directory with the --cache flag.
+Downloading the Boltz-2 affinity weights to /root/.boltz/boltz2_aff.ckpt. You may change the cache directory with the --cache flag.
+Checking input data.
+Processing 1 inputs with 1 threads.
+
+  0%|          | 0/1 [00:00<?, ?it/s]Generating MSA for /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/inputs/IDH1_R132H_A0101_mut.yaml with 2 protein entities.
+Calling MSA server for target IDH1_R132H_A0101_mut with 2 sequences
+MSA server URL: https://api.colabfold.com
+MSA pairing strategy: greedy
+No authentication provided for MSA server
+
+
+  0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+SUBMIT:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+PENDING:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][ASleeping for 5s. Reason: PENDING
+
+
+RUNNING:   0%|          | 0/300 [elapsed: 00:05 remaining: ?][A
+
+RUNNING:   2%|▏         | 5/300 [elapsed: 00:05 remaining: 05:32][ASleeping for 8s. Reason: RUNNING
+
+
+COMPLETE:   2%|▏         | 5/300 [elapsed: 00:13 remaining: 05:32][A
+
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:13 remaining: 00:00][A
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:14 remaining: 00:00]
+
+
+  0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+SUBMIT:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+PENDING:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][ASleeping for 9s. Reason: PENDING
+
+
+RUNNING:   0%|          | 0/300 [elapsed: 00:09 remaining: ?][A
+
+RUNNING:   3%|▎         | 9/300 [elapsed: 00:09 remaining: 05:08][ASleeping for 5s. Reason: RUNNING
+
+
+RUNNING:   3%|▎         | 9/300 [elapsed: 00:14 remaining: 05:08][A
+
+RUNNING:   5%|▍         | 14/300 [elapsed: 00:14 remaining: 05:02][ASleeping for 5s. Reason: RUNNING
+
+
+COMPLETE:   5%|▍         | 14/300 [elapsed: 00:20 remaining: 05:02][A
+
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:20 remaining: 00:00][A
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:20 remaining: 00:00]
+
+100%|██████████| 1/1 [00:36<00:00, 36.75s/it]
+100%|██████████| 1/1 [00:36<00:00, 36.75s/it]
+Using bfloat16 Automatic Mixed Precision (AMP)
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+Running structure prediction for 1 input.
+/usr/local/lib/python3.12/dist-packages/pytorch_lightning/utilities/migration/utils.py:56: The loaded checkpoint was produced with Lightning v2.5.0.post0, which is newer than your current Lightning version: v2.5.0
+2026-06-07 13:26:04.959413: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+/usr/local/lib/python3.12/dist-packages/pytorch_lightning/utilities/_pytree.py:21: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.
+
+Predicting: |          | 0/? [00:00<?, ?it/s]
+Predicting:   0%|          | 0/1 [00:00<?, ?it/s]
+Predicting DataLoader 0:   0%|          | 0/1 [00:00<?, ?it/s]
+Predicting DataLoader 0: 100%|██████████| 1/1 [00:40<00:00,  0.02it/s]Number of failed examples: 0
+
+Predicting DataLoader 0: 100%|██████████| 1/1 [00:40<00:00,  0.02it/s]
+[rung20] [1/5] folding IDH1_R132H_A0101_wt ...
+[rung20] invoking: boltz predict /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/inputs/IDH1_R132H_A0101_wt.yaml --use_msa_server --diffusion_samples 1 --out_dir /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/preds/IDH1_R132H_A0101_wt
+MSA server enabled: https://api.colabfold.com
+MSA server authentication: no credentials provided
+Checking input data.
+Processing 1 inputs with 1 threads.
+
+  0%|          | 0/1 [00:00<?, ?it/s]Generating MSA for /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/inputs/IDH1_R132H_A0101_wt.yaml with 2 protein entities.
+Calling MSA server for target IDH1_R132H_A0101_wt with 2 sequences
+MSA server URL: https://api.colabfold.com
+MSA pairing strategy: greedy
+No authentication provided for MSA server
+
+
+  0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+SUBMIT:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+PENDING:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][ASleeping for 6s. Reason: PENDING
+
+
+RUNNING:   0%|          | 0/300 [elapsed: 00:06 remaining: ?][A
+
+RUNNING:   2%|▏         | 6/300 [elapsed: 00:06 remaining: 05:22][ASleeping for 7s. Reason: RUNNING
+
+
+COMPLETE:   2%|▏         | 6/300 [elapsed: 00:13 remaining: 05:22][A
+
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:13 remaining: 00:00][A
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:14 remaining: 00:00]
+
+
+  0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+SUBMIT:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+PENDING:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][ASleeping for 8s. Reason: PENDING
+
+
+RUNNING:   0%|          | 0/300 [elapsed: 00:08 remaining: ?][A
+
+RUNNING:   3%|▎         | 8/300 [elapsed: 00:08 remaining: 05:11][ASleeping for 9s. Reason: RUNNING
+
+
+COMPLETE:   3%|▎         | 8/300 [elapsed: 00:17 remaining: 05:11][A
+
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:17 remaining: 00:00][A
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:18 remaining: 00:00]
+
+100%|██████████| 1/1 [00:33<00:00, 33.26s/it]
+100%|██████████| 1/1 [00:33<00:00, 33.26s/it]
+Using bfloat16 Automatic Mixed Precision (AMP)
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+Running structure prediction for 1 input.
+/usr/local/lib/python3.12/dist-packages/pytorch_lightning/utilities/migration/utils.py:56: The loaded checkpoint was produced with Lightning v2.5.0.post0, which is newer than your current Lightning version: v2.5.0
+2026-06-07 13:28:33.025200: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+/usr/local/lib/python3.12/dist-packages/pytorch_lightning/utilities/_pytree.py:21: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.
+
+Predicting: |          | 0/? [00:00<?, ?it/s]
+Predicting:   0%|          | 0/1 [00:00<?, ?it/s]
+Predicting DataLoader 0:   0%|          | 0/1 [00:00<?, ?it/s]
+Predicting DataLoader 0: 100%|██████████| 1/1 [00:40<00:00,  0.02it/s]Number of failed examples: 0
+
+Predicting DataLoader 0: 100%|██████████| 1/1 [00:40<00:00,  0.02it/s]
+  IDH1_R132H_A0101         D_boltz=0.021 presents_mut=True -> FLAGGED_1of3
+[rung20] [2/5] folding IDH1_R132H_B1501_mut ...
+[rung20] invoking: boltz predict /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/inputs/IDH1_R132H_B1501_mut.yaml --use_msa_server --diffusion_samples 1 --out_dir /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/preds/IDH1_R132H_B1501_mut
+MSA server enabled: https://api.colabfold.com
+MSA server authentication: no credentials provided
+Checking input data.
+Processing 1 inputs with 1 threads.
+
+  0%|          | 0/1 [00:00<?, ?it/s]Generating MSA for /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/inputs/IDH1_R132H_B1501_mut.yaml with 2 protein entities.
+Calling MSA server for target IDH1_R132H_B1501_mut with 2 sequences
+MSA server URL: https://api.colabfold.com
+MSA pairing strategy: greedy
+No authentication provided for MSA server
+
+
+  0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+SUBMIT:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+PENDING:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][ASleeping for 7s. Reason: PENDING
+
+
+RUNNING:   0%|          | 0/300 [elapsed: 00:07 remaining: ?][A
+
+RUNNING:   2%|▏         | 7/300 [elapsed: 00:07 remaining: 05:18][ASleeping for 9s. Reason: RUNNING
+
+
+COMPLETE:   2%|▏         | 7/300 [elapsed: 00:16 remaining: 05:18][A
+
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:16 remaining: 00:00][A
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:17 remaining: 00:00]
+
+
+  0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+SUBMIT:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+PENDING:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][ASleeping for 5s. Reason: PENDING
+
+
+RUNNING:   0%|          | 0/300 [elapsed: 00:05 remaining: ?][A
+
+RUNNING:   2%|▏         | 5/300 [elapsed: 00:05 remaining: 05:28][ASleeping for 5s. Reason: RUNNING
+
+
+RUNNING:   2%|▏         | 5/300 [elapsed: 00:10 remaining: 05:28][A
+
+RUNNING:   3%|▎         | 10/300 [elapsed: 00:10 remaining: 05:13][ASleeping for 10s. Reason: RUNNING
+
+
+COMPLETE:   3%|▎         | 10/300 [elapsed: 00:21 remaining: 05:13][A
+
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:21 remaining: 00:00][A
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:21 remaining: 00:00]
+
+100%|██████████| 1/1 [00:39<00:00, 39.66s/it]
+100%|██████████| 1/1 [00:39<00:00, 39.66s/it]
+Using bfloat16 Automatic Mixed Precision (AMP)
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+Running structure prediction for 1 input.
+/usr/local/lib/python3.12/dist-packages/pytorch_lightning/utilities/migration/utils.py:56: The loaded checkpoint was produced with Lightning v2.5.0.post0, which is newer than your current Lightning version: v2.5.0
+2026-06-07 13:31:04.683753: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+/usr/local/lib/python3.12/dist-packages/pytorch_lightning/utilities/_pytree.py:21: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.
+
+Predicting: |          | 0/? [00:00<?, ?it/s]
+Predicting:   0%|          | 0/1 [00:00<?, ?it/s]
+Predicting DataLoader 0:   0%|          | 0/1 [00:00<?, ?it/s]
+Predicting DataLoader 0: 100%|██████████| 1/1 [00:38<00:00,  0.03it/s]Number of failed examples: 0
+
+Predicting DataLoader 0: 100%|██████████| 1/1 [00:38<00:00,  0.03it/s]
+[rung20] [2/5] folding IDH1_R132H_B1501_wt ...
+[rung20] invoking: boltz predict /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/inputs/IDH1_R132H_B1501_wt.yaml --use_msa_server --diffusion_samples 1 --out_dir /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/preds/IDH1_R132H_B1501_wt
+MSA server enabled: https://api.colabfold.com
+MSA server authentication: no credentials provided
+Checking input data.
+Processing 1 inputs with 1 threads.
+
+  0%|          | 0/1 [00:00<?, ?it/s]Generating MSA for /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/inputs/IDH1_R132H_B1501_wt.yaml with 2 protein entities.
+Calling MSA server for target IDH1_R132H_B1501_wt with 2 sequences
+MSA server URL: https://api.colabfold.com
+MSA pairing strategy: greedy
+No authentication provided for MSA server
+
+
+  0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+SUBMIT:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+PENDING:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][ASleeping for 8s. Reason: PENDING
+
+
+RUNNING:   0%|          | 0/300 [elapsed: 00:08 remaining: ?][A
+
+RUNNING:   3%|▎         | 8/300 [elapsed: 00:08 remaining: 05:15][ASleeping for 6s. Reason: RUNNING
+
+
+COMPLETE:   3%|▎         | 8/300 [elapsed: 00:14 remaining: 05:15][A
+
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:14 remaining: 00:00][A
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:15 remaining: 00:00]
+
+
+  0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+SUBMIT:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+PENDING:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][ASleeping for 9s. Reason: PENDING
+
+
+RUNNING:   0%|          | 0/300 [elapsed: 00:09 remaining: ?][A
+
+RUNNING:   3%|▎         | 9/300 [elapsed: 00:09 remaining: 05:11][ASleeping for 10s. Reason: RUNNING
+
+
+COMPLETE:   3%|▎         | 9/300 [elapsed: 00:19 remaining: 05:11][A
+
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:19 remaining: 00:00][A
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:20 remaining: 00:00]
+
+100%|██████████| 1/1 [00:36<00:00, 36.48s/it]
+100%|██████████| 1/1 [00:36<00:00, 36.48s/it]
+Using bfloat16 Automatic Mixed Precision (AMP)
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+Running structure prediction for 1 input.
+/usr/local/lib/python3.12/dist-packages/pytorch_lightning/utilities/migration/utils.py:56: The loaded checkpoint was produced with Lightning v2.5.0.post0, which is newer than your current Lightning version: v2.5.0
+2026-06-07 13:33:34.156483: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+/usr/local/lib/python3.12/dist-packages/pytorch_lightning/utilities/_pytree.py:21: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.
+
+Predicting: |          | 0/? [00:00<?, ?it/s]
+Predicting:   0%|          | 0/1 [00:00<?, ?it/s]
+Predicting DataLoader 0:   0%|          | 0/1 [00:00<?, ?it/s]
+Predicting DataLoader 0: 100%|██████████| 1/1 [00:39<00:00,  0.03it/s]Number of failed examples: 0
+
+Predicting DataLoader 0: 100%|██████████| 1/1 [00:39<00:00,  0.03it/s]
+  IDH1_R132H_B1501         D_boltz=0.0 presents_mut=True -> FLAGGED_1of3
+[rung20] [3/5] folding BRAF_V600E_A0101_mut ...
+[rung20] invoking: boltz predict /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/inputs/BRAF_V600E_A0101_mut.yaml --use_msa_server --diffusion_samples 1 --out_dir /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/preds/BRAF_V600E_A0101_mut
+MSA server enabled: https://api.colabfold.com
+MSA server authentication: no credentials provided
+Checking input data.
+Processing 1 inputs with 1 threads.
+
+  0%|          | 0/1 [00:00<?, ?it/s]Generating MSA for /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/inputs/BRAF_V600E_A0101_mut.yaml with 2 protein entities.
+Calling MSA server for target BRAF_V600E_A0101_mut with 2 sequences
+MSA server URL: https://api.colabfold.com
+MSA pairing strategy: greedy
+No authentication provided for MSA server
+
+
+  0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+SUBMIT:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+PENDING:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][ASleeping for 6s. Reason: PENDING
+
+
+RUNNING:   0%|          | 0/300 [elapsed: 00:06 remaining: ?][A
+
+RUNNING:   2%|▏         | 6/300 [elapsed: 00:06 remaining: 05:23][ASleeping for 9s. Reason: RUNNING
+
+
+COMPLETE:   2%|▏         | 6/300 [elapsed: 00:15 remaining: 05:23][A
+
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:15 remaining: 00:00][A
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:16 remaining: 00:00]
+
+
+  0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+SUBMIT:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+PENDING:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][ASleeping for 5s. Reason: PENDING
+
+
+RUNNING:   0%|          | 0/300 [elapsed: 00:05 remaining: ?][A
+
+RUNNING:   2%|▏         | 5/300 [elapsed: 00:05 remaining: 05:27][ASleeping for 6s. Reason: RUNNING
+
+
+RUNNING:   2%|▏         | 5/300 [elapsed: 00:11 remaining: 05:27][A
+
+RUNNING:   4%|▎         | 11/300 [elapsed: 00:11 remaining: 05:08][ASleeping for 6s. Reason: RUNNING
+
+
+COMPLETE:   4%|▎         | 11/300 [elapsed: 00:18 remaining: 05:08][A
+
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:18 remaining: 00:00][A
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:18 remaining: 00:00]
+
+100%|██████████| 1/1 [00:35<00:00, 35.72s/it]
+100%|██████████| 1/1 [00:35<00:00, 35.72s/it]
+Using bfloat16 Automatic Mixed Precision (AMP)
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+Running structure prediction for 1 input.
+/usr/local/lib/python3.12/dist-packages/pytorch_lightning/utilities/migration/utils.py:56: The loaded checkpoint was produced with Lightning v2.5.0.post0, which is newer than your current Lightning version: v2.5.0
+2026-06-07 13:35:55.179671: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+/usr/local/lib/python3.12/dist-packages/pytorch_lightning/utilities/_pytree.py:21: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.
+
+Predicting: |          | 0/? [00:00<?, ?it/s]
+Predicting:   0%|          | 0/1 [00:00<?, ?it/s]
+Predicting DataLoader 0:   0%|          | 0/1 [00:00<?, ?it/s]
+Predicting DataLoader 0: 100%|██████████| 1/1 [00:43<00:00,  0.02it/s]Number of failed examples: 0
+
+Predicting DataLoader 0: 100%|██████████| 1/1 [00:43<00:00,  0.02it/s]
+[rung20] [3/5] folding BRAF_V600E_A0101_wt ...
+[rung20] invoking: boltz predict /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/inputs/BRAF_V600E_A0101_wt.yaml --use_msa_server --diffusion_samples 1 --out_dir /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/preds/BRAF_V600E_A0101_wt
+MSA server enabled: https://api.colabfold.com
+MSA server authentication: no credentials provided
+Checking input data.
+Processing 1 inputs with 1 threads.
+
+  0%|          | 0/1 [00:00<?, ?it/s]Generating MSA for /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/inputs/BRAF_V600E_A0101_wt.yaml with 2 protein entities.
+Calling MSA server for target BRAF_V600E_A0101_wt with 2 sequences
+MSA server URL: https://api.colabfold.com
+MSA pairing strategy: greedy
+No authentication provided for MSA server
+
+
+  0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+SUBMIT:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+PENDING:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][ASleeping for 10s. Reason: PENDING
+
+
+COMPLETE:   0%|          | 0/300 [elapsed: 00:10 remaining: ?][A
+
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:10 remaining: 00:00][A
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:10 remaining: 00:00]
+
+
+  0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+SUBMIT:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+PENDING:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][ASleeping for 9s. Reason: PENDING
+
+
+RUNNING:   0%|          | 0/300 [elapsed: 00:09 remaining: ?][A
+
+RUNNING:   3%|▎         | 9/300 [elapsed: 00:09 remaining: 05:08][ASleeping for 9s. Reason: RUNNING
+
+
+COMPLETE:   3%|▎         | 9/300 [elapsed: 00:18 remaining: 05:08][A
+
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:18 remaining: 00:00][A
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:19 remaining: 00:00]
+
+100%|██████████| 1/1 [00:30<00:00, 31.00s/it]
+100%|██████████| 1/1 [00:30<00:00, 31.00s/it]
+Using bfloat16 Automatic Mixed Precision (AMP)
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+Running structure prediction for 1 input.
+/usr/local/lib/python3.12/dist-packages/pytorch_lightning/utilities/migration/utils.py:56: The loaded checkpoint was produced with Lightning v2.5.0.post0, which is newer than your current Lightning version: v2.5.0
+2026-06-07 13:38:14.313606: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+/usr/local/lib/python3.12/dist-packages/pytorch_lightning/utilities/_pytree.py:21: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.
+
+Predicting: |          | 0/? [00:00<?, ?it/s]
+Predicting:   0%|          | 0/1 [00:00<?, ?it/s]
+Predicting DataLoader 0:   0%|          | 0/1 [00:00<?, ?it/s]
+Predicting DataLoader 0: 100%|██████████| 1/1 [00:44<00:00,  0.02it/s]Number of failed examples: 0
+
+Predicting DataLoader 0: 100%|██████████| 1/1 [00:44<00:00,  0.02it/s]
+  BRAF_V600E_A0101         D_boltz=0.031 presents_mut=True -> SUPPORTED_2of3
+[rung20] [4/5] folding KRAS_G12D_A0101_mut ...
+[rung20] invoking: boltz predict /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/inputs/KRAS_G12D_A0101_mut.yaml --use_msa_server --diffusion_samples 1 --out_dir /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/preds/KRAS_G12D_A0101_mut
+MSA server enabled: https://api.colabfold.com
+MSA server authentication: no credentials provided
+Checking input data.
+Processing 1 inputs with 1 threads.
+
+  0%|          | 0/1 [00:00<?, ?it/s]Generating MSA for /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/inputs/KRAS_G12D_A0101_mut.yaml with 2 protein entities.
+Calling MSA server for target KRAS_G12D_A0101_mut with 2 sequences
+MSA server URL: https://api.colabfold.com
+MSA pairing strategy: greedy
+No authentication provided for MSA server
+
+
+  0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+SUBMIT:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+PENDING:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][ASleeping for 6s. Reason: PENDING
+
+
+RUNNING:   0%|          | 0/300 [elapsed: 00:06 remaining: ?][A
+
+RUNNING:   2%|▏         | 6/300 [elapsed: 00:06 remaining: 05:21][ASleeping for 9s. Reason: RUNNING
+
+
+COMPLETE:   2%|▏         | 6/300 [elapsed: 00:15 remaining: 05:21][A
+
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:15 remaining: 00:00][A
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:16 remaining: 00:00]
+
+
+  0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+SUBMIT:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+PENDING:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][ASleeping for 7s. Reason: PENDING
+
+
+RUNNING:   0%|          | 0/300 [elapsed: 00:07 remaining: ?][A
+
+RUNNING:   2%|▏         | 7/300 [elapsed: 00:07 remaining: 05:19][ASleeping for 9s. Reason: RUNNING
+
+
+COMPLETE:   2%|▏         | 7/300 [elapsed: 00:16 remaining: 05:19][A
+
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:16 remaining: 00:00][A
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:17 remaining: 00:00]
+
+100%|██████████| 1/1 [00:34<00:00, 34.71s/it]
+100%|██████████| 1/1 [00:34<00:00, 34.71s/it]
+Using bfloat16 Automatic Mixed Precision (AMP)
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+Running structure prediction for 1 input.
+/usr/local/lib/python3.12/dist-packages/pytorch_lightning/utilities/migration/utils.py:56: The loaded checkpoint was produced with Lightning v2.5.0.post0, which is newer than your current Lightning version: v2.5.0
+2026-06-07 13:40:43.804374: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+/usr/local/lib/python3.12/dist-packages/pytorch_lightning/utilities/_pytree.py:21: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.
+
+Predicting: |          | 0/? [00:00<?, ?it/s]
+Predicting:   0%|          | 0/1 [00:00<?, ?it/s]
+Predicting DataLoader 0:   0%|          | 0/1 [00:00<?, ?it/s]
+Predicting DataLoader 0: 100%|██████████| 1/1 [00:40<00:00,  0.02it/s]Number of failed examples: 0
+
+Predicting DataLoader 0: 100%|██████████| 1/1 [00:40<00:00,  0.02it/s]
+[rung20] [4/5] folding KRAS_G12D_A0101_wt ...
+[rung20] invoking: boltz predict /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/inputs/KRAS_G12D_A0101_wt.yaml --use_msa_server --diffusion_samples 1 --out_dir /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/preds/KRAS_G12D_A0101_wt
+MSA server enabled: https://api.colabfold.com
+MSA server authentication: no credentials provided
+Checking input data.
+Processing 1 inputs with 1 threads.
+
+  0%|          | 0/1 [00:00<?, ?it/s]Generating MSA for /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/inputs/KRAS_G12D_A0101_wt.yaml with 2 protein entities.
+Calling MSA server for target KRAS_G12D_A0101_wt with 2 sequences
+MSA server URL: https://api.colabfold.com
+MSA pairing strategy: greedy
+No authentication provided for MSA server
+
+
+  0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+SUBMIT:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+PENDING:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][ASleeping for 10s. Reason: PENDING
+
+
+COMPLETE:   0%|          | 0/300 [elapsed: 00:10 remaining: ?][A
+
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:10 remaining: 00:00][A
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:10 remaining: 00:00]
+
+
+  0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+SUBMIT:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+PENDING:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][ASleeping for 8s. Reason: PENDING
+
+
+RUNNING:   0%|          | 0/300 [elapsed: 00:08 remaining: ?][A
+
+RUNNING:   3%|▎         | 8/300 [elapsed: 00:08 remaining: 05:12][ASleeping for 7s. Reason: RUNNING
+
+
+RUNNING:   3%|▎         | 8/300 [elapsed: 00:15 remaining: 05:12][A
+
+RUNNING:   5%|▌         | 15/300 [elapsed: 00:15 remaining: 05:00][ASleeping for 9s. Reason: RUNNING
+
+
+COMPLETE:   5%|▌         | 15/300 [elapsed: 00:25 remaining: 05:00][A
+
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:25 remaining: 00:00][A
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:25 remaining: 00:00]
+
+100%|██████████| 1/1 [00:37<00:00, 37.23s/it]
+100%|██████████| 1/1 [00:37<00:00, 37.23s/it]
+Using bfloat16 Automatic Mixed Precision (AMP)
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+Running structure prediction for 1 input.
+/usr/local/lib/python3.12/dist-packages/pytorch_lightning/utilities/migration/utils.py:56: The loaded checkpoint was produced with Lightning v2.5.0.post0, which is newer than your current Lightning version: v2.5.0
+2026-06-07 13:43:08.510088: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+/usr/local/lib/python3.12/dist-packages/pytorch_lightning/utilities/_pytree.py:21: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.
+
+Predicting: |          | 0/? [00:00<?, ?it/s]
+Predicting:   0%|          | 0/1 [00:00<?, ?it/s]
+Predicting DataLoader 0:   0%|          | 0/1 [00:00<?, ?it/s]
+Predicting DataLoader 0: 100%|██████████| 1/1 [00:40<00:00,  0.02it/s]Number of failed examples: 0
+
+Predicting DataLoader 0: 100%|██████████| 1/1 [00:40<00:00,  0.02it/s]
+  KRAS_G12D_A0101          D_boltz=0.013 presents_mut=True -> FLAGGED_1of3
+[rung20] [5/5] folding KRAS_G12D_B0801_mut ...
+[rung20] invoking: boltz predict /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/inputs/KRAS_G12D_B0801_mut.yaml --use_msa_server --diffusion_samples 1 --out_dir /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/preds/KRAS_G12D_B0801_mut
+MSA server enabled: https://api.colabfold.com
+MSA server authentication: no credentials provided
+Checking input data.
+Processing 1 inputs with 1 threads.
+
+  0%|          | 0/1 [00:00<?, ?it/s]Generating MSA for /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/inputs/KRAS_G12D_B0801_mut.yaml with 2 protein entities.
+Calling MSA server for target KRAS_G12D_B0801_mut with 2 sequences
+MSA server URL: https://api.colabfold.com
+MSA pairing strategy: greedy
+No authentication provided for MSA server
+
+
+  0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+SUBMIT:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+PENDING:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][ASleeping for 6s. Reason: PENDING
+
+
+RUNNING:   0%|          | 0/300 [elapsed: 00:06 remaining: ?][A
+
+RUNNING:   2%|▏         | 6/300 [elapsed: 00:06 remaining: 05:22][ASleeping for 10s. Reason: RUNNING
+
+
+COMPLETE:   2%|▏         | 6/300 [elapsed: 00:16 remaining: 05:22][A
+
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:16 remaining: 00:00][A
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:17 remaining: 00:00]
+
+
+  0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+SUBMIT:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+PENDING:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][ASleeping for 7s. Reason: PENDING
+
+
+RUNNING:   0%|          | 0/300 [elapsed: 00:07 remaining: ?][A
+
+RUNNING:   2%|▏         | 7/300 [elapsed: 00:07 remaining: 05:16][ASleeping for 7s. Reason: RUNNING
+
+
+RUNNING:   2%|▏         | 7/300 [elapsed: 00:14 remaining: 05:16][A
+
+RUNNING:   5%|▍         | 14/300 [elapsed: 00:14 remaining: 05:01][ASleeping for 10s. Reason: RUNNING
+
+
+COMPLETE:   5%|▍         | 14/300 [elapsed: 00:25 remaining: 05:01][A
+
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:25 remaining: 00:00][A
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:25 remaining: 00:00]
+
+100%|██████████| 1/1 [00:43<00:00, 43.51s/it]
+100%|██████████| 1/1 [00:43<00:00, 43.51s/it]
+Using bfloat16 Automatic Mixed Precision (AMP)
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+Running structure prediction for 1 input.
+/usr/local/lib/python3.12/dist-packages/pytorch_lightning/utilities/migration/utils.py:56: The loaded checkpoint was produced with Lightning v2.5.0.post0, which is newer than your current Lightning version: v2.5.0
+2026-06-07 13:45:39.180041: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+/usr/local/lib/python3.12/dist-packages/pytorch_lightning/utilities/_pytree.py:21: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.
+
+Predicting: |          | 0/? [00:00<?, ?it/s]
+Predicting:   0%|          | 0/1 [00:00<?, ?it/s]
+Predicting DataLoader 0:   0%|          | 0/1 [00:00<?, ?it/s]
+Predicting DataLoader 0: 100%|██████████| 1/1 [00:39<00:00,  0.03it/s]Number of failed examples: 0
+
+Predicting DataLoader 0: 100%|██████████| 1/1 [00:39<00:00,  0.03it/s]
+[rung20] [5/5] folding KRAS_G12D_B0801_wt ...
+[rung20] invoking: boltz predict /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/inputs/KRAS_G12D_B0801_wt.yaml --use_msa_server --diffusion_samples 1 --out_dir /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/preds/KRAS_G12D_B0801_wt
+MSA server enabled: https://api.colabfold.com
+MSA server authentication: no credentials provided
+Checking input data.
+Processing 1 inputs with 1 threads.
+
+  0%|          | 0/1 [00:00<?, ?it/s]Generating MSA for /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/inputs/KRAS_G12D_B0801_wt.yaml with 2 protein entities.
+Calling MSA server for target KRAS_G12D_B0801_wt with 2 sequences
+MSA server URL: https://api.colabfold.com
+MSA pairing strategy: greedy
+No authentication provided for MSA server
+
+
+  0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+SUBMIT:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+PENDING:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][ASleeping for 7s. Reason: PENDING
+
+
+RUNNING:   0%|          | 0/300 [elapsed: 00:07 remaining: ?][A
+
+RUNNING:   2%|▏         | 7/300 [elapsed: 00:07 remaining: 05:15][ASleeping for 10s. Reason: RUNNING
+
+
+COMPLETE:   2%|▏         | 7/300 [elapsed: 00:17 remaining: 05:15][A
+
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:17 remaining: 00:00][A
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:18 remaining: 00:00]
+
+
+  0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+SUBMIT:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][A
+
+PENDING:   0%|          | 0/300 [elapsed: 00:00 remaining: ?][ASleeping for 7s. Reason: PENDING
+
+
+RUNNING:   0%|          | 0/300 [elapsed: 00:07 remaining: ?][A
+
+RUNNING:   2%|▏         | 7/300 [elapsed: 00:07 remaining: 05:15][ASleeping for 9s. Reason: RUNNING
+
+
+COMPLETE:   2%|▏         | 7/300 [elapsed: 00:16 remaining: 05:15][A
+
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:16 remaining: 00:00][A
+COMPLETE: 100%|██████████| 300/300 [elapsed: 00:17 remaining: 00:00]
+
+100%|██████████| 1/1 [00:36<00:00, 36.19s/it]
+100%|██████████| 1/1 [00:36<00:00, 36.19s/it]
+Using bfloat16 Automatic Mixed Precision (AMP)
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+Running structure prediction for 1 input.
+/usr/local/lib/python3.12/dist-packages/pytorch_lightning/utilities/migration/utils.py:56: The loaded checkpoint was produced with Lightning v2.5.0.post0, which is newer than your current Lightning version: v2.5.0
+2026-06-07 13:47:59.347408: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+/usr/local/lib/python3.12/dist-packages/pytorch_lightning/utilities/_pytree.py:21: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.
+
+Predicting: |          | 0/? [00:00<?, ?it/s]
+Predicting:   0%|          | 0/1 [00:00<?, ?it/s]
+Predicting DataLoader 0:   0%|          | 0/1 [00:00<?, ?it/s]
+Predicting DataLoader 0: 100%|██████████| 1/1 [00:41<00:00,  0.02it/s]Number of failed examples: 0
+
+Predicting DataLoader 0: 100%|██████████| 1/1 [00:41<00:00,  0.02it/s]
+  KRAS_G12D_B0801          D_boltz=0.023 presents_mut=True -> FLAGGED_1of3
+
+[rung20] wrote /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/rung20_boltz_specificity.json
+[rung20] 0 certified / 1 supported / 4 flagged-or-failed of 5
+[rung20] wrote /content/cancer-recog-apoptosis/runs/rung20_boltz_specificity/rung20_boltz_specificity.png
+[exit 0]
