@@ -70,7 +70,7 @@ Single surface windows leak (proven). Inside windows are richer/more specific. P
 
 ## P1 — soon
 
-- [ ] **CAPSTONE SYNTHESIS** (the honest full story). 💻 M2 / writeup. Assemble the 3-stage chain end-to-end:
+- [x] **CAPSTONE SYNTHESIS** ✅ CAPSTONE.md — the honest full story. 💻 M2 / writeup. Assemble the 3-stage chain end-to-end:
       recognition (neoantigen, surface dead) → binding (safety↔immunogenicity align) → apoptosis (wave) +
       window-status (RUNG-18/18b) + escape race (RUNG-19, needs cross-kill at clinical size). Ranked target
       shortlist + named wet-lab residuals. **Fully warranted now** — positive at every stage with stated bounds.
