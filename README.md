@@ -130,6 +130,17 @@ axis (instant, from RUNG-12 handles) + surface axis (CELLxGENE Census).
 > anti-correlation: tumour-high markers (EPCAM/TROP2/MUC1/HER2/EGFR) leak into vital tissue (q_n 0.8–1.0); vital-clean
 > markers (CD20/PSMA/CD19) are barely tumour-expressed (q_t <0.05). → tumour-exclusivity must come from MUTATION
 > (neoantigen) or COMBINATORIAL AND-NOT logic, not a single shared self-antigen. (Pan-cancer pooled; a per-cancer marker may still win.)**
+>
+> **RUNG-18 (does the cancer cell keep its MHC-I "display window" ON? — 6,319 real WGS tumours, Martínez-Jiménez 2023):** the
+> immune route silently assumed the window is lit; this MEASURES it and GRADES the failure. **Across all tumours: window genetically
+> INTACT 77.9% · DIMMED (HLA-LOH/mut — one allele lost, *route survives*, still presents on the rest) 18.4% · fully DARK (systemic
+> B2M/TAP/NLRC5 — *route dies*, no surface MHC-I at all) only 3.7%** (IFN-blind, can't re-light: 4.0%). In our route cancers the
+> full-dark fraction stays **<10% everywhere** (melanoma 8.4% — highest, it's the most immune-edited; NSCLC 6.0%, CRC 5.7%, bladder
+> 3.1%). Driver of the dark cases is **B2M** (mut+del = 112/232), exactly as biology predicts. **Verdict: the immune route is
+> GENETICALLY viable — the window is mostly there.** Caveat (load-bearing): GENETIC only — epigenetic/transcriptional MHC-I silencing
+> is NOT captured, so 3.7% is a **FLOOR** on fully-dark, not the total; patient-level not clonal. The reversible (epigenetic) arm is
+> RUNG-9 territory; the next test is **RUNG-18b — single-cell HLA/B2M *transcription* in malignant cells (Colab)**. Where the window
+> is genetically dark *and* IFN-blind, only an MHC-independent killer (NK-engager / **Shriya's original autonomous self-destruct**) works.
 
 **Status legend** — ✅ built + tested · 🟢 testable now with our tools · 🔮 future (physics/delivery, kept safe)
 **The one rule:** every "kill" claim is a HYPOTHESIS with a stated wet-lab residual. β / kill% are proxies, never verdicts.
@@ -181,6 +192,7 @@ axis (instant, from RUNG-12 handles) + surface axis (CELLxGENE Census).
 
 ### Tier I — Immunogenic eradication (call the hunters)
 - **I1 MHC-I re-induction** — restore antigen presentation in immune-evading tumours (IFN-inducibility). `Test:` atlas. **Status: ✅ RUNG-9 (inducibility mapped).**
+- **I2 MHC-I window status** — *is the display window even ON in the cancer cells?* The load-bearing assumption of the whole immune route. `Test:` 6,319 WGS tumours (genetic immune escape). **Status: ✅ RUNG-18 — window genetically intact 78% / dimmed 18% / fully-dark only 3.7%; route GENETICALLY viable. Epigenetic-silencing complement = RUNG-18b (Colab).**
 - **I2 Neoantigen vaccine / CAR target addressability** — `Test:` sequence + atlas. **Status: 🟢 (overlaps A2).**
 - **I3 Immunogenic cell death (ICD)** — pick a death mode that *alerts* the immune system (calreticulin exposure). `Test:` atlas + arena death-mode tagging. **Status: 🟢.**
 
