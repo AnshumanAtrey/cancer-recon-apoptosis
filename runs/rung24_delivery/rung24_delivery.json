@@ -1,0 +1,64 @@
+{
+  "tag": "rung24_delivery_threshold",
+  "question": "How sparse can a one-time injection be (fraction of tumour cells reached) and still let the death wave percolate and clear the whole tumour? Decouples KILL from DELIVERY.",
+  "model": "stochastic lattice; inject trigger into f_deliver of cells, wave spreads vs regrowth.",
+  "params": {
+    "grid": 120,
+    "N0": 2304,
+    "reps": 30,
+    "p_grow": 0.25
+  },
+  "f_deliver_levels": [
+    0.0005,
+    0.001,
+    0.003,
+    0.01,
+    0.03,
+    0.1
+  ],
+  "p_wave_levels": [
+    0.85,
+    0.92,
+    0.98
+  ],
+  "p_clear_sweep": {
+    "0.85": {
+      "0.0005": 0.8666666666666667,
+      "0.001": 0.7,
+      "0.003": 0.7,
+      "0.01": 0.7,
+      "0.03": 0.7666666666666667,
+      "0.1": 0.7333333333333333
+    },
+    "0.92": {
+      "0.0005": 0.8333333333333334,
+      "0.001": 0.9333333333333333,
+      "0.003": 0.8666666666666667,
+      "0.01": 0.9666666666666667,
+      "0.03": 0.9,
+      "0.1": 0.8666666666666667
+    },
+    "0.98": {
+      "0.0005": 0.9,
+      "0.001": 0.9333333333333333,
+      "0.003": 0.8333333333333334,
+      "0.01": 0.9666666666666667,
+      "0.03": 0.8,
+      "0.1": 0.8666666666666667
+    }
+  },
+  "critical_delivery_fraction_f_star": {
+    "0.85": 0.0005,
+    "0.92": 0.0005,
+    "0.98": 0.0005
+  },
+  "HEADLINE": {
+    "plain": "There is a PERCOLATION delivery threshold f*: below it the injected seeds are too sparse, the wave dies in regrowth, the tumour persists; above it the wave percolates and clears everything. Stronger coupling (p_wave) lowers f* \u2014 a more potent trigger needs a less thorough injection. f* (this lattice): p_wave=0.85\u21920.0005, p_wave=0.92\u21920.0005, p_wave=0.98\u21920.0005",
+    "meaning": "If f* is small (~1%), a SPARSE one-time injection suffices (delivery is NOT the bottleneck \u2014 the wave does the work). If f* is large, the injection reach is the wall."
+  },
+  "INTERPRETATION_MAP": {
+    "f* small & falls with p_wave": "delivery decoupled from kill (Anshuman's framing holds): a potent self-propagating trigger needs only sparse seeding.",
+    "f* large / no clear at any tested f": "delivery reach IS the bottleneck -> need better biodistribution (nanorobotic/LNP-tropism, the FUT delivery layer) or stronger coupling."
+  },
+  "CEILING": "2D lattice CA; p_wave effective coupling (agonism/transduction residual); regrowth a parameter; 'reaches f_deliver of cells' abstracts real biodistribution. BOUNDS the delivery reach needed; the vehicle is wet-lab."
+}

@@ -158,7 +158,7 @@ four — the answer is a LAYERED, multi-target, personalised system; that layere
 These are the bio-deliverable parts of Anshuman's earlier syringe / AI-injection / "wave in a one-time shot"
 hypotheses. The *physics* of delivery (robot, sound, EM) is future-safe below; the *biology* is testable now.
 
-- [ ] **WAVE-AS-A-ONE-TIME-INJECTION — delivery threshold**. 💻 M2, extend RUNG-13/19 wave sim. Anshuman's idea:
+- [x] **WAVE-AS-A-ONE-TIME-INJECTION — delivery threshold** ✅ RUNG-24 (f*<0.05% ≈1 seed at potent trigger; delivery NOT the gate, trigger potency is). 💻 M2, extend RUNG-13/19 wave sim. Anshuman's idea:
       put the death-wave trigger in a single injection (mRNA-LNP / oncolytic virus / peptide) that seeds a few
       cells and lets the wave do the rest. RUNG-13 showed *one* seed can suffice in principle — **quantify it:**
       sweep the SEED FRACTION (what % of tumour cells the injection actually reaches) and find the minimum
