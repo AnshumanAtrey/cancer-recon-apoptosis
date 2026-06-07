@@ -141,6 +141,15 @@ axis (instant, from RUNG-12 handles) + surface axis (CELLxGENE Census).
 > is NOT captured, so 3.7% is a **FLOOR** on fully-dark, not the total; patient-level not clonal. The reversible (epigenetic) arm is
 > RUNG-9 territory; the next test is **RUNG-18b — single-cell HLA/B2M *transcription* in malignant cells (Colab)**. Where the window
 > is genetically dark *and* IFN-blind, only an MHC-independent killer (NK-engager / **Shriya's original autonomous self-destruct**) works.
+>
+> **RUNG-18b (does the window get *switched off* without being broken? — real malignant cells, CELLxGENE Census, housekeeping depth-gated):**
+> the epigenetic layer genetics can't see. **LUNG (n=50,719 well-sequenced malignant cells): MHC-I window transcriptionally DARK in
+> 12.6% of cancer cells vs 0.5% in immune/stromal control** (control≈0 → the metric is sound, not dropout-calling-everything-dark) — that's
+> **≈2× the 6.0% genetic floor (RUNG-18)**, so transcriptional/epigenetic silencing is a **real additional escape layer and genetics
+> UNDER-counts** (exactly the "3.7% is a floor" caveat). But the window is still **LIT in ~87%** of lung cancer cells → the immune route
+> stays broadly viable; this added layer is the *reversible* kind (IFN/epi-drugs = RUNG-9). Worst-donor 82% → strong tumour-to-tumour
+> heterogeneity (some lung tumours heavily silenced). CRC weak/noisier (n=1,170, delta≈floor); melanoma/bladder absent in Census
+> 2024-07-01. Caveat: mRNA≠surface protein; HLA-I is IFN-inducible so resting atlas OVER-states silencing → 12.6% is an UPPER bound.
 
 **Status legend** — ✅ built + tested · 🟢 testable now with our tools · 🔮 future (physics/delivery, kept safe)
 **The one rule:** every "kill" claim is a HYPOTHESIS with a stated wet-lab residual. β / kill% are proxies, never verdicts.
@@ -193,7 +202,7 @@ axis (instant, from RUNG-12 handles) + surface axis (CELLxGENE Census).
 ### Tier I — Immunogenic eradication (call the hunters)
 - **I1 MHC-I re-induction** — restore antigen presentation in immune-evading tumours (IFN-inducibility). `Test:` atlas. **Status: ✅ RUNG-9 (inducibility mapped).**
 - **I2 MHC-I window status** — *is the display window even ON in the cancer cells?* The load-bearing assumption of the whole immune route. `Test:` 6,319 WGS tumours (genetic immune escape). **Status: ✅ RUNG-18 — window genetically intact 78% / dimmed 18% / fully-dark only 3.7%; route GENETICALLY viable.**
-- **I3 MHC-I window — switched off without being broken** — the EPIGENETIC layer genetics can't see: HLA-A/B/C + B2M *transcription* in real malignant cells (housekeeping depth-gated; immune cells as positive control; cancer−control delta = silencing beyond genetics). `Test:` CELLxGENE Census single-cell. **Status: 🟢 RUNG-18b BUILT + selftest 17/17 (`scripts/44`, `notebooks/mhc_window_colab.ipynb`) — Census run pending on Colab.**
+- **I3 MHC-I window — switched off without being broken** — the EPIGENETIC layer genetics can't see: HLA-A/B/C + B2M *transcription* in real malignant cells (housekeeping depth-gated; immune cells as positive control; cancer−control delta = silencing beyond genetics). `Test:` CELLxGENE Census single-cell. **Status: ✅ RUNG-18b RAN (Colab, Census 2024-07-01) — LUNG (n=50,719): window-dark 12.6% in cancer vs 0.5% immune control (metric VALIDATED) ≈ 2× the 6.0% genetic floor → transcriptional silencing is a REAL additional layer (genetics under-counts, as flagged), but window still LIT in ~87% → route broadly viable; worst-donor 82% (some tumours heavily silenced). CRC weak (n=1,170, delta≈floor). Melanoma/bladder absent in this Census build.**
 - **I2 Neoantigen vaccine / CAR target addressability** — `Test:` sequence + atlas. **Status: 🟢 (overlaps A2).**
 - **I3 Immunogenic cell death (ICD)** — pick a death mode that *alerts* the immune system (calreticulin exposure). `Test:` atlas + arena death-mode tagging. **Status: 🟢.**
 

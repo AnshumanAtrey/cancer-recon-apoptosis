@@ -1,0 +1,194 @@
+# cancer-recog-apoptosis — run log
+# step          : rung18_mhc_window
+# utc           : 20260607T122531Z
+# commit_short  : 17828bb
+# commit_full   : 17828bb65faa9b29b8e3c71e7eef0afca9013189
+# branch        : main
+# python        : 3.12.13
+# platform      : Linux-6.6.122+-x86_64-with-glibc2.35
+#================================================================
+
+$ /usr/bin/python3 -u scripts/43_mhc_window_status.py selftest
+  [PASS] row0 window_class == DARK_SYSTEMIC
+  [PASS] row1 window_class == DIMMED_HLA
+  [PASS] row2 window_class == DIMMED_HLA
+  [PASS] row3 window_class == INTACT_GENETIC
+  [PASS] row4 window_class == DARK_SYSTEMIC
+  [PASS] row5 window_class == INTACT_GENETIC
+  [PASS] native bool True parsed
+  [PASS] string 'False' -> False
+  [PASS] systemic overrides targeted in class
+  [PASS] summarise n==4
+  [PASS] summarise dark fraction==0.5
+  [PASS] summarise dimmed fraction==0.25
+  [PASS] summarise route_dies==dark
+  [PASS] summarise route_viable==0.5
+  [PASS] wilson brackets p
+
+  selftest: 15/15 passed
+[exit 0]
+
+$ /usr/bin/python3 -u scripts/44_mhc_window_expression.py selftest
+  [PASS] fully-on cell: window_on True, dark False
+  [PASS] B2M-knockout cell: window_dark True (HLA on but B2M off)
+  [PASS] HLA-silenced cell: window_dark True via hlaI_dark
+  [PASS] shallow cell (2 HK): NOT well_sequenced
+  [PASS] deep+dark cell (6 HK, no MHC): well_seq True AND window_dark True (the silenced cell we must KEEP)
+  [PASS] summarise: 200 well-seq measuring cells
+  [PASS] summarise: window_dark_pooled == 0.5
+  [PASS] summarise: worst-donor == 1.0 (D1 all dark)
+  [PASS] summarise: median-donor == 0.5 across D1=1.0,D2=0.0
+  [PASS] dataset-measuring: dsZ excluded as never-measuring
+  [PASS] dataset-measuring: only dsA's 100 on-cells counted -> dark 0%
+  [PASS] shallow dark cells excluded by HK-gate -> only 50 used, dark 0%
+  [PASS] route matcher buckets melanoma/lung/colorectal/bladder
+  [PASS] route matcher excludes breast
+  [PASS] classify: malignant -> cancer (explicit mode)
+  [PASS] classify: T cell + macrophage -> control
+[+    0.1s] [rung18b] selftest heartbeat
+  [PASS] heartbeat starts/stops
+
+selftest: 17/17 passed
+[exit 0]
+
+$ /usr/bin/python3 -u scripts/43_mhc_window_status.py run
+[rung18] graded 6,319 tumours across 58 cancer types
+[rung18] wrote /content/cancer-recog-apoptosis/runs/rung18_mhc_window/rung18_mhc_window.json
+
+  OVERALL (n=6,319):  any-GIE 25.7%   DARK(route dies) 3.7%   DIMMED(survives) 18.4%   INTACT 77.9%   IFN-blind 4.0%
+
+  cancer   n    DARK(dies)  DIMMED(surv)  INTACT   IFN-blind
+  SKCM    404   8.4% [6.1%-11.5%]   10.9%        80.7%    5.0%
+  NSCLC   587   6.0% [4.3%-8.2%]   29.3%        64.7%    4.4%
+  COREAD  662   5.7% [4.2%-7.8%]   21.1%        73.1%    5.6%
+  BLCA    196   3.1% [1.4%-6.5%]   18.4%        78.6%    5.6%
+  PAAD    306   0.7% [0.2%-2.4%]   28.8%        70.6%    2.6%
+  BRCA    938   2.4% [1.6%-3.5%]   14.2%        83.5%    4.0%
+  PRAD    552   1.3% [0.6%-2.6%]   4.5%        94.2%    6.2%
+
+  genetic drivers of the FULL-dark window: {'mut B2M': 82, 'mut NLRC5': 49, 'del B2M': 30, 'mut CIITA': 23, 'mut TAPBP': 12, 'mut TAP2': 11, 'mut TAP1': 10, 'mut CALR': 7, 'mut RFX5': 3, 'del NLRC5': 2, 'del CALR': 2, 'del TAPBP': 1}
+[rung18] wrote /content/cancer-recog-apoptosis/runs/rung18_mhc_window/rung18_mhc_window.png
+[exit 0]
+
+$ pip cellxgene-census
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 91.2/91.2 kB 4.3 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 55.6/55.6 kB 4.5 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 203.4/203.4 kB 9.9 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 22.3/22.3 MB 77.9 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 175.3/175.3 kB 15.7 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 89.5/89.5 kB 7.5 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 60.1/60.1 kB 4.8 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 79.9 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.4/12.4 MB 64.8 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 319.6/319.6 kB 26.2 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.0/15.0 MB 90.0 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.2/9.2 MB 112.6 MB/s eta 0:00:00
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+google-colab 1.0.0 requires pandas==2.2.2, but you have pandas 2.3.3 which is incompatible.
+gcsfs 2025.3.0 requires fsspec==2025.3.0, but you have fsspec 2026.4.0 which is incompatible.
+datasets 4.0.0 requires fsspec[http]<=2025.3.0,>=2023.1.0, but you have fsspec 2026.4.0 which is incompatible.
+[exit 0]
+
+$ /usr/bin/python3 -u scripts/44_mhc_window_expression.py run
+[+    0.0s] [rung18b] cache/tiles -> /content/drive/MyDrive/cancer-recon/rung18b_tiles  (resumable: completed diseases are skipped)
+12:26:29 [INFO] NumExpr defaulting to 2 threads.
+[+    4.1s] [rung18b] opening CELLxGENE Census 2024-07-01 ...
+[+    5.1s] [rung18b] discovery: which diseases have malignant-labelled cells? ...
+[+    9.9s] [rung18b] discovery: 108 diseases with malignant cells; top: [('glioblastoma', 391852), ('follicular lymphoma', 89203), ('blastoma', 52431), ('lung adenocarcinoma', 41615), ('squamous cell lung carcinoma', 33234), ('luminal B breast carcinoma', 17189), ('triple-negative breast carcinoma', 16361), ('non-small cell lung carcinoma', 13562)]
+[+    9.9s] [rung18b] route buckets matched: {'lung': ['lung adenocarcinoma', 'squamous cell lung carcinoma', 'non-small cell lung carcinoma', 'interstitial lung disease', 'lung large cell carcinoma', 'small cell lung carcinoma'], 'colorectal': ['colorectal cancer', 'colon sessile serrated adenoma/polyp', 'colorectal neoplasm']}
+[+    9.9s] [rung18b] targets (>= 50 malignant cells): [('lung', 'lung adenocarcinoma'), ('lung', 'squamous cell lung carcinoma'), ('lung', 'non-small cell lung carcinoma'), ('colorectal', 'colorectal cancer'), ('colorectal', 'colon sessile serrated adenoma/polyp'), ('colorectal', 'colorectal neoplasm')]
+[+    9.9s] [rung18b] [1/6] lung adenocarcinoma: reading obs metadata ...
+[+   11.9s] [rung18b] [1/6] lung adenocarcinoma: materialising 10 genes for 166,467 cells (31,031 cancer [explicit-malignant], 135,436 control) ...
+/content/cancer-recog-apoptosis/scripts/44_mhc_window_expression.py:281: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+[+   20.0s] [heartbeat] [1/6] lung adenocarcinoma: materialising 10 genes for 166,467 cells (31,031 cancer [explicit-malignant], 135,436 control) ... | RAM 1.2GB
+[+   40.1s] [heartbeat] [1/6] lung adenocarcinoma: materialising 10 genes for 166,467 cells (31,031 cancer [explicit-malignant], 135,436 control) ... | RAM 5.8GB
+[+   60.6s] [heartbeat] [1/6] lung adenocarcinoma: materialising 10 genes for 166,467 cells (31,031 cancer [explicit-malignant], 135,436 control) ... | RAM 6.3GB
+[+   80.7s] [heartbeat] [1/6] lung adenocarcinoma: materialising 10 genes for 166,467 cells (31,031 cancer [explicit-malignant], 135,436 control) ... | RAM 6.3GB
+[+  100.7s] [heartbeat] [1/6] lung adenocarcinoma: materialising 10 genes for 166,467 cells (31,031 cancer [explicit-malignant], 135,436 control) ... | RAM 6.3GB
+[+  120.7s] [heartbeat] [1/6] lung adenocarcinoma: materialising 10 genes for 166,467 cells (31,031 cancer [explicit-malignant], 135,436 control) ... | RAM 6.3GB
+[+  140.7s] [heartbeat] [1/6] lung adenocarcinoma: materialising 10 genes for 166,467 cells (31,031 cancer [explicit-malignant], 135,436 control) ... | RAM 6.3GB
+[+  160.7s] [heartbeat] [1/6] lung adenocarcinoma: materialising 10 genes for 166,467 cells (31,031 cancer [explicit-malignant], 135,436 control) ... | RAM 6.3GB
+[+  180.7s] [heartbeat] [1/6] lung adenocarcinoma: materialising 10 genes for 166,467 cells (31,031 cancer [explicit-malignant], 135,436 control) ... | RAM 6.3GB
+[+  200.8s] [heartbeat] [1/6] lung adenocarcinoma: materialising 10 genes for 166,467 cells (31,031 cancer [explicit-malignant], 135,436 control) ... | RAM 6.3GB
+[+  220.8s] [heartbeat] [1/6] lung adenocarcinoma: materialising 10 genes for 166,467 cells (31,031 cancer [explicit-malignant], 135,436 control) ... | RAM 6.3GB
+[+  240.8s] [heartbeat] [1/6] lung adenocarcinoma: materialising 10 genes for 166,467 cells (31,031 cancer [explicit-malignant], 135,436 control) ... | RAM 6.3GB
+[+  260.8s] [heartbeat] [1/6] lung adenocarcinoma: materialising 10 genes for 166,467 cells (31,031 cancer [explicit-malignant], 135,436 control) ... | RAM 6.3GB
+[+  280.8s] [heartbeat] [1/6] lung adenocarcinoma: materialising 10 genes for 166,467 cells (31,031 cancer [explicit-malignant], 135,436 control) ... | RAM 6.3GB
+[+  300.8s] [heartbeat] [1/6] lung adenocarcinoma: materialising 10 genes for 166,467 cells (31,031 cancer [explicit-malignant], 135,436 control) ... | RAM 6.3GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+  318.0s] [rung18b] [1/6] lung adenocarcinoma: kept 166,467 cells (mode=explicit-malignant) RAM 6.3GB
+[+  319.1s] [rung18b] [1/6] lung adenocarcinoma: tile checkpointed (safe to disconnect)
+[+  319.9s] [rung18b] [2/6] squamous cell lung carcinoma: reading obs metadata ...
+[+  320.8s] [heartbeat] [2/6] squamous cell lung carcinoma: reading obs metadata ... | RAM 6.3GB
+[+  321.2s] [rung18b] [2/6] squamous cell lung carcinoma: materialising 10 genes for 40,447 cells (15,762 cancer [explicit-malignant], 24,685 control) ...
+/content/cancer-recog-apoptosis/scripts/44_mhc_window_expression.py:281: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+[+  340.8s] [heartbeat] [2/6] squamous cell lung carcinoma: materialising 10 genes for 40,447 cells (15,762 cancer [explicit-malignant], 24,685 control) ... | RAM 6.3GB
+[+  360.8s] [heartbeat] [2/6] squamous cell lung carcinoma: materialising 10 genes for 40,447 cells (15,762 cancer [explicit-malignant], 24,685 control) ... | RAM 6.3GB
+[+  380.9s] [heartbeat] [2/6] squamous cell lung carcinoma: materialising 10 genes for 40,447 cells (15,762 cancer [explicit-malignant], 24,685 control) ... | RAM 6.3GB
+[+  400.9s] [heartbeat] [2/6] squamous cell lung carcinoma: materialising 10 genes for 40,447 cells (15,762 cancer [explicit-malignant], 24,685 control) ... | RAM 6.3GB
+[+  420.9s] [heartbeat] [2/6] squamous cell lung carcinoma: materialising 10 genes for 40,447 cells (15,762 cancer [explicit-malignant], 24,685 control) ... | RAM 6.3GB
+[+  440.9s] [heartbeat] [2/6] squamous cell lung carcinoma: materialising 10 genes for 40,447 cells (15,762 cancer [explicit-malignant], 24,685 control) ... | RAM 6.3GB
+[+  460.9s] [heartbeat] [2/6] squamous cell lung carcinoma: materialising 10 genes for 40,447 cells (15,762 cancer [explicit-malignant], 24,685 control) ... | RAM 6.3GB
+[+  480.9s] [heartbeat] [2/6] squamous cell lung carcinoma: materialising 10 genes for 40,447 cells (15,762 cancer [explicit-malignant], 24,685 control) ... | RAM 6.3GB
+[+  500.9s] [heartbeat] [2/6] squamous cell lung carcinoma: materialising 10 genes for 40,447 cells (15,762 cancer [explicit-malignant], 24,685 control) ... | RAM 6.3GB
+[+  520.9s] [heartbeat] [2/6] squamous cell lung carcinoma: materialising 10 genes for 40,447 cells (15,762 cancer [explicit-malignant], 24,685 control) ... | RAM 6.3GB
+[+  540.9s] [heartbeat] [2/6] squamous cell lung carcinoma: materialising 10 genes for 40,447 cells (15,762 cancer [explicit-malignant], 24,685 control) ... | RAM 6.3GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+  551.3s] [rung18b] [2/6] squamous cell lung carcinoma: kept 40,447 cells (mode=explicit-malignant) RAM 6.3GB
+[+  551.6s] [rung18b] [2/6] squamous cell lung carcinoma: tile checkpointed (safe to disconnect)
+[+  551.7s] [rung18b] [3/6] non-small cell lung carcinoma: reading obs metadata ...
+[+  552.4s] [rung18b] [3/6] non-small cell lung carcinoma: materialising 10 genes for 14,991 cells (4,712 cancer [explicit-malignant], 10,279 control) ...
+/content/cancer-recog-apoptosis/scripts/44_mhc_window_expression.py:281: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+[+  561.0s] [heartbeat] [3/6] non-small cell lung carcinoma: materialising 10 genes for 14,991 cells (4,712 cancer [explicit-malignant], 10,279 control) ... | RAM 6.3GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+  564.6s] [rung18b] [3/6] non-small cell lung carcinoma: kept 14,991 cells (mode=explicit-malignant) RAM 6.3GB
+[+  564.7s] [rung18b] [3/6] non-small cell lung carcinoma: tile checkpointed (safe to disconnect)
+[+  564.8s] [rung18b] [4/6] colorectal cancer: reading obs metadata ...
+[+  565.3s] [rung18b] [4/6] colorectal cancer: materialising 10 genes for 1,566 cells (752 cancer [explicit-malignant], 814 control) ...
+/content/cancer-recog-apoptosis/scripts/44_mhc_window_expression.py:281: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+  571.1s] [rung18b] [4/6] colorectal cancer: kept 1,566 cells (mode=explicit-malignant) RAM 6.3GB
+[+  571.1s] [rung18b] [4/6] colorectal cancer: tile checkpointed (safe to disconnect)
+[+  571.1s] [rung18b] [5/6] colon sessile serrated adenoma/polyp: reading obs metadata ...
+[+  572.0s] [rung18b] [5/6] colon sessile serrated adenoma/polyp: materialising 10 genes for 1,272 cells (427 cancer [explicit-malignant], 845 control) ...
+/content/cancer-recog-apoptosis/scripts/44_mhc_window_expression.py:281: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+[+  581.0s] [heartbeat] [5/6] colon sessile serrated adenoma/polyp: materialising 10 genes for 1,272 cells (427 cancer [explicit-malignant], 845 control) ... | RAM 6.3GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+  581.6s] [rung18b] [5/6] colon sessile serrated adenoma/polyp: kept 1,272 cells (mode=explicit-malignant) RAM 6.3GB
+[+  581.7s] [rung18b] [5/6] colon sessile serrated adenoma/polyp: tile checkpointed (safe to disconnect)
+[+  581.7s] [rung18b] [6/6] colorectal neoplasm: reading obs metadata ...
+[+  582.2s] [rung18b] [6/6] colorectal neoplasm: materialising 10 genes for 260 cells (260 cancer [explicit-malignant], 0 control) ...
+/content/cancer-recog-apoptosis/scripts/44_mhc_window_expression.py:281: FutureWarning: The argument `column_names` is deprecated and will be removed in a future release. Please use `obs_column_names` and `var_column_names` instead.
+  ad = cellxgene_census.get_anndata(
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+  585.7s] [rung18b] [6/6] colorectal neoplasm: kept 260 cells (mode=explicit-malignant) RAM 6.3GB
+[+  585.8s] [rung18b] [6/6] colorectal neoplasm: tile checkpointed (safe to disconnect)
+[+  587.2s] [rung18b] wrote /content/cancer-recog-apoptosis/runs/rung18b_mhc_expression/rung18b_mhc_expression.json
+[+  587.2s] [rung18b] bucket       mode                  n_cancer   dark%  worst%   ctrl% genFloor%
+[+  587.2s] [rung18b]   lung         explicit-malignant      50,719   12.6%   82.5%    0.5%      6.0%
+[+  587.2s] [rung18b]   colorectal   explicit-malignant       1,170    7.4%   13.4%    2.7%      5.7%
+[+  588.1s] [rung18b] wrote /content/cancer-recog-apoptosis/runs/rung18b_mhc_expression/rung18b_mhc_expression.png
+[exit 0]

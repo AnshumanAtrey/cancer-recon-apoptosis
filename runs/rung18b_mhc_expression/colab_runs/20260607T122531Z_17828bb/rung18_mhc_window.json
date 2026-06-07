@@ -1,0 +1,2191 @@
+{
+  "tag": "rung18_mhc_window_status",
+  "hypothesis": "Does the cancer cell keep its MHC-I display window ON? Measure, per cancer type, how often antigen presentation is genetically disabled, and GRADE it: full-dark (systemic B2M/TAP, route dies) vs dimmed (HLA-LOH/mut, route survives) vs intact.",
+  "data_source": "Martinez-Jimenez et al. 2023, Nat Genet, DOI 10.1038/s41588-023-01367-1, Supplementary Data (MOESM6) sheet 'GIE per sample'; 6,319 WGS tumours, 58 types.",
+  "n_samples_total": 6319,
+  "grading": {
+    "DARK_SYSTEMIC": "systemic_app_pathway True (B2M/TAP/NLRC5/CALR/TAPBP). WHOLE window off -> immune route dies.",
+    "DIMMED_HLA": "targeted_escape True (HLA-LOH or HLA mut), not systemic. Some alleles lost -> route survives reduced.",
+    "INTACT_GENETIC": "neither -> window genetically present (may still be epigenetically silenced; see CEILING).",
+    "IFN_BLIND": "ifn_gamma_pathway True -> window cannot be re-lit by inflammation (orthogonal flag)."
+  },
+  "OVERALL": {
+    "n": 6319,
+    "any_gie": {
+      "k": 1626,
+      "fraction": 0.2573,
+      "ci_lower": 0.2467,
+      "ci_upper": 0.2682
+    },
+    "dark_systemic": {
+      "k": 232,
+      "fraction": 0.0367,
+      "ci_lower": 0.0324,
+      "ci_upper": 0.0416
+    },
+    "targeted_hla": {
+      "k": 1228,
+      "fraction": 0.1943,
+      "ci_lower": 0.1848,
+      "ci_upper": 0.2043
+    },
+    "hla_loh": {
+      "k": 1101,
+      "fraction": 0.1742,
+      "ci_lower": 0.1651,
+      "ci_upper": 0.1838
+    },
+    "hla_mut": {
+      "k": 159,
+      "fraction": 0.0252,
+      "ci_lower": 0.0216,
+      "ci_upper": 0.0293
+    },
+    "ifn_blind": {
+      "k": 253,
+      "fraction": 0.04,
+      "ci_lower": 0.0355,
+      "ci_upper": 0.0452
+    },
+    "epigen_genetic": {
+      "k": 70,
+      "fraction": 0.0111,
+      "ci_lower": 0.0088,
+      "ci_upper": 0.014
+    },
+    "window_class_fraction": {
+      "DARK_SYSTEMIC": 0.0367,
+      "DIMMED_HLA": 0.184,
+      "INTACT_GENETIC": 0.7792
+    },
+    "route_dies_fraction": 0.0367,
+    "route_viable_fraction": 0.9633
+  },
+  "ROUTE_CANCERS": {
+    "SKCM": {
+      "n": 404,
+      "any_gie": {
+        "k": 92,
+        "fraction": 0.2277,
+        "ci_lower": 0.1895,
+        "ci_upper": 0.2711
+      },
+      "dark_systemic": {
+        "k": 34,
+        "fraction": 0.0842,
+        "ci_lower": 0.0608,
+        "ci_upper": 0.1153
+      },
+      "targeted_hla": {
+        "k": 52,
+        "fraction": 0.1287,
+        "ci_lower": 0.0995,
+        "ci_upper": 0.1649
+      },
+      "hla_loh": {
+        "k": 41,
+        "fraction": 0.1015,
+        "ci_lower": 0.0757,
+        "ci_upper": 0.1348
+      },
+      "hla_mut": {
+        "k": 11,
+        "fraction": 0.0272,
+        "ci_lower": 0.0153,
+        "ci_upper": 0.0481
+      },
+      "ifn_blind": {
+        "k": 20,
+        "fraction": 0.0495,
+        "ci_lower": 0.0323,
+        "ci_upper": 0.0752
+      },
+      "epigen_genetic": {
+        "k": 1,
+        "fraction": 0.0025,
+        "ci_lower": 0.0004,
+        "ci_upper": 0.0139
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0842,
+        "DIMMED_HLA": 0.1089,
+        "INTACT_GENETIC": 0.8069
+      },
+      "route_dies_fraction": 0.0842,
+      "route_viable_fraction": 0.9158
+    },
+    "NSCLC": {
+      "n": 587,
+      "any_gie": {
+        "k": 232,
+        "fraction": 0.3952,
+        "ci_lower": 0.3565,
+        "ci_upper": 0.4353
+      },
+      "dark_systemic": {
+        "k": 35,
+        "fraction": 0.0596,
+        "ci_lower": 0.0432,
+        "ci_upper": 0.0818
+      },
+      "targeted_hla": {
+        "k": 185,
+        "fraction": 0.3152,
+        "ci_lower": 0.2789,
+        "ci_upper": 0.3538
+      },
+      "hla_loh": {
+        "k": 163,
+        "fraction": 0.2777,
+        "ci_lower": 0.243,
+        "ci_upper": 0.3153
+      },
+      "hla_mut": {
+        "k": 31,
+        "fraction": 0.0528,
+        "ci_lower": 0.0375,
+        "ci_upper": 0.074
+      },
+      "ifn_blind": {
+        "k": 26,
+        "fraction": 0.0443,
+        "ci_lower": 0.0304,
+        "ci_upper": 0.0641
+      },
+      "epigen_genetic": {
+        "k": 16,
+        "fraction": 0.0273,
+        "ci_lower": 0.0168,
+        "ci_upper": 0.0438
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0596,
+        "DIMMED_HLA": 0.293,
+        "INTACT_GENETIC": 0.6474
+      },
+      "route_dies_fraction": 0.0596,
+      "route_viable_fraction": 0.9404
+    },
+    "COREAD": {
+      "n": 662,
+      "any_gie": {
+        "k": 192,
+        "fraction": 0.29,
+        "ci_lower": 0.2568,
+        "ci_upper": 0.3257
+      },
+      "dark_systemic": {
+        "k": 38,
+        "fraction": 0.0574,
+        "ci_lower": 0.0421,
+        "ci_upper": 0.0778
+      },
+      "targeted_hla": {
+        "k": 152,
+        "fraction": 0.2296,
+        "ci_lower": 0.1992,
+        "ci_upper": 0.2632
+      },
+      "hla_loh": {
+        "k": 135,
+        "fraction": 0.2039,
+        "ci_lower": 0.175,
+        "ci_upper": 0.2363
+      },
+      "hla_mut": {
+        "k": 25,
+        "fraction": 0.0378,
+        "ci_lower": 0.0257,
+        "ci_upper": 0.0552
+      },
+      "ifn_blind": {
+        "k": 37,
+        "fraction": 0.0559,
+        "ci_lower": 0.0408,
+        "ci_upper": 0.0761
+      },
+      "epigen_genetic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0058
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0574,
+        "DIMMED_HLA": 0.2115,
+        "INTACT_GENETIC": 0.7311
+      },
+      "route_dies_fraction": 0.0574,
+      "route_viable_fraction": 0.9426
+    },
+    "BLCA": {
+      "n": 196,
+      "any_gie": {
+        "k": 56,
+        "fraction": 0.2857,
+        "ci_lower": 0.2271,
+        "ci_upper": 0.3526
+      },
+      "dark_systemic": {
+        "k": 6,
+        "fraction": 0.0306,
+        "ci_lower": 0.0141,
+        "ci_upper": 0.0652
+      },
+      "targeted_hla": {
+        "k": 39,
+        "fraction": 0.199,
+        "ci_lower": 0.1491,
+        "ci_upper": 0.2604
+      },
+      "hla_loh": {
+        "k": 29,
+        "fraction": 0.148,
+        "ci_lower": 0.105,
+        "ci_upper": 0.2044
+      },
+      "hla_mut": {
+        "k": 14,
+        "fraction": 0.0714,
+        "ci_lower": 0.043,
+        "ci_upper": 0.1163
+      },
+      "ifn_blind": {
+        "k": 11,
+        "fraction": 0.0561,
+        "ci_lower": 0.0316,
+        "ci_upper": 0.0977
+      },
+      "epigen_genetic": {
+        "k": 5,
+        "fraction": 0.0255,
+        "ci_lower": 0.0109,
+        "ci_upper": 0.0583
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0306,
+        "DIMMED_HLA": 0.1837,
+        "INTACT_GENETIC": 0.7857
+      },
+      "route_dies_fraction": 0.0306,
+      "route_viable_fraction": 0.9694
+    }
+  },
+  "route_dies_fraction_by_cancer": {
+    "SKCM": 0.0842,
+    "NSCLC": 0.0596,
+    "COREAD": 0.0574,
+    "BLCA": 0.0306
+  },
+  "worst_route_cancer_for_window_loss": "SKCM",
+  "per_cancer": {
+    "BRCA": {
+      "n": 938,
+      "any_gie": {
+        "k": 201,
+        "fraction": 0.2143,
+        "ci_lower": 0.1892,
+        "ci_upper": 0.2417
+      },
+      "dark_systemic": {
+        "k": 22,
+        "fraction": 0.0235,
+        "ci_lower": 0.0155,
+        "ci_upper": 0.0353
+      },
+      "targeted_hla": {
+        "k": 136,
+        "fraction": 0.145,
+        "ci_lower": 0.1239,
+        "ci_upper": 0.169
+      },
+      "hla_loh": {
+        "k": 127,
+        "fraction": 0.1354,
+        "ci_lower": 0.115,
+        "ci_upper": 0.1588
+      },
+      "hla_mut": {
+        "k": 9,
+        "fraction": 0.0096,
+        "ci_lower": 0.0051,
+        "ci_upper": 0.0181
+      },
+      "ifn_blind": {
+        "k": 38,
+        "fraction": 0.0405,
+        "ci_lower": 0.0297,
+        "ci_upper": 0.0551
+      },
+      "epigen_genetic": {
+        "k": 19,
+        "fraction": 0.0203,
+        "ci_lower": 0.013,
+        "ci_upper": 0.0314
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0235,
+        "DIMMED_HLA": 0.1418,
+        "INTACT_GENETIC": 0.8348
+      },
+      "route_dies_fraction": 0.0235,
+      "route_viable_fraction": 0.9765
+    },
+    "COREAD": {
+      "n": 662,
+      "any_gie": {
+        "k": 192,
+        "fraction": 0.29,
+        "ci_lower": 0.2568,
+        "ci_upper": 0.3257
+      },
+      "dark_systemic": {
+        "k": 38,
+        "fraction": 0.0574,
+        "ci_lower": 0.0421,
+        "ci_upper": 0.0778
+      },
+      "targeted_hla": {
+        "k": 152,
+        "fraction": 0.2296,
+        "ci_lower": 0.1992,
+        "ci_upper": 0.2632
+      },
+      "hla_loh": {
+        "k": 135,
+        "fraction": 0.2039,
+        "ci_lower": 0.175,
+        "ci_upper": 0.2363
+      },
+      "hla_mut": {
+        "k": 25,
+        "fraction": 0.0378,
+        "ci_lower": 0.0257,
+        "ci_upper": 0.0552
+      },
+      "ifn_blind": {
+        "k": 37,
+        "fraction": 0.0559,
+        "ci_lower": 0.0408,
+        "ci_upper": 0.0761
+      },
+      "epigen_genetic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0058
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0574,
+        "DIMMED_HLA": 0.2115,
+        "INTACT_GENETIC": 0.7311
+      },
+      "route_dies_fraction": 0.0574,
+      "route_viable_fraction": 0.9426
+    },
+    "NSCLC": {
+      "n": 587,
+      "any_gie": {
+        "k": 232,
+        "fraction": 0.3952,
+        "ci_lower": 0.3565,
+        "ci_upper": 0.4353
+      },
+      "dark_systemic": {
+        "k": 35,
+        "fraction": 0.0596,
+        "ci_lower": 0.0432,
+        "ci_upper": 0.0818
+      },
+      "targeted_hla": {
+        "k": 185,
+        "fraction": 0.3152,
+        "ci_lower": 0.2789,
+        "ci_upper": 0.3538
+      },
+      "hla_loh": {
+        "k": 163,
+        "fraction": 0.2777,
+        "ci_lower": 0.243,
+        "ci_upper": 0.3153
+      },
+      "hla_mut": {
+        "k": 31,
+        "fraction": 0.0528,
+        "ci_lower": 0.0375,
+        "ci_upper": 0.074
+      },
+      "ifn_blind": {
+        "k": 26,
+        "fraction": 0.0443,
+        "ci_lower": 0.0304,
+        "ci_upper": 0.0641
+      },
+      "epigen_genetic": {
+        "k": 16,
+        "fraction": 0.0273,
+        "ci_lower": 0.0168,
+        "ci_upper": 0.0438
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0596,
+        "DIMMED_HLA": 0.293,
+        "INTACT_GENETIC": 0.6474
+      },
+      "route_dies_fraction": 0.0596,
+      "route_viable_fraction": 0.9404
+    },
+    "PRAD": {
+      "n": 552,
+      "any_gie": {
+        "k": 67,
+        "fraction": 0.1214,
+        "ci_lower": 0.0967,
+        "ci_upper": 0.1513
+      },
+      "dark_systemic": {
+        "k": 7,
+        "fraction": 0.0127,
+        "ci_lower": 0.0062,
+        "ci_upper": 0.0259
+      },
+      "targeted_hla": {
+        "k": 27,
+        "fraction": 0.0489,
+        "ci_lower": 0.0338,
+        "ci_upper": 0.0702
+      },
+      "hla_loh": {
+        "k": 21,
+        "fraction": 0.038,
+        "ci_lower": 0.025,
+        "ci_upper": 0.0575
+      },
+      "hla_mut": {
+        "k": 6,
+        "fraction": 0.0109,
+        "ci_lower": 0.005,
+        "ci_upper": 0.0235
+      },
+      "ifn_blind": {
+        "k": 34,
+        "fraction": 0.0616,
+        "ci_lower": 0.0444,
+        "ci_upper": 0.0848
+      },
+      "epigen_genetic": {
+        "k": 5,
+        "fraction": 0.0091,
+        "ci_lower": 0.0039,
+        "ci_upper": 0.021
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0127,
+        "DIMMED_HLA": 0.0453,
+        "INTACT_GENETIC": 0.942
+      },
+      "route_dies_fraction": 0.0127,
+      "route_viable_fraction": 0.9873
+    },
+    "SKCM": {
+      "n": 404,
+      "any_gie": {
+        "k": 92,
+        "fraction": 0.2277,
+        "ci_lower": 0.1895,
+        "ci_upper": 0.2711
+      },
+      "dark_systemic": {
+        "k": 34,
+        "fraction": 0.0842,
+        "ci_lower": 0.0608,
+        "ci_upper": 0.1153
+      },
+      "targeted_hla": {
+        "k": 52,
+        "fraction": 0.1287,
+        "ci_lower": 0.0995,
+        "ci_upper": 0.1649
+      },
+      "hla_loh": {
+        "k": 41,
+        "fraction": 0.1015,
+        "ci_lower": 0.0757,
+        "ci_upper": 0.1348
+      },
+      "hla_mut": {
+        "k": 11,
+        "fraction": 0.0272,
+        "ci_lower": 0.0153,
+        "ci_upper": 0.0481
+      },
+      "ifn_blind": {
+        "k": 20,
+        "fraction": 0.0495,
+        "ci_lower": 0.0323,
+        "ci_upper": 0.0752
+      },
+      "epigen_genetic": {
+        "k": 1,
+        "fraction": 0.0025,
+        "ci_lower": 0.0004,
+        "ci_upper": 0.0139
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0842,
+        "DIMMED_HLA": 0.1089,
+        "INTACT_GENETIC": 0.8069
+      },
+      "route_dies_fraction": 0.0842,
+      "route_viable_fraction": 0.9158
+    },
+    "PAAD": {
+      "n": 306,
+      "any_gie": {
+        "k": 96,
+        "fraction": 0.3137,
+        "ci_lower": 0.2643,
+        "ci_upper": 0.3678
+      },
+      "dark_systemic": {
+        "k": 2,
+        "fraction": 0.0065,
+        "ci_lower": 0.0018,
+        "ci_upper": 0.0235
+      },
+      "targeted_hla": {
+        "k": 88,
+        "fraction": 0.2876,
+        "ci_lower": 0.2397,
+        "ci_upper": 0.3407
+      },
+      "hla_loh": {
+        "k": 84,
+        "fraction": 0.2745,
+        "ci_lower": 0.2275,
+        "ci_upper": 0.3271
+      },
+      "hla_mut": {
+        "k": 6,
+        "fraction": 0.0196,
+        "ci_lower": 0.009,
+        "ci_upper": 0.0421
+      },
+      "ifn_blind": {
+        "k": 8,
+        "fraction": 0.0261,
+        "ci_lower": 0.0133,
+        "ci_upper": 0.0507
+      },
+      "epigen_genetic": {
+        "k": 1,
+        "fraction": 0.0033,
+        "ci_lower": 0.0006,
+        "ci_upper": 0.0183
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0065,
+        "DIMMED_HLA": 0.2876,
+        "INTACT_GENETIC": 0.7059
+      },
+      "route_dies_fraction": 0.0065,
+      "route_viable_fraction": 0.9935
+    },
+    "ESCA": {
+      "n": 224,
+      "any_gie": {
+        "k": 83,
+        "fraction": 0.3705,
+        "ci_lower": 0.31,
+        "ci_upper": 0.4355
+      },
+      "dark_systemic": {
+        "k": 2,
+        "fraction": 0.0089,
+        "ci_lower": 0.0025,
+        "ci_upper": 0.032
+      },
+      "targeted_hla": {
+        "k": 77,
+        "fraction": 0.3438,
+        "ci_lower": 0.2847,
+        "ci_upper": 0.4081
+      },
+      "hla_loh": {
+        "k": 73,
+        "fraction": 0.3259,
+        "ci_lower": 0.2679,
+        "ci_upper": 0.3898
+      },
+      "hla_mut": {
+        "k": 5,
+        "fraction": 0.0223,
+        "ci_lower": 0.0096,
+        "ci_upper": 0.0512
+      },
+      "ifn_blind": {
+        "k": 8,
+        "fraction": 0.0357,
+        "ci_lower": 0.0182,
+        "ci_upper": 0.0689
+      },
+      "epigen_genetic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0169
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0089,
+        "DIMMED_HLA": 0.3438,
+        "INTACT_GENETIC": 0.6473
+      },
+      "route_dies_fraction": 0.0089,
+      "route_viable_fraction": 0.9911
+    },
+    "KIRC": {
+      "n": 224,
+      "any_gie": {
+        "k": 43,
+        "fraction": 0.192,
+        "ci_lower": 0.1458,
+        "ci_upper": 0.2486
+      },
+      "dark_systemic": {
+        "k": 5,
+        "fraction": 0.0223,
+        "ci_lower": 0.0096,
+        "ci_upper": 0.0512
+      },
+      "targeted_hla": {
+        "k": 39,
+        "fraction": 0.1741,
+        "ci_lower": 0.1301,
+        "ci_upper": 0.2291
+      },
+      "hla_loh": {
+        "k": 36,
+        "fraction": 0.1607,
+        "ci_lower": 0.1184,
+        "ci_upper": 0.2145
+      },
+      "hla_mut": {
+        "k": 3,
+        "fraction": 0.0134,
+        "ci_lower": 0.0046,
+        "ci_upper": 0.0386
+      },
+      "ifn_blind": {
+        "k": 2,
+        "fraction": 0.0089,
+        "ci_lower": 0.0025,
+        "ci_upper": 0.032
+      },
+      "epigen_genetic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0169
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0223,
+        "DIMMED_HLA": 0.1652,
+        "INTACT_GENETIC": 0.8125
+      },
+      "route_dies_fraction": 0.0223,
+      "route_viable_fraction": 0.9777
+    },
+    "OV": {
+      "n": 214,
+      "any_gie": {
+        "k": 62,
+        "fraction": 0.2897,
+        "ci_lower": 0.2331,
+        "ci_upper": 0.3538
+      },
+      "dark_systemic": {
+        "k": 6,
+        "fraction": 0.028,
+        "ci_lower": 0.0129,
+        "ci_upper": 0.0598
+      },
+      "targeted_hla": {
+        "k": 45,
+        "fraction": 0.2103,
+        "ci_lower": 0.161,
+        "ci_upper": 0.2697
+      },
+      "hla_loh": {
+        "k": 45,
+        "fraction": 0.2103,
+        "ci_lower": 0.161,
+        "ci_upper": 0.2697
+      },
+      "hla_mut": {
+        "k": 1,
+        "fraction": 0.0047,
+        "ci_lower": 0.0008,
+        "ci_upper": 0.026
+      },
+      "ifn_blind": {
+        "k": 6,
+        "fraction": 0.028,
+        "ci_lower": 0.0129,
+        "ci_upper": 0.0598
+      },
+      "epigen_genetic": {
+        "k": 7,
+        "fraction": 0.0327,
+        "ci_lower": 0.0159,
+        "ci_upper": 0.066
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.028,
+        "DIMMED_HLA": 0.2103,
+        "INTACT_GENETIC": 0.7617
+      },
+      "route_dies_fraction": 0.028,
+      "route_viable_fraction": 0.972
+    },
+    "BLCA": {
+      "n": 196,
+      "any_gie": {
+        "k": 56,
+        "fraction": 0.2857,
+        "ci_lower": 0.2271,
+        "ci_upper": 0.3526
+      },
+      "dark_systemic": {
+        "k": 6,
+        "fraction": 0.0306,
+        "ci_lower": 0.0141,
+        "ci_upper": 0.0652
+      },
+      "targeted_hla": {
+        "k": 39,
+        "fraction": 0.199,
+        "ci_lower": 0.1491,
+        "ci_upper": 0.2604
+      },
+      "hla_loh": {
+        "k": 29,
+        "fraction": 0.148,
+        "ci_lower": 0.105,
+        "ci_upper": 0.2044
+      },
+      "hla_mut": {
+        "k": 14,
+        "fraction": 0.0714,
+        "ci_lower": 0.043,
+        "ci_upper": 0.1163
+      },
+      "ifn_blind": {
+        "k": 11,
+        "fraction": 0.0561,
+        "ci_lower": 0.0316,
+        "ci_upper": 0.0977
+      },
+      "epigen_genetic": {
+        "k": 5,
+        "fraction": 0.0255,
+        "ci_lower": 0.0109,
+        "ci_upper": 0.0583
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0306,
+        "DIMMED_HLA": 0.1837,
+        "INTACT_GENETIC": 0.7857
+      },
+      "route_dies_fraction": 0.0306,
+      "route_viable_fraction": 0.9694
+    },
+    "LIHC": {
+      "n": 147,
+      "any_gie": {
+        "k": 22,
+        "fraction": 0.1497,
+        "ci_lower": 0.101,
+        "ci_upper": 0.2162
+      },
+      "dark_systemic": {
+        "k": 5,
+        "fraction": 0.034,
+        "ci_lower": 0.0146,
+        "ci_upper": 0.0771
+      },
+      "targeted_hla": {
+        "k": 4,
+        "fraction": 0.0272,
+        "ci_lower": 0.0106,
+        "ci_upper": 0.0679
+      },
+      "hla_loh": {
+        "k": 3,
+        "fraction": 0.0204,
+        "ci_lower": 0.007,
+        "ci_upper": 0.0583
+      },
+      "hla_mut": {
+        "k": 1,
+        "fraction": 0.0068,
+        "ci_lower": 0.0012,
+        "ci_upper": 0.0375
+      },
+      "ifn_blind": {
+        "k": 9,
+        "fraction": 0.0612,
+        "ci_lower": 0.0325,
+        "ci_upper": 0.1123
+      },
+      "epigen_genetic": {
+        "k": 4,
+        "fraction": 0.0272,
+        "ci_lower": 0.0106,
+        "ci_upper": 0.0679
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.034,
+        "DIMMED_HLA": 0.0272,
+        "INTACT_GENETIC": 0.9388
+      },
+      "route_dies_fraction": 0.034,
+      "route_viable_fraction": 0.966
+    },
+    "SARC": {
+      "n": 135,
+      "any_gie": {
+        "k": 24,
+        "fraction": 0.1778,
+        "ci_lower": 0.1225,
+        "ci_upper": 0.2509
+      },
+      "dark_systemic": {
+        "k": 2,
+        "fraction": 0.0148,
+        "ci_lower": 0.0041,
+        "ci_upper": 0.0524
+      },
+      "targeted_hla": {
+        "k": 23,
+        "fraction": 0.1704,
+        "ci_lower": 0.1163,
+        "ci_upper": 0.2427
+      },
+      "hla_loh": {
+        "k": 22,
+        "fraction": 0.163,
+        "ci_lower": 0.1102,
+        "ci_upper": 0.2344
+      },
+      "hla_mut": {
+        "k": 2,
+        "fraction": 0.0148,
+        "ci_lower": 0.0041,
+        "ci_upper": 0.0524
+      },
+      "ifn_blind": {
+        "k": 1,
+        "fraction": 0.0074,
+        "ci_lower": 0.0013,
+        "ci_upper": 0.0408
+      },
+      "epigen_genetic": {
+        "k": 1,
+        "fraction": 0.0074,
+        "ci_lower": 0.0013,
+        "ci_upper": 0.0408
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0148,
+        "DIMMED_HLA": 0.1556,
+        "INTACT_GENETIC": 0.8296
+      },
+      "route_dies_fraction": 0.0148,
+      "route_viable_fraction": 0.9852
+    },
+    "DLBCL": {
+      "n": 114,
+      "any_gie": {
+        "k": 54,
+        "fraction": 0.4737,
+        "ci_lower": 0.3844,
+        "ci_upper": 0.5647
+      },
+      "dark_systemic": {
+        "k": 22,
+        "fraction": 0.193,
+        "ci_lower": 0.131,
+        "ci_upper": 0.2749
+      },
+      "targeted_hla": {
+        "k": 34,
+        "fraction": 0.2982,
+        "ci_lower": 0.222,
+        "ci_upper": 0.3877
+      },
+      "hla_loh": {
+        "k": 25,
+        "fraction": 0.2193,
+        "ci_lower": 0.1532,
+        "ci_upper": 0.3037
+      },
+      "hla_mut": {
+        "k": 11,
+        "fraction": 0.0965,
+        "ci_lower": 0.0547,
+        "ci_upper": 0.1646
+      },
+      "ifn_blind": {
+        "k": 4,
+        "fraction": 0.0351,
+        "ci_lower": 0.0137,
+        "ci_upper": 0.0868
+      },
+      "epigen_genetic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0326
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.193,
+        "DIMMED_HLA": 0.2368,
+        "INTACT_GENETIC": 0.5702
+      },
+      "route_dies_fraction": 0.193,
+      "route_viable_fraction": 0.807
+    },
+    "PANET": {
+      "n": 114,
+      "any_gie": {
+        "k": 63,
+        "fraction": 0.5526,
+        "ci_lower": 0.4611,
+        "ci_upper": 0.6407
+      },
+      "dark_systemic": {
+        "k": 3,
+        "fraction": 0.0263,
+        "ci_lower": 0.009,
+        "ci_upper": 0.0745
+      },
+      "targeted_hla": {
+        "k": 62,
+        "fraction": 0.5439,
+        "ci_lower": 0.4525,
+        "ci_upper": 0.6324
+      },
+      "hla_loh": {
+        "k": 62,
+        "fraction": 0.5439,
+        "ci_lower": 0.4525,
+        "ci_upper": 0.6324
+      },
+      "hla_mut": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0326
+      },
+      "ifn_blind": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0326
+      },
+      "epigen_genetic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0326
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0263,
+        "DIMMED_HLA": 0.5263,
+        "INTACT_GENETIC": 0.4474
+      },
+      "route_dies_fraction": 0.0263,
+      "route_viable_fraction": 0.9737
+    },
+    "CUP": {
+      "n": 108,
+      "any_gie": {
+        "k": 21,
+        "fraction": 0.1944,
+        "ci_lower": 0.1308,
+        "ci_upper": 0.279
+      },
+      "dark_systemic": {
+        "k": 2,
+        "fraction": 0.0185,
+        "ci_lower": 0.0051,
+        "ci_upper": 0.065
+      },
+      "targeted_hla": {
+        "k": 17,
+        "fraction": 0.1574,
+        "ci_lower": 0.1007,
+        "ci_upper": 0.2377
+      },
+      "hla_loh": {
+        "k": 16,
+        "fraction": 0.1481,
+        "ci_lower": 0.0933,
+        "ci_upper": 0.2272
+      },
+      "hla_mut": {
+        "k": 3,
+        "fraction": 0.0278,
+        "ci_lower": 0.0095,
+        "ci_upper": 0.0785
+      },
+      "ifn_blind": {
+        "k": 2,
+        "fraction": 0.0185,
+        "ci_lower": 0.0051,
+        "ci_upper": 0.065
+      },
+      "epigen_genetic": {
+        "k": 1,
+        "fraction": 0.0093,
+        "ci_lower": 0.0016,
+        "ci_upper": 0.0506
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0185,
+        "DIMMED_HLA": 0.1574,
+        "INTACT_GENETIC": 0.8241
+      },
+      "route_dies_fraction": 0.0185,
+      "route_viable_fraction": 0.9815
+    },
+    "MBL": {
+      "n": 107,
+      "any_gie": {
+        "k": 4,
+        "fraction": 0.0374,
+        "ci_lower": 0.0146,
+        "ci_upper": 0.0922
+      },
+      "dark_systemic": {
+        "k": 1,
+        "fraction": 0.0093,
+        "ci_lower": 0.0017,
+        "ci_upper": 0.0511
+      },
+      "targeted_hla": {
+        "k": 2,
+        "fraction": 0.0187,
+        "ci_lower": 0.0051,
+        "ci_upper": 0.0656
+      },
+      "hla_loh": {
+        "k": 2,
+        "fraction": 0.0187,
+        "ci_lower": 0.0051,
+        "ci_upper": 0.0656
+      },
+      "hla_mut": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0347
+      },
+      "ifn_blind": {
+        "k": 1,
+        "fraction": 0.0093,
+        "ci_lower": 0.0017,
+        "ci_upper": 0.0511
+      },
+      "epigen_genetic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0347
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0093,
+        "DIMMED_HLA": 0.0187,
+        "INTACT_GENETIC": 0.972
+      },
+      "route_dies_fraction": 0.0093,
+      "route_viable_fraction": 0.9907
+    },
+    "GBM": {
+      "n": 97,
+      "any_gie": {
+        "k": 9,
+        "fraction": 0.0928,
+        "ci_lower": 0.0496,
+        "ci_upper": 0.167
+      },
+      "dark_systemic": {
+        "k": 4,
+        "fraction": 0.0412,
+        "ci_lower": 0.0162,
+        "ci_upper": 0.1013
+      },
+      "targeted_hla": {
+        "k": 5,
+        "fraction": 0.0515,
+        "ci_lower": 0.0222,
+        "ci_upper": 0.115
+      },
+      "hla_loh": {
+        "k": 3,
+        "fraction": 0.0309,
+        "ci_lower": 0.0106,
+        "ci_upper": 0.087
+      },
+      "hla_mut": {
+        "k": 2,
+        "fraction": 0.0206,
+        "ci_lower": 0.0057,
+        "ci_upper": 0.0721
+      },
+      "ifn_blind": {
+        "k": 1,
+        "fraction": 0.0103,
+        "ci_lower": 0.0018,
+        "ci_upper": 0.0561
+      },
+      "epigen_genetic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0381
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0412,
+        "DIMMED_HLA": 0.0515,
+        "INTACT_GENETIC": 0.9072
+      },
+      "route_dies_fraction": 0.0412,
+      "route_viable_fraction": 0.9588
+    },
+    "STAD": {
+      "n": 96,
+      "any_gie": {
+        "k": 32,
+        "fraction": 0.3333,
+        "ci_lower": 0.2471,
+        "ci_upper": 0.4324
+      },
+      "dark_systemic": {
+        "k": 7,
+        "fraction": 0.0729,
+        "ci_lower": 0.0358,
+        "ci_upper": 0.1429
+      },
+      "targeted_hla": {
+        "k": 21,
+        "fraction": 0.2188,
+        "ci_lower": 0.1478,
+        "ci_upper": 0.3114
+      },
+      "hla_loh": {
+        "k": 19,
+        "fraction": 0.1979,
+        "ci_lower": 0.1305,
+        "ci_upper": 0.2886
+      },
+      "hla_mut": {
+        "k": 3,
+        "fraction": 0.0312,
+        "ci_lower": 0.0107,
+        "ci_upper": 0.0879
+      },
+      "ifn_blind": {
+        "k": 9,
+        "fraction": 0.0938,
+        "ci_lower": 0.0501,
+        "ci_upper": 0.1687
+      },
+      "epigen_genetic": {
+        "k": 1,
+        "fraction": 0.0104,
+        "ci_lower": 0.0018,
+        "ci_upper": 0.0567
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0729,
+        "DIMMED_HLA": 0.2083,
+        "INTACT_GENETIC": 0.7188
+      },
+      "route_dies_fraction": 0.0729,
+      "route_viable_fraction": 0.9271
+    },
+    "HNSC": {
+      "n": 84,
+      "any_gie": {
+        "k": 38,
+        "fraction": 0.4524,
+        "ci_lower": 0.3504,
+        "ci_upper": 0.5586
+      },
+      "dark_systemic": {
+        "k": 8,
+        "fraction": 0.0952,
+        "ci_lower": 0.0491,
+        "ci_upper": 0.1768
+      },
+      "targeted_hla": {
+        "k": 27,
+        "fraction": 0.3214,
+        "ci_lower": 0.2313,
+        "ci_upper": 0.4272
+      },
+      "hla_loh": {
+        "k": 22,
+        "fraction": 0.2619,
+        "ci_lower": 0.1798,
+        "ci_upper": 0.3649
+      },
+      "hla_mut": {
+        "k": 5,
+        "fraction": 0.0595,
+        "ci_lower": 0.0257,
+        "ci_upper": 0.1319
+      },
+      "ifn_blind": {
+        "k": 5,
+        "fraction": 0.0595,
+        "ci_lower": 0.0257,
+        "ci_upper": 0.1319
+      },
+      "epigen_genetic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0437
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0952,
+        "DIMMED_HLA": 0.2976,
+        "INTACT_GENETIC": 0.6071
+      },
+      "route_dies_fraction": 0.0952,
+      "route_viable_fraction": 0.9048
+    },
+    "CHOL": {
+      "n": 76,
+      "any_gie": {
+        "k": 27,
+        "fraction": 0.3553,
+        "ci_lower": 0.257,
+        "ci_upper": 0.4674
+      },
+      "dark_systemic": {
+        "k": 2,
+        "fraction": 0.0263,
+        "ci_lower": 0.0072,
+        "ci_upper": 0.091
+      },
+      "targeted_hla": {
+        "k": 22,
+        "fraction": 0.2895,
+        "ci_lower": 0.1996,
+        "ci_upper": 0.3996
+      },
+      "hla_loh": {
+        "k": 22,
+        "fraction": 0.2895,
+        "ci_lower": 0.1996,
+        "ci_upper": 0.3996
+      },
+      "hla_mut": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0481
+      },
+      "ifn_blind": {
+        "k": 7,
+        "fraction": 0.0921,
+        "ci_lower": 0.0453,
+        "ci_upper": 0.1781
+      },
+      "epigen_genetic": {
+        "k": 2,
+        "fraction": 0.0263,
+        "ci_lower": 0.0072,
+        "ci_upper": 0.091
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0263,
+        "DIMMED_HLA": 0.2763,
+        "INTACT_GENETIC": 0.6974
+      },
+      "route_dies_fraction": 0.0263,
+      "route_viable_fraction": 0.9737
+    },
+    "GIST": {
+      "n": 68,
+      "any_gie": {
+        "k": 11,
+        "fraction": 0.1618,
+        "ci_lower": 0.0928,
+        "ci_upper": 0.2669
+      },
+      "dark_systemic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0535
+      },
+      "targeted_hla": {
+        "k": 11,
+        "fraction": 0.1618,
+        "ci_lower": 0.0928,
+        "ci_upper": 0.2669
+      },
+      "hla_loh": {
+        "k": 10,
+        "fraction": 0.1471,
+        "ci_lower": 0.0819,
+        "ci_upper": 0.25
+      },
+      "hla_mut": {
+        "k": 1,
+        "fraction": 0.0147,
+        "ci_lower": 0.0026,
+        "ci_upper": 0.0787
+      },
+      "ifn_blind": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0535
+      },
+      "epigen_genetic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0535
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0,
+        "DIMMED_HLA": 0.1618,
+        "INTACT_GENETIC": 0.8382
+      },
+      "route_dies_fraction": 0.0,
+      "route_viable_fraction": 1.0
+    },
+    "THCA": {
+      "n": 65,
+      "any_gie": {
+        "k": 7,
+        "fraction": 0.1077,
+        "ci_lower": 0.0532,
+        "ci_upper": 0.206
+      },
+      "dark_systemic": {
+        "k": 1,
+        "fraction": 0.0154,
+        "ci_lower": 0.0027,
+        "ci_upper": 0.0821
+      },
+      "targeted_hla": {
+        "k": 6,
+        "fraction": 0.0923,
+        "ci_lower": 0.043,
+        "ci_upper": 0.1871
+      },
+      "hla_loh": {
+        "k": 5,
+        "fraction": 0.0769,
+        "ci_lower": 0.0333,
+        "ci_upper": 0.1678
+      },
+      "hla_mut": {
+        "k": 1,
+        "fraction": 0.0154,
+        "ci_lower": 0.0027,
+        "ci_upper": 0.0821
+      },
+      "ifn_blind": {
+        "k": 1,
+        "fraction": 0.0154,
+        "ci_lower": 0.0027,
+        "ci_upper": 0.0821
+      },
+      "epigen_genetic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0558
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0154,
+        "DIMMED_HLA": 0.0769,
+        "INTACT_GENETIC": 0.9077
+      },
+      "route_dies_fraction": 0.0154,
+      "route_viable_fraction": 0.9846
+    },
+    "GINET": {
+      "n": 62,
+      "any_gie": {
+        "k": 5,
+        "fraction": 0.0806,
+        "ci_lower": 0.0349,
+        "ci_upper": 0.1753
+      },
+      "dark_systemic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0583
+      },
+      "targeted_hla": {
+        "k": 4,
+        "fraction": 0.0645,
+        "ci_lower": 0.0254,
+        "ci_upper": 0.1545
+      },
+      "hla_loh": {
+        "k": 4,
+        "fraction": 0.0645,
+        "ci_lower": 0.0254,
+        "ci_upper": 0.1545
+      },
+      "hla_mut": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0583
+      },
+      "ifn_blind": {
+        "k": 1,
+        "fraction": 0.0161,
+        "ci_lower": 0.0029,
+        "ci_upper": 0.0859
+      },
+      "epigen_genetic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0583
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0,
+        "DIMMED_HLA": 0.0645,
+        "INTACT_GENETIC": 0.9355
+      },
+      "route_dies_fraction": 0.0,
+      "route_viable_fraction": 1.0
+    },
+    "UCEC": {
+      "n": 61,
+      "any_gie": {
+        "k": 12,
+        "fraction": 0.1967,
+        "ci_lower": 0.1163,
+        "ci_upper": 0.3131
+      },
+      "dark_systemic": {
+        "k": 3,
+        "fraction": 0.0492,
+        "ci_lower": 0.0169,
+        "ci_upper": 0.1349
+      },
+      "targeted_hla": {
+        "k": 7,
+        "fraction": 0.1148,
+        "ci_lower": 0.0567,
+        "ci_upper": 0.2184
+      },
+      "hla_loh": {
+        "k": 5,
+        "fraction": 0.082,
+        "ci_lower": 0.0355,
+        "ci_upper": 0.1779
+      },
+      "hla_mut": {
+        "k": 2,
+        "fraction": 0.0328,
+        "ci_lower": 0.009,
+        "ci_upper": 0.1119
+      },
+      "ifn_blind": {
+        "k": 4,
+        "fraction": 0.0656,
+        "ci_lower": 0.0258,
+        "ci_upper": 0.1568
+      },
+      "epigen_genetic": {
+        "k": 2,
+        "fraction": 0.0328,
+        "ci_lower": 0.009,
+        "ci_upper": 0.1119
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0492,
+        "DIMMED_HLA": 0.1148,
+        "INTACT_GENETIC": 0.8361
+      },
+      "route_dies_fraction": 0.0492,
+      "route_viable_fraction": 0.9508
+    },
+    "LMS": {
+      "n": 61,
+      "any_gie": {
+        "k": 20,
+        "fraction": 0.3279,
+        "ci_lower": 0.2233,
+        "ci_upper": 0.4528
+      },
+      "dark_systemic": {
+        "k": 2,
+        "fraction": 0.0328,
+        "ci_lower": 0.009,
+        "ci_upper": 0.1119
+      },
+      "targeted_hla": {
+        "k": 18,
+        "fraction": 0.2951,
+        "ci_lower": 0.1955,
+        "ci_upper": 0.4189
+      },
+      "hla_loh": {
+        "k": 18,
+        "fraction": 0.2951,
+        "ci_lower": 0.1955,
+        "ci_upper": 0.4189
+      },
+      "hla_mut": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0592
+      },
+      "ifn_blind": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0592
+      },
+      "epigen_genetic": {
+        "k": 1,
+        "fraction": 0.0164,
+        "ci_lower": 0.0029,
+        "ci_upper": 0.0872
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0328,
+        "DIMMED_HLA": 0.2787,
+        "INTACT_GENETIC": 0.6885
+      },
+      "route_dies_fraction": 0.0328,
+      "route_viable_fraction": 0.9672
+    },
+    "CLL": {
+      "n": 60,
+      "any_gie": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0602
+      },
+      "dark_systemic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0602
+      },
+      "targeted_hla": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0602
+      },
+      "hla_loh": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0602
+      },
+      "hla_mut": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0602
+      },
+      "ifn_blind": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0602
+      },
+      "epigen_genetic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0602
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0,
+        "DIMMED_HLA": 0.0,
+        "INTACT_GENETIC": 1.0
+      },
+      "route_dies_fraction": 0.0,
+      "route_viable_fraction": 1.0
+    },
+    "CESC": {
+      "n": 57,
+      "any_gie": {
+        "k": 31,
+        "fraction": 0.5439,
+        "ci_lower": 0.4159,
+        "ci_upper": 0.6663
+      },
+      "dark_systemic": {
+        "k": 2,
+        "fraction": 0.0351,
+        "ci_lower": 0.0097,
+        "ci_upper": 0.1192
+      },
+      "targeted_hla": {
+        "k": 27,
+        "fraction": 0.4737,
+        "ci_lower": 0.3499,
+        "ci_upper": 0.6008
+      },
+      "hla_loh": {
+        "k": 23,
+        "fraction": 0.4035,
+        "ci_lower": 0.2862,
+        "ci_upper": 0.533
+      },
+      "hla_mut": {
+        "k": 4,
+        "fraction": 0.0702,
+        "ci_lower": 0.0276,
+        "ci_upper": 0.167
+      },
+      "ifn_blind": {
+        "k": 2,
+        "fraction": 0.0351,
+        "ci_lower": 0.0097,
+        "ci_upper": 0.1192
+      },
+      "epigen_genetic": {
+        "k": 2,
+        "fraction": 0.0351,
+        "ci_lower": 0.0097,
+        "ci_upper": 0.1192
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0351,
+        "DIMMED_HLA": 0.4561,
+        "INTACT_GENETIC": 0.5088
+      },
+      "route_dies_fraction": 0.0351,
+      "route_viable_fraction": 0.9649
+    },
+    "SCLC": {
+      "n": 51,
+      "any_gie": {
+        "k": 13,
+        "fraction": 0.2549,
+        "ci_lower": 0.1555,
+        "ci_upper": 0.3887
+      },
+      "dark_systemic": {
+        "k": 4,
+        "fraction": 0.0784,
+        "ci_lower": 0.0309,
+        "ci_upper": 0.185
+      },
+      "targeted_hla": {
+        "k": 6,
+        "fraction": 0.1176,
+        "ci_lower": 0.055,
+        "ci_upper": 0.2338
+      },
+      "hla_loh": {
+        "k": 4,
+        "fraction": 0.0784,
+        "ci_lower": 0.0309,
+        "ci_upper": 0.185
+      },
+      "hla_mut": {
+        "k": 2,
+        "fraction": 0.0392,
+        "ci_lower": 0.0108,
+        "ci_upper": 0.1322
+      },
+      "ifn_blind": {
+        "k": 2,
+        "fraction": 0.0392,
+        "ci_lower": 0.0108,
+        "ci_upper": 0.1322
+      },
+      "epigen_genetic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.07
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0784,
+        "DIMMED_HLA": 0.1176,
+        "INTACT_GENETIC": 0.8039
+      },
+      "route_dies_fraction": 0.0784,
+      "route_viable_fraction": 0.9216
+    },
+    "PIA": {
+      "n": 43,
+      "any_gie": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.082
+      },
+      "dark_systemic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.082
+      },
+      "targeted_hla": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.082
+      },
+      "hla_loh": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.082
+      },
+      "hla_mut": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.082
+      },
+      "ifn_blind": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.082
+      },
+      "epigen_genetic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.082
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0,
+        "DIMMED_HLA": 0.0,
+        "INTACT_GENETIC": 1.0
+      },
+      "route_dies_fraction": 0.0,
+      "route_viable_fraction": 1.0
+    },
+    "KICH": {
+      "n": 42,
+      "any_gie": {
+        "k": 31,
+        "fraction": 0.7381,
+        "ci_lower": 0.5893,
+        "ci_upper": 0.847
+      },
+      "dark_systemic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0838
+      },
+      "targeted_hla": {
+        "k": 31,
+        "fraction": 0.7381,
+        "ci_lower": 0.5893,
+        "ci_upper": 0.847
+      },
+      "hla_loh": {
+        "k": 31,
+        "fraction": 0.7381,
+        "ci_lower": 0.5893,
+        "ci_upper": 0.847
+      },
+      "hla_mut": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0838
+      },
+      "ifn_blind": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0838
+      },
+      "epigen_genetic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0838
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0,
+        "DIMMED_HLA": 0.7381,
+        "INTACT_GENETIC": 0.2619
+      },
+      "route_dies_fraction": 0.0,
+      "route_viable_fraction": 1.0
+    },
+    "LPS": {
+      "n": 41,
+      "any_gie": {
+        "k": 9,
+        "fraction": 0.2195,
+        "ci_lower": 0.12,
+        "ci_upper": 0.3671
+      },
+      "dark_systemic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0857
+      },
+      "targeted_hla": {
+        "k": 6,
+        "fraction": 0.1463,
+        "ci_lower": 0.0688,
+        "ci_upper": 0.2844
+      },
+      "hla_loh": {
+        "k": 6,
+        "fraction": 0.1463,
+        "ci_lower": 0.0688,
+        "ci_upper": 0.2844
+      },
+      "hla_mut": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0857
+      },
+      "ifn_blind": {
+        "k": 1,
+        "fraction": 0.0244,
+        "ci_lower": 0.0043,
+        "ci_upper": 0.126
+      },
+      "epigen_genetic": {
+        "k": 2,
+        "fraction": 0.0488,
+        "ci_lower": 0.0135,
+        "ci_upper": 0.1614
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0,
+        "DIMMED_HLA": 0.1463,
+        "INTACT_GENETIC": 0.8537
+      },
+      "route_dies_fraction": 0.0,
+      "route_viable_fraction": 1.0
+    },
+    "MESO": {
+      "n": 38,
+      "any_gie": {
+        "k": 4,
+        "fraction": 0.1053,
+        "ci_lower": 0.0417,
+        "ci_upper": 0.2413
+      },
+      "dark_systemic": {
+        "k": 1,
+        "fraction": 0.0263,
+        "ci_lower": 0.0047,
+        "ci_upper": 0.135
+      },
+      "targeted_hla": {
+        "k": 4,
+        "fraction": 0.1053,
+        "ci_lower": 0.0417,
+        "ci_upper": 0.2413
+      },
+      "hla_loh": {
+        "k": 4,
+        "fraction": 0.1053,
+        "ci_lower": 0.0417,
+        "ci_upper": 0.2413
+      },
+      "hla_mut": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0918
+      },
+      "ifn_blind": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0918
+      },
+      "epigen_genetic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.0918
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0263,
+        "DIMMED_HLA": 0.0789,
+        "INTACT_GENETIC": 0.8947
+      },
+      "route_dies_fraction": 0.0263,
+      "route_viable_fraction": 0.9737
+    },
+    "OS": {
+      "n": 32,
+      "any_gie": {
+        "k": 7,
+        "fraction": 0.2188,
+        "ci_lower": 0.1102,
+        "ci_upper": 0.3876
+      },
+      "dark_systemic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.1072
+      },
+      "targeted_hla": {
+        "k": 7,
+        "fraction": 0.2188,
+        "ci_lower": 0.1102,
+        "ci_upper": 0.3876
+      },
+      "hla_loh": {
+        "k": 7,
+        "fraction": 0.2188,
+        "ci_lower": 0.1102,
+        "ci_upper": 0.3876
+      },
+      "hla_mut": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.1072
+      },
+      "ifn_blind": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.1072
+      },
+      "epigen_genetic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.1072
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0,
+        "DIMMED_HLA": 0.2188,
+        "INTACT_GENETIC": 0.7812
+      },
+      "route_dies_fraction": 0.0,
+      "route_viable_fraction": 1.0
+    },
+    "KIRP": {
+      "n": 30,
+      "any_gie": {
+        "k": 5,
+        "fraction": 0.1667,
+        "ci_lower": 0.0734,
+        "ci_upper": 0.3356
+      },
+      "dark_systemic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.1135
+      },
+      "targeted_hla": {
+        "k": 5,
+        "fraction": 0.1667,
+        "ci_lower": 0.0734,
+        "ci_upper": 0.3356
+      },
+      "hla_loh": {
+        "k": 5,
+        "fraction": 0.1667,
+        "ci_lower": 0.0734,
+        "ci_upper": 0.3356
+      },
+      "hla_mut": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.1135
+      },
+      "ifn_blind": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.1135
+      },
+      "epigen_genetic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.1135
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0,
+        "DIMMED_HLA": 0.1667,
+        "INTACT_GENETIC": 0.8333
+      },
+      "route_dies_fraction": 0.0,
+      "route_viable_fraction": 1.0
+    },
+    "SG": {
+      "n": 30,
+      "any_gie": {
+        "k": 6,
+        "fraction": 0.2,
+        "ci_lower": 0.095,
+        "ci_upper": 0.3731
+      },
+      "dark_systemic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.1135
+      },
+      "targeted_hla": {
+        "k": 4,
+        "fraction": 0.1333,
+        "ci_lower": 0.0531,
+        "ci_upper": 0.2968
+      },
+      "hla_loh": {
+        "k": 4,
+        "fraction": 0.1333,
+        "ci_lower": 0.0531,
+        "ci_upper": 0.2968
+      },
+      "hla_mut": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.1135
+      },
+      "ifn_blind": {
+        "k": 2,
+        "fraction": 0.0667,
+        "ci_lower": 0.0185,
+        "ci_upper": 0.2132
+      },
+      "epigen_genetic": {
+        "k": 0,
+        "fraction": 0.0,
+        "ci_lower": 0.0,
+        "ci_upper": 0.1135
+      },
+      "window_class_fraction": {
+        "DARK_SYSTEMIC": 0.0,
+        "DIMMED_HLA": 0.1333,
+        "INTACT_GENETIC": 0.8667
+      },
+      "route_dies_fraction": 0.0,
+      "route_viable_fraction": 1.0
+    }
+  },
+  "code_to_name": {
+    "NSCLC": "Non small cell lung cancer",
+    "BLCA": "Urothelial cancer",
+    "OV": "Ovarian cancer",
+    "SKCM": "Skin melanoma",
+    "GIST": "Gastrointestinal stromal tumor",
+    "BRCA": "Breast cancer",
+    "SARC": "Sarcoma various",
+    "PRAD": "Prostate carcinoma",
+    "CUP": "CUP",
+    "COREAD": "Colorectum carcinoma",
+    "GINET": "Gastrointestinal neuroendocrine",
+    "HNSC": "Upper respiratory tract cancer",
+    "PAAD": "Pancreas carcinoma",
+    "CHOL": "Cholangiocarcinoma",
+    "CESC": "Cervix carcinoma",
+    "ACC": "Adrenal gland cancer",
+    "ESCA": "Esophagus cancer",
+    "STAD": "Stomach cancer",
+    "GBM": "Glioblastoma multiforme",
+    "TEST": "Testis cancer",
+    "KIRC": "Kidney clear cell carcinoma",
+    "LMS": "Leiomyosarcoma",
+    "LIHC": "Hepatocellular carcinoma",
+    "SKSC": "Skin Squamous cell carcinoma",
+    "THCA": "Thyroid cancer",
+    "SCLC": "Small cell lung cancer",
+    "LUNET": "Lung neuroendocrine",
+    "PANET": "Pancreas neuroendocrine",
+    "LPS": "Liposarcoma",
+    "UCEC": "Uterus carcinoma",
+    "MESO": "Mesothelioma",
+    "GBC": "Gallbladder cancer",
+    "DLBCL": "Diffuse large B-cell lymphoma",
+    "SG": "Salivary gland cancer",
+    "VULV": "Vulva and vagina cancer",
+    "SIAD": "Small intestine cancer",
+    "THYM": "Thymus carcinoma",
+    "GISTOT": "Gastrointestinal tract unknown",
+    "LUOT": "Lung cancer mixed",
+    "CNSOT": "CNS cancer mixed",
+    "SKBC": "Skin Basal cell carcinoma",
+    "PNL": "Penile cancer",
+    "LYOT": "Lymphoma mixed",
+    "SKOT": "Skin carcinoma other",
+    "PIA": "Pilocytic astrocytoma",
+    "SKME": "Skin Merkel cell carcinoma",
+    "KIOT": "Kidney unclassified",
+    "UVM": "Eye Melanoma",
+    "MM": "Multiple myeloma",
+    "MBL": "Medulloblastoma",
+    "THYMNET": "Thymus neuroendocrine",
+    "CLL": "Chronic lymphocytic leukemia",
+    "KIRP": "Kidney papilary carcinoma",
+    "KICH": "Kidney chromophobe cancer",
+    "OS": "Osteosarcoma",
+    "ODG": "Oligodendroglioma",
+    "LAML": "Acute myeloid leukemia",
+    "BBT": "Bone benign tumor"
+  },
+  "dark_systemic_genetic_drivers": {
+    "mut B2M": 82,
+    "mut NLRC5": 49,
+    "del B2M": 30,
+    "mut CIITA": 23,
+    "mut TAPBP": 12,
+    "mut TAP2": 11,
+    "mut TAP1": 10,
+    "mut CALR": 7,
+    "mut RFX5": 3,
+    "del NLRC5": 2,
+    "del CALR": 2,
+    "del TAPBP": 1
+  },
+  "HEADLINE": {
+    "any_genetic_immune_escape": 0.2573,
+    "window_fully_dark_systemic_ROUTE_DIES": 0.0367,
+    "window_dimmed_HLA_only_route_survives": 0.184,
+    "window_intact_genetic": 0.7792,
+    "ifn_blind_cannot_relight": 0.04,
+    "plain": "Across 6,319 real tumours: ~26% have SOME genetic immune escape, but the FATAL kind (whole window dark, route dies) is only ~4%. Most escape (~18%) is HLA-LOH/mut \u2014 the window DIMS but still presents on the remaining alleles, so the neoantigen route survives there."
+  },
+  "INTERPRETATION_MAP": {
+    "dark_systemic_small (<0.10) in route cancers": "Genetic window mostly intact -> immune route is GENETICALLY viable in melanoma/NSCLC/CRC. The dominant REMAINING risk is EXPRESSION-level silencing (epigenetic), which genetics can't see -> next test is RUNG-18b single-cell HLA/B2M transcription in MALIGNANT cells (Colab).",
+    "dark_systemic_large (>=0.10)": "Genetic escape alone kills the route in a large fraction -> Shriya's ORIGINAL autonomous self-destruct (no MHC needed) becomes essential as the backup for window-dark tumours.",
+    "ifn_blind co-occurring with dark": "Tumours that are BOTH dark and IFN-blind cannot be rescued by inflammation -> these are the hard core where only an MHC-independent killer (NK-engager / autonomous trigger) can work."
+  },
+  "CEILING": "GENETIC ONLY: epigenetic/transcriptional MHC-I silencing is NOT captured, so DARK_SYSTEMIC is a FLOOR, not the total (genetically-intact windows can still be transcriptionally OFF; that arm is reversible by IFN/epi-drugs and is RUNG-9 territory). PATIENT-LEVEL, not clonal (much escape is subclonal/late -> a DARK tumour may have only some dark cells; an INTACT one can hide a dark subclone). Bulk WGS genotype, not surface protein. NOT a wet result."
+}
