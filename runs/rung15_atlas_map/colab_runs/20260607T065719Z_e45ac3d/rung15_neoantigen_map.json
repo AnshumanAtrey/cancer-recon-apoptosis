@@ -1,0 +1,154 @@
+{
+  "tag": "rung15_atlas_mechanism_map_neoantigen",
+  "axis": "SEQUENCE/neoantigen (RUNG-12 structure-certified handles) x RUNG-14 mechanism ceilings",
+  "mechanism_q_n_ceilings": {
+    "per_cell": 0.02,
+    "wave": 0.173,
+    "quorum": 0.2
+  },
+  "per_cancer": {
+    "BRCA": {
+      "per_cell": {
+        "coverage": 0.0,
+        "n_handles": 0
+      },
+      "wave": {
+        "coverage": 0.0,
+        "n_handles": 0
+      },
+      "quorum": {
+        "coverage": 0.0,
+        "n_handles": 0
+      },
+      "propagation_gain_wave_vs_percell": 0.0,
+      "quorum_gain_vs_wave": 0.0,
+      "best_mechanism": "per_cell"
+    },
+    "CRC": {
+      "per_cell": {
+        "coverage": 0.107,
+        "n_handles": 2
+      },
+      "wave": {
+        "coverage": 0.1239,
+        "n_handles": 2
+      },
+      "quorum": {
+        "coverage": 0.1239,
+        "n_handles": 2
+      },
+      "propagation_gain_wave_vs_percell": 0.0169,
+      "quorum_gain_vs_wave": 0.0,
+      "best_mechanism": "wave"
+    },
+    "GLIOMA": {
+      "per_cell": {
+        "coverage": 0.2212,
+        "n_handles": 1
+      },
+      "wave": {
+        "coverage": 0.2212,
+        "n_handles": 1
+      },
+      "quorum": {
+        "coverage": 0.2212,
+        "n_handles": 1
+      },
+      "propagation_gain_wave_vs_percell": 0.0,
+      "quorum_gain_vs_wave": 0.0,
+      "best_mechanism": "per_cell"
+    },
+    "HCC": {
+      "per_cell": {
+        "coverage": 0.0032,
+        "n_handles": 1
+      },
+      "wave": {
+        "coverage": 0.0032,
+        "n_handles": 1
+      },
+      "quorum": {
+        "coverage": 0.0032,
+        "n_handles": 1
+      },
+      "propagation_gain_wave_vs_percell": 0.0,
+      "quorum_gain_vs_wave": 0.0,
+      "best_mechanism": "per_cell"
+    },
+    "MELANOMA": {
+      "per_cell": {
+        "coverage": 0.108,
+        "n_handles": 1
+      },
+      "wave": {
+        "coverage": 0.1914,
+        "n_handles": 1
+      },
+      "quorum": {
+        "coverage": 0.1914,
+        "n_handles": 1
+      },
+      "propagation_gain_wave_vs_percell": 0.0834,
+      "quorum_gain_vs_wave": 0.0,
+      "best_mechanism": "wave"
+    },
+    "NSCLC": {
+      "per_cell": {
+        "coverage": 0.0308,
+        "n_handles": 2
+      },
+      "wave": {
+        "coverage": 0.0344,
+        "n_handles": 2
+      },
+      "quorum": {
+        "coverage": 0.0344,
+        "n_handles": 2
+      },
+      "propagation_gain_wave_vs_percell": 0.0036,
+      "quorum_gain_vs_wave": 0.0,
+      "best_mechanism": "wave"
+    },
+    "OV": {
+      "per_cell": {
+        "coverage": 0.0131,
+        "n_handles": 1
+      },
+      "wave": {
+        "coverage": 0.0131,
+        "n_handles": 1
+      },
+      "quorum": {
+        "coverage": 0.0131,
+        "n_handles": 1
+      },
+      "propagation_gain_wave_vs_percell": 0.0,
+      "quorum_gain_vs_wave": 0.0,
+      "best_mechanism": "per_cell"
+    },
+    "PDAC": {
+      "per_cell": {
+        "coverage": 0.2615,
+        "n_handles": 1
+      },
+      "wave": {
+        "coverage": 0.2615,
+        "n_handles": 1
+      },
+      "quorum": {
+        "coverage": 0.2615,
+        "n_handles": 1
+      },
+      "propagation_gain_wave_vs_percell": 0.0,
+      "quorum_gain_vs_wave": 0.0,
+      "best_mechanism": "per_cell"
+    }
+  },
+  "quorum_beats_wave_on_neoantigens": false,
+  "INTERPRETATION_MAP": {
+    "propagation_gain": "wave coverage - per_cell coverage = how much a bystander wave unlocks vs a per-cell gate, per cancer (the RUNG-13 relaxation cashed out per cancer).",
+    "quorum_needs_surface": "if quorum_beats_wave_on_neoantigens is FALSE, neoantigen q_n is bimodal (clean ~0 or risky >0.3) so quorum's headroom is unused -> run `census` to exploit quorum on SURFACE markers (continuous q_n)."
+  },
+  "DECISIVE": "Per-cancer addressable coverage by mechanism (neoantigen axis): PDAC: per_cell 0.26 / wave 0.26 (best per_cell); GLIOMA: per_cell 0.22 / wave 0.22 (best per_cell); MELANOMA: per_cell 0.11 / wave 0.19 (best wave); CRC: per_cell 0.11 / wave 0.12 (best wave); NSCLC: per_cell 0.03 / wave 0.03 (best wave); OV: per_cell 0.01 / wave 0.01 (best per_cell). Propagation (wave) unlocks the most in: MELANOMA(+0.08), CRC(+0.02), NSCLC(+0.00). quorum beats wave on neoantigens: False -> neoantigen q_n is bimodal; run `census` to cash quorum on surface markers.",
+  "CEILING": "Neoantigen q_n is a PREDICTED proxy (MHCflurry+AF2, RUNG-11/12). Coverage is a transparent union-over-mutations upper estimate (ignores co-occurrence). Mechanism ceilings = in-silico containment, not clinical efficacy. Coupling/delivery = wet-lab residual."
+}

@@ -264,15 +264,36 @@ def run_census() -> int:
     safe_by_mech = {m: [r["marker"] for r in rows if r.get("best_mechanism") == m] for m in CEILINGS}
     quorum_only = [r["marker"] for r in rows if r.get("safe", {}).get("quorum") and not r.get("safe", {}).get("wave")
                    and r.get("effective")]
+    # the specificity anti-correlation: do high-expression markers leak, and are clean markers under-expressed?
+    eff = [r for r in rows if (r.get("q_t") or 0) >= EFFECTIVE_QT]            # enough tumour expression
+    clean = [r for r in rows if r.get("q_n") is not None and r["q_n"] <= 0.20]  # low vital leak
+    import statistics as _st
+    anti = {
+        "n_effective_qt>=0.10": len(eff),
+        "median_leak_of_effective_markers": round(_st.median([r["q_n"] for r in eff]), 3) if eff else None,
+        "n_clean_qn<=0.20": len(clean),
+        "median_qt_of_clean_markers": round(_st.median([r["q_t"] for r in clean]), 3) if clean else None,
+        "any_marker_both_effective_and_quorum_safe": any((r.get("q_t") or 0) >= EFFECTIVE_QT and
+                                                         (r.get("q_n") is not None and r["q_n"] <= 0.20) for r in rows),
+        "finding": "single surface antigens trade off: tumour-high markers leak into vital tissue, vital-clean "
+                   "markers are barely tumour-expressed -> no single marker gives a safe gate. Tumour-EXCLUSIVITY "
+                   "must come from MUTATION (neoantigen, RUNG-11/12) or COMBINATORIAL logic (AND-NOT, RUNG-6), "
+                   "not a single shared self-antigen. (Pan-cancer pooled q_t; a per-cancer marker may still win.)",
+    }
     result = {
         "tag": "rung15_atlas_mechanism_map_surface",
         "axis": "EXPRESSION/surface antigens x RUNG-14 mechanism ceilings (Census, reuses RUNG-34 loader)",
         "panel": panel, "mechanism_q_n_ceilings": CEILINGS, "markers": rows,
         "safe_effective_by_mechanism": safe_by_mech,
         "markers_quorum_unlocks_over_wave": quorum_only,
+        "specificity_anticorrelation": anti,
         "DECISIVE": (f"Surface markers safe&effective by cheapest mechanism: "
                      + "; ".join(f"{m}: {safe_by_mech[m]}" for m in CEILINGS)
-                     + f". Markers QUORUM unlocks that the wave cannot (0.173<q_n<=0.20): {quorum_only or 'none'}."),
+                     + f". Markers QUORUM unlocks that the wave cannot (0.173<q_n<=0.20): {quorum_only or 'none'}. "
+                     + f"SPECIFICITY ANTI-CORRELATION: {anti['n_effective_qt>=0.10']} markers are tumour-expressed "
+                     + f"(q_t>=0.10) but their median vital leak is {anti['median_leak_of_effective_markers']}; the "
+                     + f"{anti['n_clean_qn<=0.20']} vital-clean markers have median tumour q_t only "
+                     + f"{anti['median_qt_of_clean_markers']}. {anti['finding']}"),
         "CEILING": "mRNA positivity (Census), not surface protein; dropout/dissociation bias (HK-depth control "
                    "mitigates). q_t from RUNG-5 surfaceome tumour cache (pan-cancer pooled). Mechanism ceilings = "
                    "in-silico containment. Coupling/delivery = wet-lab residual.",

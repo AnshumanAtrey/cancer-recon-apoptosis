@@ -1,0 +1,376 @@
+# cancer-recog-apoptosis — run log
+# step          : rung13_15_arena
+# utc           : 20260607T065719Z
+# commit_short  : e45ac3d
+# commit_full   : e45ac3ddc89e2f666d00407b33a8a2a9daa4e8f4
+# branch        : main
+# python        : 3.12.13
+# platform      : Linux-6.6.122+-x86_64-with-glibc2.35
+#================================================================
+
+$ /usr/bin/python3 -u scripts/38_apoptosis_wave.py selftest
+  [PASS] single-cell all-or-none threshold S* exists and > 0
+  [PASS] sub-threshold input -> cell LIVES
+  [PASS] supra-threshold input -> cell COMMITS
+  [PASS] dead-basin stays COMMITTED at S=0 (CP ratchet)
+  [PASS] commitment latches: brief supra pulse still commits (irreversible)
+  [PASS] sub-threshold sustained never commits (threshold gates)
+  [PASS] binarisation: <10% intermediate final-CP
+  [PASS] priming delays death (Td rises with brake)
+  [PASS] death wave CLEARS tumour at low q_n (>0.7)
+  [PASS] death wave SPARES normal at low q_n (<0.02)
+  [PASS] death wave LEAKS into normal at high q_n (>0.1)
+  [PASS] low tumour fidelity q_t -> weaker clearance
+
+selftest: 12/12 checks passed
+[exit 0]
+
+$ /usr/bin/python3 -u scripts/39_mechanism_arena.py selftest
+  [PASS] per_cell: returns valid kill fractions in [0,1]
+  [PASS] wave: returns valid kill fractions in [0,1]
+  [PASS] quorum: returns valid kill fractions in [0,1]
+  [PASS] diffusible: returns valid kill fractions in [0,1]
+  [PASS] oncolytic: returns valid kill fractions in [0,1]
+  [PASS] alt_death: returns valid kill fractions in [0,1]
+  [PASS] combo: returns valid kill fractions in [0,1]
+  [PASS] ferroptosis_wave: returns valid kill fractions in [0,1]
+  [PASS] synthetic_lethal: returns valid kill fractions in [0,1]
+  [PASS] per_cell normal-leak rises with q_n (linear baseline)
+  [PASS] quorum spares normal at high q_n better than per_cell
+  [PASS] wave clears tumour at low q_n (>0.5)
+  [PASS] alt_death achieves tumour clearance with resistant fraction (>0.4)
+  [PASS] ferroptosis_wave clears tumour at low q_n (>0.5)
+  [PASS] ferroptosis_wave spares normal at low q_n (<0.05)
+  [PASS] synthetic_lethal stays SAFE even at high regime q_n (<0.05)
+  [PASS] synthetic_lethal is coverage-limited (tumour_killed < 0.8)
+  [PASS] oncotripsy toy returns selectivity
+  [PASS] ttfields toy: tumour killed > normal killed
+
+selftest: 19/19 checks passed
+[exit 0]
+
+$ /usr/bin/python3 -u scripts/40_atlas_mechanism_map.py selftest
+  [PASS] clean handle (q_n=0) -> per_cell is best (cheapest safe)
+  [PASS] q_n=0.10 -> wave is best (per_cell unsafe)
+  [PASS] q_n=0.19 -> quorum is best (wave unsafe, quorum safe)
+  [PASS] q_n=0.40 -> no safe mechanism
+  [PASS] q_t=0.02 -> not effective (no mechanism)
+  [PASS] _union_prev monotonic
+[rung15] wrote /content/cancer-recog-apoptosis/runs/rung15_atlas_map/rung15_neoantigen_map.json
+
+  per-cancer coverage (per_cell / wave / quorum) [best]:
+    PDAC      0.262 / 0.262 / 0.262   [per_cell]  prop-gain +0.000
+    GLIOMA    0.221 / 0.221 / 0.221   [per_cell]  prop-gain +0.000
+    MELANOMA  0.108 / 0.191 / 0.191   [wave]  prop-gain +0.083
+    CRC       0.107 / 0.124 / 0.124   [wave]  prop-gain +0.017
+    NSCLC     0.031 / 0.034 / 0.034   [wave]  prop-gain +0.004
+    OV        0.013 / 0.013 / 0.013   [per_cell]  prop-gain +0.000
+    HCC       0.003 / 0.003 / 0.003   [per_cell]  prop-gain +0.000
+    BRCA      0.000 / 0.000 / 0.000   [per_cell]  prop-gain +0.000
+
+  DECISIVE: Per-cancer addressable coverage by mechanism (neoantigen axis): PDAC: per_cell 0.26 / wave 0.26 (best per_cell); GLIOMA: per_cell 0.22 / wave 0.22 (best per_cell); MELANOMA: per_cell 0.11 / wave 0.19 (best wave); CRC: per_cell 0.11 / wave 0.12 (best wave); NSCLC: per_cell 0.03 / wave 0.03 (best wave); OV: per_cell 0.01 / wave 0.01 (best per_cell). Propagation (wave) unlocks the most in: MELANOMA(+0.08), CRC(+0.02), NSCLC(+0.00). quorum beats wave on neoantigens: False -> neoantigen q_n is bimodal; run `census` to cash quorum on surface markers.
+[rung15] wrote /content/cancer-recog-apoptosis/runs/rung15_atlas_map/rung15_neoantigen_map.png
+  [PASS] map mode runs on real RUNG-12 data
+
+selftest: 7/7 checks passed
+[exit 0]
+
+$ /usr/bin/python3 -u scripts/38_apoptosis_wave.py run
+[rung13] single-cell death switch (EARM-calibrated reduced model) ...
+[rung13]   S*=0.002  Td(mod)=1.81h  Ts=0.55h  snap(Ts<0.5Td)=True  latch=True  intermediate=0.0
+[rung13] spatial death wave: containment vs q_n ...
+           q_n=0.00  tumour_killed=0.953  normal_killed=0.000
+           q_n=0.09  tumour_killed=0.953  normal_killed=0.002
+           q_n=0.17  tumour_killed=0.953  normal_killed=0.005
+           q_n=0.26  tumour_killed=0.953  normal_killed=0.010
+           q_n=0.34  tumour_killed=0.953  normal_killed=0.018
+           q_n=0.43  tumour_killed=0.953  normal_killed=0.036
+           q_n=0.52  tumour_killed=0.953  normal_killed=0.135
+           q_n=0.60  tumour_killed=0.953  normal_killed=0.443
+           q_n=0.69  tumour_killed=0.953  normal_killed=0.665
+           q_n=0.78  tumour_killed=0.953  normal_killed=0.775
+           q_n=0.86  tumour_killed=0.953  normal_killed=0.864
+           q_n=0.95  tumour_killed=0.953  normal_killed=0.951
+[rung13] wrote /content/cancer-recog-apoptosis/runs/rung13_apoptosis/rung13_apoptosis.json
+
+  kinetic safe q_n ceiling: 0.17 (~8.6x bar 0.02) | RUNG-12P/B 2D 0.3
+
+  DECISIVE: POSITIVE (recognition->death link closes in silico): EARM-calibrated coupled cells give (1) an all-or-none excitable threshold S*=0.002 with a variable delay (Td 3.88->0.69h across dose) and a fast snap (Ts=0.55h < Td); (2) an IRREVERSIBLE commitment -- the threshold crossing latches death (a brief supra pulse still commits; sustained sub-threshold never does) and the dead state persists at zero input -- so Shriya 6.3 'cannot back out' is a dynamical property, not an assumption; (3) a BOUNDED death wave clearing the tumour (>=80% over q_n in [0.0,0.95]) while keeping normal kill <=1% up to q_n~0.17 (~8.6x the per-cell bar 0.02); (4) this CONFIRMS RUNG-12P/B's binary abstraction (2D ceiling 0.3) under real kinetics -- the recognition relaxation is EARNED. Bonus: the wave clears even heavily-primed tumour (resistance-resistance). Efficacy still needs tumour fidelity q_t above the propagation threshold; mapping c/g to molecular efficiencies is the wet-lab residual.
+[rung13] wrote /content/cancer-recog-apoptosis/runs/rung13_apoptosis/rung13_apoptosis.png
+[exit 0]
+
+$ /usr/bin/python3 -u scripts/39_mechanism_arena.py run
+[rung14] arena: 9 rigorous + 2 toy mechanisms x 12 regimes (L=61, full)
+  [per_cell   ] safe&effective 0/12 | containment-safe 0/12 [leaks] (best: tumour 0.94 / normal 0.046)
+  [wave       ] safe&effective 4/12 | containment-safe 4/12 (best: tumour 0.94 / normal 0.001)
+  [quorum     ] safe&effective 8/12 | containment-safe 8/12 (best: tumour 0.92 / normal 0.004)
+  [diffusible ] safe&effective 0/12 | containment-safe 0/12 [leaks] (best: tumour 0.94 / normal 0.015)
+  [oncolytic  ] safe&effective 0/12 | containment-safe 0/12 [leaks] (best: tumour 0.94 / normal 0.021)
+  [alt_death  ] safe&effective 4/12 | containment-safe 4/12 (best: tumour 0.94 / normal 0.001)
+  [combo      ] safe&effective 4/12 | containment-safe 4/12 (best: tumour 0.94 / normal 0.001)
+  [ferroptosis_wave] safe&effective 4/12 | containment-safe 4/12 (best: tumour 0.94 / normal 0.001)
+  [synthetic_lethal] safe&effective 0/12 | containment-safe 12/12 [SAFE but coverage-limited] (best: tumour 0.56 / normal 0.006)
+  [oncotripsy ] (TOY) best selectivity: tumour 0.29 / normal 0.000
+  [ttfields   ] (TOY) tumour 0.96 / normal 0.274
+
+[rung14] wrote /content/cancer-recog-apoptosis/runs/rung14_arena/rung14_arena.json
+  LEADERBOARD: quorum(0.67) > wave(0.33) > alt_death(0.33) > combo(0.33) > ferroptosis_wave(0.33) > per_cell(0.00) > diffusible(0.00) > oncolytic(0.00) > synthetic_lethal(0.00)
+
+  DECISIVE: In-silico containment leaderboard (safe&effective fraction): quorum=0.67, wave=0.33, alt_death=0.33, combo=0.33, ferroptosis_wave=0.33, per_cell=0.00, diffusible=0.00, oncolytic=0.00, synthetic_lethal=0.00. Strategies that HIT across >=50% of regimes: ['quorum']. SAFE-by-construction but coverage-limited (spares normal, but <80% tumour alone -> combine with a propagation arm): ['synthetic_lethal']. per_cell (no propagation) is the baseline whose normal-leak scales LINEARLY with q_n; propagation/quorum/gated arms that beat it convert that into bounded leak. Toy physics arms reported separately (future). Coupling/delivery efficiency is the wet-lab residual.
+[rung14] wrote /content/cancer-recog-apoptosis/runs/rung14_arena/rung14_arena.png
+[exit 0]
+
+$ /usr/bin/python3 -u scripts/40_atlas_mechanism_map.py map
+[rung15] wrote /content/cancer-recog-apoptosis/runs/rung15_atlas_map/rung15_neoantigen_map.json
+
+  per-cancer coverage (per_cell / wave / quorum) [best]:
+    PDAC      0.262 / 0.262 / 0.262   [per_cell]  prop-gain +0.000
+    GLIOMA    0.221 / 0.221 / 0.221   [per_cell]  prop-gain +0.000
+    MELANOMA  0.108 / 0.191 / 0.191   [wave]  prop-gain +0.083
+    CRC       0.107 / 0.124 / 0.124   [wave]  prop-gain +0.017
+    NSCLC     0.031 / 0.034 / 0.034   [wave]  prop-gain +0.004
+    OV        0.013 / 0.013 / 0.013   [per_cell]  prop-gain +0.000
+    HCC       0.003 / 0.003 / 0.003   [per_cell]  prop-gain +0.000
+    BRCA      0.000 / 0.000 / 0.000   [per_cell]  prop-gain +0.000
+
+  DECISIVE: Per-cancer addressable coverage by mechanism (neoantigen axis): PDAC: per_cell 0.26 / wave 0.26 (best per_cell); GLIOMA: per_cell 0.22 / wave 0.22 (best per_cell); MELANOMA: per_cell 0.11 / wave 0.19 (best wave); CRC: per_cell 0.11 / wave 0.12 (best wave); NSCLC: per_cell 0.03 / wave 0.03 (best wave); OV: per_cell 0.01 / wave 0.01 (best per_cell). Propagation (wave) unlocks the most in: MELANOMA(+0.08), CRC(+0.02), NSCLC(+0.00). quorum beats wave on neoantigens: False -> neoantigen q_n is bimodal; run `census` to cash quorum on surface markers.
+[rung15] wrote /content/cancer-recog-apoptosis/runs/rung15_atlas_map/rung15_neoantigen_map.png
+[exit 0]
+
+$ pip cellxgene-census
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 91.2/91.2 kB 7.5 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 55.6/55.6 kB 4.6 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 203.4/203.4 kB 17.7 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 22.3/22.3 MB 73.8 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 175.3/175.3 kB 15.2 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 89.5/89.5 kB 7.6 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 60.1/60.1 kB 4.8 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 60.5 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.4/12.4 MB 104.4 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 319.6/319.6 kB 26.9 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.0/15.0 MB 88.6 MB/s eta 0:00:00
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.2/9.2 MB 113.1 MB/s eta 0:00:00
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+google-colab 1.0.0 requires pandas==2.2.2, but you have pandas 2.3.3 which is incompatible.
+gcsfs 2025.3.0 requires fsspec==2025.3.0, but you have fsspec 2026.4.0 which is incompatible.
+datasets 4.0.0 requires fsspec[http]<=2025.3.0,>=2023.1.0, but you have fsspec 2026.4.0 which is incompatible.
+[exit 0]
+
+$ /usr/bin/python3 -u scripts/40_atlas_mechanism_map.py census
+[+    1.1s] [rung5] RESUMING from /content/drive/MyDrive/cancer-recon/rung5_cache.r5.tumour.npz
+[+    5.5s] [rung9] [rung15] tumour surface coverage from RUNG-5 cache: 25/25 markers present
+[+    6.1s] [rung9] [1/9] heart: scouting vital cells ...
+[+   11.2s] [rung9] [1/9] heart: chunk 1/1 (35,047 vital cells x 29 genes)
+[+   20.1s] [heartbeat] [1/9] heart: chunk 1/1 (35,047 vital cells x 29 genes) | RAM 2.4GB
+[+   40.2s] [heartbeat] [1/9] heart: chunk 1/1 (35,047 vital cells x 29 genes) | RAM 3.4GB
+[+   60.2s] [heartbeat] [1/9] heart: chunk 1/1 (35,047 vital cells x 29 genes) | RAM 3.5GB
+[+   80.2s] [heartbeat] [1/9] heart: chunk 1/1 (35,047 vital cells x 29 genes) | RAM 3.5GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+   89.3s] [rung9] [1/9] heart: tile checkpointed (35,047 cells)
+[+   89.3s] [rung9] [2/9] brain: scouting vital cells ...
+[+  107.1s] [heartbeat] [2/9] brain: scouting vital cells ... | RAM 3.5GB
+[+  126.5s] [rung9] [2/9] brain: chunk 1/5 (199,908 vital cells x 29 genes)
+[+  127.2s] [heartbeat] [2/9] brain: chunk 1/5 (199,908 vital cells x 29 genes) | RAM 3.5GB
+[+  147.2s] [heartbeat] [2/9] brain: chunk 1/5 (199,908 vital cells x 29 genes) | RAM 3.6GB
+[+  167.3s] [heartbeat] [2/9] brain: chunk 1/5 (199,908 vital cells x 29 genes) | RAM 3.7GB
+[+  187.3s] [heartbeat] [2/9] brain: chunk 1/5 (199,908 vital cells x 29 genes) | RAM 3.7GB
+[+  207.3s] [heartbeat] [2/9] brain: chunk 1/5 (199,908 vital cells x 29 genes) | RAM 3.7GB
+[+  227.3s] [heartbeat] [2/9] brain: chunk 1/5 (199,908 vital cells x 29 genes) | RAM 3.7GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+  238.5s] [rung9] [2/9] brain: chunk 2/5 (199,908 vital cells x 29 genes)
+[+  247.3s] [heartbeat] [2/9] brain: chunk 2/5 (199,908 vital cells x 29 genes) | RAM 3.7GB
+[+  267.3s] [heartbeat] [2/9] brain: chunk 2/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  287.3s] [heartbeat] [2/9] brain: chunk 2/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  307.3s] [heartbeat] [2/9] brain: chunk 2/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  327.3s] [heartbeat] [2/9] brain: chunk 2/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+  333.3s] [rung9] [2/9] brain: chunk 3/5 (199,908 vital cells x 29 genes)
+[+  347.4s] [heartbeat] [2/9] brain: chunk 3/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  367.4s] [heartbeat] [2/9] brain: chunk 3/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  387.4s] [heartbeat] [2/9] brain: chunk 3/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  407.4s] [heartbeat] [2/9] brain: chunk 3/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  427.4s] [heartbeat] [2/9] brain: chunk 3/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+  445.9s] [rung9] [2/9] brain: chunk 4/5 (199,908 vital cells x 29 genes)
+[+  447.5s] [heartbeat] [2/9] brain: chunk 4/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  467.5s] [heartbeat] [2/9] brain: chunk 4/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  487.5s] [heartbeat] [2/9] brain: chunk 4/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  507.5s] [heartbeat] [2/9] brain: chunk 4/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  527.5s] [heartbeat] [2/9] brain: chunk 4/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  547.5s] [heartbeat] [2/9] brain: chunk 4/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  567.5s] [heartbeat] [2/9] brain: chunk 4/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  587.5s] [heartbeat] [2/9] brain: chunk 4/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  607.5s] [heartbeat] [2/9] brain: chunk 4/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  627.5s] [heartbeat] [2/9] brain: chunk 4/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  647.6s] [heartbeat] [2/9] brain: chunk 4/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  667.6s] [heartbeat] [2/9] brain: chunk 4/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  687.6s] [heartbeat] [2/9] brain: chunk 4/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  707.6s] [heartbeat] [2/9] brain: chunk 4/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+  715.0s] [rung9] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes)
+[+  727.6s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  747.6s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  767.6s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  787.6s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  807.7s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  827.7s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  847.7s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  867.7s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  887.7s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  907.7s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  927.7s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  947.7s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  967.7s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+  987.7s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1007.7s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1027.8s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1047.8s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1067.8s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1087.8s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1107.8s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1127.8s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1147.8s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1167.8s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1187.8s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1207.8s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1227.8s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1247.8s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1267.8s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1287.8s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1307.9s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1327.9s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1347.9s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1367.9s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1387.9s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1407.9s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1427.9s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1447.9s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1467.9s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1487.9s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1507.9s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1527.9s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1547.9s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1567.9s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1587.9s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1607.9s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1628.0s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1648.0s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+[+ 1668.0s] [heartbeat] [2/9] brain: chunk 5/5 (199,908 vital cells x 29 genes) | RAM 3.9GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 1679.3s] [rung9] [2/9] brain: tile checkpointed (199,908 cells)
+[+ 1679.3s] [rung9] [3/9] kidney: scouting vital cells ...
+[+ 1683.2s] [rung9] [3/9] kidney: chunk 1/1 (38,595 vital cells x 29 genes)
+[+ 1688.0s] [heartbeat] [3/9] kidney: chunk 1/1 (38,595 vital cells x 29 genes) | RAM 3.9GB
+[+ 1708.0s] [heartbeat] [3/9] kidney: chunk 1/1 (38,595 vital cells x 29 genes) | RAM 3.9GB
+[+ 1728.0s] [heartbeat] [3/9] kidney: chunk 1/1 (38,595 vital cells x 29 genes) | RAM 3.9GB
+[+ 1748.0s] [heartbeat] [3/9] kidney: chunk 1/1 (38,595 vital cells x 29 genes) | RAM 3.9GB
+[+ 1768.0s] [heartbeat] [3/9] kidney: chunk 1/1 (38,595 vital cells x 29 genes) | RAM 3.9GB
+[+ 1788.0s] [heartbeat] [3/9] kidney: chunk 1/1 (38,595 vital cells x 29 genes) | RAM 3.9GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 1801.9s] [rung9] [3/9] kidney: tile checkpointed (38,595 cells)
+[+ 1801.9s] [rung9] [4/9] liver: scouting vital cells ...
+[+ 1805.2s] [rung9] [4/9] liver: chunk 1/1 (19,685 vital cells x 29 genes)
+[+ 1808.1s] [heartbeat] [4/9] liver: chunk 1/1 (19,685 vital cells x 29 genes) | RAM 3.9GB
+[+ 1828.1s] [heartbeat] [4/9] liver: chunk 1/1 (19,685 vital cells x 29 genes) | RAM 3.9GB
+[+ 1848.1s] [heartbeat] [4/9] liver: chunk 1/1 (19,685 vital cells x 29 genes) | RAM 3.9GB
+[+ 1868.1s] [heartbeat] [4/9] liver: chunk 1/1 (19,685 vital cells x 29 genes) | RAM 3.9GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 1881.6s] [rung9] [4/9] liver: tile checkpointed (19,685 cells)
+[+ 1881.6s] [rung9] [5/9] lung: scouting vital cells ...
+[+ 1884.7s] [rung9] [5/9] lung: chunk 1/3 (91,466 vital cells x 29 genes)
+[+ 1888.1s] [heartbeat] [5/9] lung: chunk 1/3 (91,466 vital cells x 29 genes) | RAM 3.9GB
+[+ 1908.2s] [heartbeat] [5/9] lung: chunk 1/3 (91,466 vital cells x 29 genes) | RAM 3.9GB
+[+ 1928.2s] [heartbeat] [5/9] lung: chunk 1/3 (91,466 vital cells x 29 genes) | RAM 3.9GB
+[+ 1948.2s] [heartbeat] [5/9] lung: chunk 1/3 (91,466 vital cells x 29 genes) | RAM 3.9GB
+[+ 1968.2s] [heartbeat] [5/9] lung: chunk 1/3 (91,466 vital cells x 29 genes) | RAM 3.9GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 1978.9s] [rung9] [5/9] lung: chunk 2/3 (91,466 vital cells x 29 genes)
+[+ 1988.2s] [heartbeat] [5/9] lung: chunk 2/3 (91,466 vital cells x 29 genes) | RAM 3.9GB
+[+ 2008.2s] [heartbeat] [5/9] lung: chunk 2/3 (91,466 vital cells x 29 genes) | RAM 3.9GB
+[+ 2028.2s] [heartbeat] [5/9] lung: chunk 2/3 (91,466 vital cells x 29 genes) | RAM 3.9GB
+[+ 2048.3s] [heartbeat] [5/9] lung: chunk 2/3 (91,466 vital cells x 29 genes) | RAM 3.9GB
+[+ 2068.3s] [heartbeat] [5/9] lung: chunk 2/3 (91,466 vital cells x 29 genes) | RAM 3.9GB
+[+ 2088.3s] [heartbeat] [5/9] lung: chunk 2/3 (91,466 vital cells x 29 genes) | RAM 3.9GB
+[+ 2108.3s] [heartbeat] [5/9] lung: chunk 2/3 (91,466 vital cells x 29 genes) | RAM 3.9GB
+[+ 2128.3s] [heartbeat] [5/9] lung: chunk 2/3 (91,466 vital cells x 29 genes) | RAM 3.9GB
+[+ 2148.3s] [heartbeat] [5/9] lung: chunk 2/3 (91,466 vital cells x 29 genes) | RAM 3.9GB
+[+ 2168.3s] [heartbeat] [5/9] lung: chunk 2/3 (91,466 vital cells x 29 genes) | RAM 3.9GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 2177.4s] [rung9] [5/9] lung: chunk 3/3 (91,466 vital cells x 29 genes)
+[+ 2188.4s] [heartbeat] [5/9] lung: chunk 3/3 (91,466 vital cells x 29 genes) | RAM 3.9GB
+[+ 2208.4s] [heartbeat] [5/9] lung: chunk 3/3 (91,466 vital cells x 29 genes) | RAM 3.9GB
+[+ 2228.4s] [heartbeat] [5/9] lung: chunk 3/3 (91,466 vital cells x 29 genes) | RAM 3.9GB
+[+ 2248.4s] [heartbeat] [5/9] lung: chunk 3/3 (91,466 vital cells x 29 genes) | RAM 3.9GB
+[+ 2268.4s] [heartbeat] [5/9] lung: chunk 3/3 (91,466 vital cells x 29 genes) | RAM 3.9GB
+[+ 2288.4s] [heartbeat] [5/9] lung: chunk 3/3 (91,466 vital cells x 29 genes) | RAM 3.9GB
+[+ 2308.4s] [heartbeat] [5/9] lung: chunk 3/3 (91,466 vital cells x 29 genes) | RAM 3.9GB
+[+ 2328.5s] [heartbeat] [5/9] lung: chunk 3/3 (91,466 vital cells x 29 genes) | RAM 3.9GB
+[+ 2348.5s] [heartbeat] [5/9] lung: chunk 3/3 (91,466 vital cells x 29 genes) | RAM 3.9GB
+[+ 2368.5s] [heartbeat] [5/9] lung: chunk 3/3 (91,466 vital cells x 29 genes) | RAM 3.9GB
+[+ 2388.5s] [heartbeat] [5/9] lung: chunk 3/3 (91,466 vital cells x 29 genes) | RAM 3.9GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 2396.3s] [rung9] [5/9] lung: tile checkpointed (91,466 cells)
+[+ 2396.3s] [rung9] [6/9] bone marrow: scouting vital cells ...
+[+ 2398.5s] [rung9] [6/9] bone marrow: chunk 1/1 (993 vital cells x 29 genes)
+[+ 2408.5s] [heartbeat] [6/9] bone marrow: chunk 1/1 (993 vital cells x 29 genes) | RAM 3.9GB
+[+ 2428.5s] [heartbeat] [6/9] bone marrow: chunk 1/1 (993 vital cells x 29 genes) | RAM 3.9GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 2430.2s] [rung9] [6/9] bone marrow: tile checkpointed (993 cells)
+[+ 2430.2s] [rung9] [7/9] pancreas: scouting vital cells ...
+[+ 2434.0s] [rung9] [7/9] pancreas: chunk 1/1 (16,030 vital cells x 29 genes)
+[+ 2448.5s] [heartbeat] [7/9] pancreas: chunk 1/1 (16,030 vital cells x 29 genes) | RAM 3.9GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 2463.0s] [rung9] [7/9] pancreas: tile checkpointed (16,030 cells)
+[+ 2463.0s] [rung9] [8/9] adrenal gland: scouting vital cells ...
+[+ 2465.5s] [rung9] [8/9] adrenal gland: chunk 1/1 (11,542 vital cells x 29 genes)
+[+ 2468.6s] [heartbeat] [8/9] adrenal gland: chunk 1/1 (11,542 vital cells x 29 genes) | RAM 3.9GB
+[+ 2488.6s] [heartbeat] [8/9] adrenal gland: chunk 1/1 (11,542 vital cells x 29 genes) | RAM 3.9GB
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+/usr/lib/python3.12/functools.py:912: ImplicitModificationWarning: Transforming to str index.
+  return dispatch(args[0].__class__)(*args, **kw)
+[+ 2492.2s] [rung9] [8/9] adrenal gland: tile checkpointed (11,542 cells)
+[+ 2492.2s] [rung9] [9/9] skeletal muscle: scouting vital cells ...
+[+ 2492.7s] [rung9] [9/9] skeletal muscle: no vital cells
+[+ 2492.8s] [rung9] [rung15] wrote /content/cancer-recog-apoptosis/runs/rung15_atlas_map/rung15_surface_map.json
+[+ 2492.8s] [rung9] [rung15] DECISIVE: Surface markers safe&effective by cheapest mechanism: per_cell: []; wave: []; quorum: []. Markers QUORUM unlocks that the wave cannot (0.173<q_n<=0.20): none.
+[exit 0]

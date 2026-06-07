@@ -1,0 +1,541 @@
+{
+  "tag": "rung15_atlas_mechanism_map_surface",
+  "axis": "EXPRESSION/surface antigens x RUNG-14 mechanism ceilings (Census, reuses RUNG-34 loader)",
+  "panel": [
+    "EPCAM",
+    "ERBB2",
+    "EGFR",
+    "MET",
+    "MSLN",
+    "MUC1",
+    "CEACAM5",
+    "FOLH1",
+    "TACSTD2",
+    "CD19",
+    "MS4A1",
+    "CD22",
+    "NCAM1",
+    "PROM1",
+    "CD276",
+    "MUC16",
+    "FOLR1",
+    "MCAM",
+    "CD70",
+    "ROR1",
+    "DLL3",
+    "GPC3",
+    "CDH3",
+    "NECTIN4",
+    "TNFRSF8"
+  ],
+  "mechanism_q_n_ceilings": {
+    "per_cell": 0.02,
+    "wave": 0.173,
+    "quorum": 0.2
+  },
+  "markers": [
+    {
+      "marker": "MS4A1",
+      "common": "CD20",
+      "leaks_into": [],
+      "q_t": 0.0008,
+      "q_n": 0.0156,
+      "effective": false,
+      "safe": {
+        "per_cell": true,
+        "wave": true,
+        "quorum": true
+      },
+      "best_mechanism": null
+    },
+    {
+      "marker": "CD22",
+      "common": "CD22",
+      "leaks_into": [
+        "vascular_endothelium"
+      ],
+      "q_t": 0.0005,
+      "q_n": 0.13,
+      "effective": false,
+      "safe": {
+        "per_cell": false,
+        "wave": true,
+        "quorum": true
+      },
+      "best_mechanism": null
+    },
+    {
+      "marker": "FOLH1",
+      "common": "PSMA",
+      "leaks_into": [
+        "neuron"
+      ],
+      "q_t": 0.0021,
+      "q_n": 0.138,
+      "effective": false,
+      "safe": {
+        "per_cell": false,
+        "wave": true,
+        "quorum": true
+      },
+      "best_mechanism": null
+    },
+    {
+      "marker": "TNFRSF8",
+      "common": "CD30",
+      "leaks_into": [
+        "neuron"
+      ],
+      "q_t": 0.0001,
+      "q_n": 0.1414,
+      "effective": false,
+      "safe": {
+        "per_cell": false,
+        "wave": true,
+        "quorum": true
+      },
+      "best_mechanism": null
+    },
+    {
+      "marker": "MUC16",
+      "common": "CA125",
+      "leaks_into": [
+        "neuron"
+      ],
+      "q_t": 0.0455,
+      "q_n": 0.1616,
+      "effective": false,
+      "safe": {
+        "per_cell": false,
+        "wave": true,
+        "quorum": true
+      },
+      "best_mechanism": null
+    },
+    {
+      "marker": "CD19",
+      "common": "CD19",
+      "leaks_into": [
+        "vascular_endothelium"
+      ],
+      "q_t": 0.0004,
+      "q_n": 0.1622,
+      "effective": false,
+      "safe": {
+        "per_cell": false,
+        "wave": true,
+        "quorum": true
+      },
+      "best_mechanism": null
+    },
+    {
+      "marker": "CD70",
+      "common": "CD70",
+      "leaks_into": [
+        "vascular_endothelium"
+      ],
+      "q_t": 0.0058,
+      "q_n": 0.2069,
+      "effective": false,
+      "safe": {
+        "per_cell": false,
+        "wave": false,
+        "quorum": false
+      },
+      "best_mechanism": null
+    },
+    {
+      "marker": "CEACAM5",
+      "common": "CEACAM5",
+      "leaks_into": [
+        "kidney_tubule",
+        "lung_pneumocyte"
+      ],
+      "q_t": 0.1042,
+      "q_n": 0.404,
+      "effective": true,
+      "safe": {
+        "per_cell": false,
+        "wave": false,
+        "quorum": false
+      },
+      "best_mechanism": null
+    },
+    {
+      "marker": "CDH3",
+      "common": "CDH3",
+      "leaks_into": [
+        "cardiomyocyte",
+        "lung_pneumocyte",
+        "neuron",
+        "pancreatic_islet",
+        "skeletal_myocyte"
+      ],
+      "q_t": 0.0471,
+      "q_n": 0.4545,
+      "effective": false,
+      "safe": {
+        "per_cell": false,
+        "wave": false,
+        "quorum": false
+      },
+      "best_mechanism": null
+    },
+    {
+      "marker": "NECTIN4",
+      "common": "Nectin-4",
+      "leaks_into": [
+        "kidney_tubule",
+        "lung_pneumocyte",
+        "pancreatic_islet"
+      ],
+      "q_t": 0.1018,
+      "q_n": 0.5699,
+      "effective": true,
+      "safe": {
+        "per_cell": false,
+        "wave": false,
+        "quorum": false
+      },
+      "best_mechanism": null
+    },
+    {
+      "marker": "MSLN",
+      "common": "MSLN",
+      "leaks_into": [
+        "kidney_podocyte",
+        "kidney_tubule",
+        "lung_pneumocyte",
+        "vascular_endothelium"
+      ],
+      "q_t": 0.1137,
+      "q_n": 0.69,
+      "effective": true,
+      "safe": {
+        "per_cell": false,
+        "wave": false,
+        "quorum": false
+      },
+      "best_mechanism": null
+    },
+    {
+      "marker": "CD276",
+      "common": "B7-H3",
+      "leaks_into": [
+        "cardiac_conduction",
+        "cardiomyocyte",
+        "kidney_podocyte",
+        "kidney_tubule",
+        "lung_pneumocyte",
+        "neuron",
+        "pancreatic_islet",
+        "skeletal_myocyte",
+        "vascular_endothelium"
+      ],
+      "q_t": 0.0408,
+      "q_n": 0.7419,
+      "effective": false,
+      "safe": {
+        "per_cell": false,
+        "wave": false,
+        "quorum": false
+      },
+      "best_mechanism": null
+    },
+    {
+      "marker": "ERBB2",
+      "common": "HER2",
+      "leaks_into": [
+        "cardiomyocyte",
+        "cholangiocyte",
+        "kidney_podocyte",
+        "kidney_tubule",
+        "lung_pneumocyte",
+        "neuron",
+        "pancreatic_islet",
+        "skeletal_myocyte",
+        "vascular_endothelium"
+      ],
+      "q_t": 0.1305,
+      "q_n": 0.7957,
+      "effective": true,
+      "safe": {
+        "per_cell": false,
+        "wave": false,
+        "quorum": false
+      },
+      "best_mechanism": null
+    },
+    {
+      "marker": "DLL3",
+      "common": "DLL3",
+      "leaks_into": [
+        "neuron"
+      ],
+      "q_t": 0.0025,
+      "q_n": 0.803,
+      "effective": false,
+      "safe": {
+        "per_cell": false,
+        "wave": false,
+        "quorum": false
+      },
+      "best_mechanism": null
+    },
+    {
+      "marker": "MET",
+      "common": "MET",
+      "leaks_into": [
+        "cardiomyocyte",
+        "cholangiocyte",
+        "kidney_tubule",
+        "lung_pneumocyte",
+        "neuron",
+        "pancreatic_islet",
+        "skeletal_myocyte",
+        "vascular_endothelium"
+      ],
+      "q_t": 0.1195,
+      "q_n": 0.8367,
+      "effective": true,
+      "safe": {
+        "per_cell": false,
+        "wave": false,
+        "quorum": false
+      },
+      "best_mechanism": null
+    },
+    {
+      "marker": "PROM1",
+      "common": "CD133",
+      "leaks_into": [
+        "cholangiocyte",
+        "kidney_tubule",
+        "neuron",
+        "pancreatic_islet",
+        "skeletal_myocyte",
+        "vascular_endothelium"
+      ],
+      "q_t": 0.0483,
+      "q_n": 0.828,
+      "effective": false,
+      "safe": {
+        "per_cell": false,
+        "wave": false,
+        "quorum": false
+      },
+      "best_mechanism": null
+    },
+    {
+      "marker": "MCAM",
+      "common": "MCAM",
+      "leaks_into": [
+        "cardiomyocyte",
+        "cholangiocyte",
+        "kidney_podocyte",
+        "kidney_tubule",
+        "neuron",
+        "pancreatic_islet",
+        "skeletal_myocyte",
+        "vascular_endothelium"
+      ],
+      "q_t": 0.0121,
+      "q_n": 0.8706,
+      "effective": false,
+      "safe": {
+        "per_cell": false,
+        "wave": false,
+        "quorum": false
+      },
+      "best_mechanism": null
+    },
+    {
+      "marker": "TACSTD2",
+      "common": "TROP2",
+      "leaks_into": [
+        "cholangiocyte",
+        "kidney_podocyte",
+        "kidney_tubule",
+        "lung_pneumocyte",
+        "pancreatic_islet",
+        "vascular_endothelium"
+      ],
+      "q_t": 0.4472,
+      "q_n": 0.9677,
+      "effective": true,
+      "safe": {
+        "per_cell": false,
+        "wave": false,
+        "quorum": false
+      },
+      "best_mechanism": null
+    },
+    {
+      "marker": "EPCAM",
+      "common": "EPCAM",
+      "leaks_into": [
+        "cholangiocyte",
+        "kidney_podocyte",
+        "kidney_tubule",
+        "lung_pneumocyte",
+        "neuron",
+        "pancreatic_islet",
+        "vascular_endothelium"
+      ],
+      "q_t": 0.48,
+      "q_n": 1.0,
+      "effective": true,
+      "safe": {
+        "per_cell": false,
+        "wave": false,
+        "quorum": false
+      },
+      "best_mechanism": null
+    },
+    {
+      "marker": "MUC1",
+      "common": "MUC1",
+      "leaks_into": [
+        "cholangiocyte",
+        "kidney_podocyte",
+        "kidney_tubule",
+        "lung_pneumocyte",
+        "pancreatic_islet",
+        "vascular_endothelium"
+      ],
+      "q_t": 0.4403,
+      "q_n": 0.9967,
+      "effective": true,
+      "safe": {
+        "per_cell": false,
+        "wave": false,
+        "quorum": false
+      },
+      "best_mechanism": null
+    },
+    {
+      "marker": "FOLR1",
+      "common": "FOLR1",
+      "leaks_into": [
+        "kidney_podocyte",
+        "kidney_tubule",
+        "lung_pneumocyte",
+        "neuron",
+        "pancreatic_islet",
+        "vascular_endothelium"
+      ],
+      "q_t": 0.208,
+      "q_n": 0.9693,
+      "effective": true,
+      "safe": {
+        "per_cell": false,
+        "wave": false,
+        "quorum": false
+      },
+      "best_mechanism": null
+    },
+    {
+      "marker": "GPC3",
+      "common": "GPC3",
+      "leaks_into": [
+        "cardiac_conduction",
+        "cardiomyocyte",
+        "kidney_podocyte",
+        "kidney_tubule",
+        "lung_pneumocyte",
+        "neuron",
+        "skeletal_myocyte",
+        "vascular_endothelium"
+      ],
+      "q_t": 0.0238,
+      "q_n": 0.9405,
+      "effective": false,
+      "safe": {
+        "per_cell": false,
+        "wave": false,
+        "quorum": false
+      },
+      "best_mechanism": null
+    },
+    {
+      "marker": "EGFR",
+      "common": "EGFR",
+      "leaks_into": [
+        "cardiac_conduction",
+        "cholangiocyte",
+        "kidney_podocyte",
+        "kidney_tubule",
+        "lung_pneumocyte",
+        "neuron",
+        "pancreatic_islet",
+        "skeletal_myocyte",
+        "vascular_endothelium"
+      ],
+      "q_t": 0.1143,
+      "q_n": 0.9633,
+      "effective": true,
+      "safe": {
+        "per_cell": false,
+        "wave": false,
+        "quorum": false
+      },
+      "best_mechanism": null
+    },
+    {
+      "marker": "ROR1",
+      "common": "ROR1",
+      "leaks_into": [
+        "cardiac_conduction",
+        "cardiomyocyte",
+        "cholangiocyte",
+        "kidney_podocyte",
+        "kidney_tubule",
+        "lung_pneumocyte",
+        "neuron",
+        "pancreatic_islet",
+        "skeletal_myocyte",
+        "vascular_endothelium"
+      ],
+      "q_t": 0.0096,
+      "q_n": 0.9833,
+      "effective": false,
+      "safe": {
+        "per_cell": false,
+        "wave": false,
+        "quorum": false
+      },
+      "best_mechanism": null
+    },
+    {
+      "marker": "NCAM1",
+      "common": "NCAM1",
+      "leaks_into": [
+        "cardiac_conduction",
+        "cardiomyocyte",
+        "cholangiocyte",
+        "kidney_tubule",
+        "neuron",
+        "pancreatic_islet",
+        "skeletal_myocyte",
+        "vascular_endothelium"
+      ],
+      "q_t": 0.0045,
+      "q_n": 1.0,
+      "effective": false,
+      "safe": {
+        "per_cell": false,
+        "wave": false,
+        "quorum": false
+      },
+      "best_mechanism": null
+    }
+  ],
+  "safe_effective_by_mechanism": {
+    "per_cell": [],
+    "wave": [],
+    "quorum": []
+  },
+  "markers_quorum_unlocks_over_wave": [],
+  "DECISIVE": "Surface markers safe&effective by cheapest mechanism: per_cell: []; wave: []; quorum: []. Markers QUORUM unlocks that the wave cannot (0.173<q_n<=0.20): none.",
+  "CEILING": "mRNA positivity (Census), not surface protein; dropout/dissociation bias (HK-depth control mitigates). q_t from RUNG-5 surfaceome tumour cache (pan-cancer pooled). Mechanism ceilings = in-silico containment. Coupling/delivery = wet-lab residual."
+}
