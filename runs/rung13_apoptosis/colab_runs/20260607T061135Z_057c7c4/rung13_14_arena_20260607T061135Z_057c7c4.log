@@ -1,0 +1,87 @@
+# cancer-recog-apoptosis — run log
+# step          : rung13_14_arena
+# utc           : 20260607T061135Z
+# commit_short  : 057c7c4
+# commit_full   : 057c7c416d0d19ea0f44deb01d0938059131f90c
+# branch        : main
+# python        : 3.12.13
+# platform      : Linux-6.6.122+-x86_64-with-glibc2.35
+#================================================================
+
+$ /usr/bin/python3 -u scripts/38_apoptosis_wave.py selftest
+  [PASS] single-cell all-or-none threshold S* exists and > 0
+  [PASS] sub-threshold input -> cell LIVES
+  [PASS] supra-threshold input -> cell COMMITS
+  [PASS] dead-basin stays COMMITTED at S=0 (CP ratchet)
+  [PASS] commitment latches: brief supra pulse still commits (irreversible)
+  [PASS] sub-threshold sustained never commits (threshold gates)
+  [PASS] binarisation: <10% intermediate final-CP
+  [PASS] priming delays death (Td rises with brake)
+  [PASS] death wave CLEARS tumour at low q_n (>0.7)
+  [PASS] death wave SPARES normal at low q_n (<0.02)
+  [PASS] death wave LEAKS into normal at high q_n (>0.1)
+  [PASS] low tumour fidelity q_t -> weaker clearance
+
+selftest: 12/12 checks passed
+[exit 0]
+
+$ /usr/bin/python3 -u scripts/39_mechanism_arena.py selftest
+  [PASS] per_cell: returns valid kill fractions in [0,1]
+  [PASS] wave: returns valid kill fractions in [0,1]
+  [PASS] quorum: returns valid kill fractions in [0,1]
+  [PASS] diffusible: returns valid kill fractions in [0,1]
+  [PASS] oncolytic: returns valid kill fractions in [0,1]
+  [PASS] alt_death: returns valid kill fractions in [0,1]
+  [PASS] combo: returns valid kill fractions in [0,1]
+  [PASS] per_cell normal-leak rises with q_n (linear baseline)
+  [PASS] quorum spares normal at high q_n better than per_cell
+  [PASS] wave clears tumour at low q_n (>0.5)
+  [PASS] alt_death achieves tumour clearance with resistant fraction (>0.4)
+  [PASS] oncotripsy toy returns selectivity
+  [PASS] ttfields toy: tumour killed > normal killed
+
+selftest: 13/13 checks passed
+[exit 0]
+
+$ /usr/bin/python3 -u scripts/38_apoptosis_wave.py run
+[rung13] single-cell death switch (EARM-calibrated reduced model) ...
+[rung13]   S*=0.002  Td(mod)=1.81h  Ts=0.55h  snap(Ts<0.5Td)=True  latch=True  intermediate=0.0
+[rung13] spatial death wave: containment vs q_n ...
+           q_n=0.00  tumour_killed=0.953  normal_killed=0.000
+           q_n=0.09  tumour_killed=0.953  normal_killed=0.002
+           q_n=0.17  tumour_killed=0.953  normal_killed=0.005
+           q_n=0.26  tumour_killed=0.953  normal_killed=0.010
+           q_n=0.34  tumour_killed=0.953  normal_killed=0.018
+           q_n=0.43  tumour_killed=0.953  normal_killed=0.036
+           q_n=0.52  tumour_killed=0.953  normal_killed=0.135
+           q_n=0.60  tumour_killed=0.953  normal_killed=0.443
+           q_n=0.69  tumour_killed=0.953  normal_killed=0.665
+           q_n=0.78  tumour_killed=0.953  normal_killed=0.775
+           q_n=0.86  tumour_killed=0.953  normal_killed=0.864
+           q_n=0.95  tumour_killed=0.953  normal_killed=0.951
+[rung13] wrote /content/cancer-recog-apoptosis/runs/rung13_apoptosis/rung13_apoptosis.json
+
+  kinetic safe q_n ceiling: 0.17 (~8.6x bar 0.02) | RUNG-12P/B 2D 0.3
+
+  DECISIVE: POSITIVE (recognition->death link closes in silico): EARM-calibrated coupled cells give (1) an all-or-none excitable threshold S*=0.002 with a variable delay (Td 3.88->0.69h across dose) and a fast snap (Ts=0.55h < Td); (2) an IRREVERSIBLE commitment -- the threshold crossing latches death (a brief supra pulse still commits; sustained sub-threshold never does) and the dead state persists at zero input -- so Shriya 6.3 'cannot back out' is a dynamical property, not an assumption; (3) a BOUNDED death wave clearing the tumour (>=80% over q_n in [0.0,0.95]) while keeping normal kill <=1% up to q_n~0.17 (~8.6x the per-cell bar 0.02); (4) this CONFIRMS RUNG-12P/B's binary abstraction (2D ceiling 0.3) under real kinetics -- the recognition relaxation is EARNED. Bonus: the wave clears even heavily-primed tumour (resistance-resistance). Efficacy still needs tumour fidelity q_t above the propagation threshold; mapping c/g to molecular efficiencies is the wet-lab residual.
+[rung13] wrote /content/cancer-recog-apoptosis/runs/rung13_apoptosis/rung13_apoptosis.png
+[exit 0]
+
+$ /usr/bin/python3 -u scripts/39_mechanism_arena.py run
+[rung14] arena: 7 rigorous + 2 toy mechanisms x 12 regimes (L=61, full)
+  [per_cell   ] safe&effective in 0/12 regimes (best: tumour 0.94 / normal 0.046)
+  [wave       ] safe&effective in 4/12 regimes (best: tumour 0.94 / normal 0.001)
+  [quorum     ] safe&effective in 8/12 regimes (best: tumour 0.92 / normal 0.004)
+  [diffusible ] safe&effective in 0/12 regimes (best: tumour 0.94 / normal 0.015)
+  [oncolytic  ] safe&effective in 0/12 regimes (best: tumour 0.94 / normal 0.021)
+  [alt_death  ] safe&effective in 4/12 regimes (best: tumour 0.94 / normal 0.001)
+  [combo      ] safe&effective in 4/12 regimes (best: tumour 0.94 / normal 0.001)
+  [oncotripsy ] (TOY) best selectivity: tumour 0.29 / normal 0.000
+  [ttfields   ] (TOY) tumour 0.96 / normal 0.274
+
+[rung14] wrote /content/cancer-recog-apoptosis/runs/rung14_arena/rung14_arena.json
+  LEADERBOARD: quorum(0.67) > wave(0.33) > alt_death(0.33) > combo(0.33) > per_cell(0.00) > diffusible(0.00) > oncolytic(0.00)
+
+  DECISIVE: In-silico containment leaderboard (safe&effective fraction): quorum=0.67, wave=0.33, alt_death=0.33, combo=0.33, per_cell=0.00, diffusible=0.00, oncolytic=0.00. Strategies that HIT across >=50% of regimes: ['quorum']. per_cell (no propagation) is the baseline whose normal-leak scales LINEARLY with q_n; propagation/quorum/gated arms that beat it convert that into bounded leak. Toy physics arms reported separately (future). Coupling/delivery efficiency is the wet-lab residual.
+[rung14] wrote /content/cancer-recog-apoptosis/runs/rung14_arena/rung14_arena.png
+[exit 0]
