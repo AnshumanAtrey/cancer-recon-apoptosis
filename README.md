@@ -192,7 +192,8 @@ axis (instant, from RUNG-12 handles) + surface axis (CELLxGENE Census).
 
 ### Tier I — Immunogenic eradication (call the hunters)
 - **I1 MHC-I re-induction** — restore antigen presentation in immune-evading tumours (IFN-inducibility). `Test:` atlas. **Status: ✅ RUNG-9 (inducibility mapped).**
-- **I2 MHC-I window status** — *is the display window even ON in the cancer cells?* The load-bearing assumption of the whole immune route. `Test:` 6,319 WGS tumours (genetic immune escape). **Status: ✅ RUNG-18 — window genetically intact 78% / dimmed 18% / fully-dark only 3.7%; route GENETICALLY viable. Epigenetic-silencing complement = RUNG-18b (Colab).**
+- **I2 MHC-I window status** — *is the display window even ON in the cancer cells?* The load-bearing assumption of the whole immune route. `Test:` 6,319 WGS tumours (genetic immune escape). **Status: ✅ RUNG-18 — window genetically intact 78% / dimmed 18% / fully-dark only 3.7%; route GENETICALLY viable.**
+- **I3 MHC-I window — switched off without being broken** — the EPIGENETIC layer genetics can't see: HLA-A/B/C + B2M *transcription* in real malignant cells (housekeeping depth-gated; immune cells as positive control; cancer−control delta = silencing beyond genetics). `Test:` CELLxGENE Census single-cell. **Status: 🟢 RUNG-18b BUILT + selftest 17/17 (`scripts/44`, `notebooks/mhc_window_colab.ipynb`) — Census run pending on Colab.**
 - **I2 Neoantigen vaccine / CAR target addressability** — `Test:` sequence + atlas. **Status: 🟢 (overlaps A2).**
 - **I3 Immunogenic cell death (ICD)** — pick a death mode that *alerts* the immune system (calreticulin exposure). `Test:` atlas + arena death-mode tagging. **Status: 🟢.**
 
