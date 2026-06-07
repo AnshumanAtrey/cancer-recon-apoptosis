@@ -1,0 +1,22 @@
+{
+  "n_sim_mutations": 250,
+  "n_supported_alleles": 20,
+  "n_peptides_scored": 19000,
+  "n_patient_draws": 40,
+  "wt_off_rank": 4.0,
+  "by_threshold": {
+    "strong_0.5": {
+      "deployable_per_mutation_1allele": 0.025,
+      "deployable_per_mutation_6allele_patient": 0.117
+    },
+    "strong_2.0": {
+      "deployable_per_mutation_1allele": 0.133,
+      "deployable_per_mutation_6allele_patient": 0.4629
+    }
+  },
+  "literature_yield_band": [
+    0.01,
+    0.05
+  ],
+  "deployable_per_mutation_USED": 0.117
+}

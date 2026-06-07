@@ -110,8 +110,15 @@ axis (instant, from RUNG-12 handles) + surface axis (CELLxGENE Census).
 > **Leaderboard (RUNG-14, 9 strategies × 12 regimes):** `quorum` HITS (8/12) · `wave`/`alt_death`/`combo`/`ferroptosis_wave`
 > CLOSE (4/12) · `synthetic_lethal` SAFE-but-coverage-limited (12/12 safe, <80% kill alone) · `per_cell`/`diffusible`/`oncolytic`
 > FAR (leak at high q_n). **RUNG-15 map:** propagation unlocks melanoma (+8%) & CRC; clean neoantigens (PDAC 26%, glioma 22%)
-> need no propagation; quorum's headroom needs surface markers (→ the Census arm). **RUNG-15 census (real CELLxGENE,
-> 25 tumour antigens): DECISIVE NEGATIVE — 0/25 single surface markers are safe under any mechanism. Specificity
+> need no propagation; quorum's headroom needs surface markers (→ the Census arm).
+>
+> **RUNG-16 (clonal neoantigen burden, MHCflurry):** the *shared hotspot* ceiling (RUNG-11) is bounded (3–20%), but with
+> the **full per-patient clonal mutation repertoire**, the fraction of patients with ≥1 clean tumour-exclusive handle to
+> **seed the wave** is *much* higher for high-mutation cancers — at the conservative 1–5% neoantigen yield: **MSI-CRC 99–100%,
+> melanoma 81–100%, NSCLC/bladder 64–99%**, down to **PDAC 20–68%, breast 18–64%** (TMB-graded). Caveat: this is **personalised**
+> addressability (per-patient neoantigen ID + effector), not off-the-shelf; presentation ≠ killing (TCR = wet-lab residual).
+>
+> **RUNG-15 census (real CELLxGENE, 25 tumour antigens): DECISIVE NEGATIVE — 0/25 single surface markers are safe under any mechanism. Specificity
 > anti-correlation: tumour-high markers (EPCAM/TROP2/MUC1/HER2/EGFR) leak into vital tissue (q_n 0.8–1.0); vital-clean
 > markers (CD20/PSMA/CD19) are barely tumour-expressed (q_t <0.05). → tumour-exclusivity must come from MUTATION
 > (neoantigen) or COMBINATORIAL AND-NOT logic, not a single shared self-antigen. (Pan-cancer pooled; a per-cancer marker may still win.)**

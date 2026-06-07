@@ -1,0 +1,144 @@
+{
+  "tag": "rung16_clonal_neoantigen_burden_coverage",
+  "question": "With the FULL clonal mutation repertoire (not just shared hotspots), what fraction of patients have >=1 clean tumour-exclusive neoantigen handle to SEED the death wave?",
+  "calibration": {
+    "n_sim_mutations": 250,
+    "n_supported_alleles": 20,
+    "n_peptides_scored": 19000,
+    "n_patient_draws": 40,
+    "wt_off_rank": 4.0,
+    "by_threshold": {
+      "strong_0.5": {
+        "deployable_per_mutation_1allele": 0.025,
+        "deployable_per_mutation_6allele_patient": 0.117
+      },
+      "strong_2.0": {
+        "deployable_per_mutation_1allele": 0.133,
+        "deployable_per_mutation_6allele_patient": 0.4629
+      }
+    },
+    "literature_yield_band": [
+      0.01,
+      0.05
+    ],
+    "deployable_per_mutation_USED": 0.117
+  },
+  "exome_model": {
+    "exome_Mb": 30.0,
+    "missense_frac": 0.7,
+    "clonal_frac": 0.6,
+    "n_class1_alleles": 6,
+    "tmb_note": "median mut/Mb (TCGA/PCAWG order-of-magnitude); high-TMB driven by UV(melanoma)/smoking(NSCLC)/MMR-d(MSI)."
+  },
+  "coverage_band": {
+    "deployable_per_mutation": {
+      "lit_low": 0.01,
+      "lit_high": 0.05,
+      "mhcflurry": 0.117
+    },
+    "per_cancer": {
+      "MELANOMA": {
+        "P_ge1_lit_low": 0.8056,
+        "P_ge1_lit_high": 0.9997,
+        "P_ge1_mhcflurry": 1.0,
+        "tmb": 13.0,
+        "n_clonal_missense": 163.8
+      },
+      "NSCLC": {
+        "P_ge1_lit_low": 0.6351,
+        "P_ge1_lit_high": 0.9935,
+        "P_ge1_mhcflurry": 1.0,
+        "tmb": 8.0,
+        "n_clonal_missense": 100.8
+      },
+      "BLADDER": {
+        "P_ge1_lit_low": 0.6351,
+        "P_ge1_lit_high": 0.9935,
+        "P_ge1_mhcflurry": 1.0,
+        "tmb": 8.0,
+        "n_clonal_missense": 100.8
+      },
+      "CRC_MSI": {
+        "P_ge1_lit_low": 0.9935,
+        "P_ge1_lit_high": 1.0,
+        "P_ge1_mhcflurry": 1.0,
+        "tmb": 40.0,
+        "n_clonal_missense": 504.0
+      },
+      "GASTRIC": {
+        "P_ge1_lit_low": 0.5305,
+        "P_ge1_lit_high": 0.9772,
+        "P_ge1_mhcflurry": 0.9999,
+        "tmb": 6.0,
+        "n_clonal_missense": 75.6
+      },
+      "HNSC": {
+        "P_ge1_lit_low": 0.4674,
+        "P_ge1_lit_high": 0.9571,
+        "P_ge1_mhcflurry": 0.9994,
+        "tmb": 5.0,
+        "n_clonal_missense": 63.0
+      },
+      "HCC": {
+        "P_ge1_lit_low": 0.3959,
+        "P_ge1_lit_high": 0.9195,
+        "P_ge1_mhcflurry": 0.9973,
+        "tmb": 4.0,
+        "n_clonal_missense": 50.4
+      },
+      "CRC_MSS": {
+        "P_ge1_lit_low": 0.3566,
+        "P_ge1_lit_high": 0.8897,
+        "P_ge1_mhcflurry": 0.9943,
+        "tmb": 3.5,
+        "n_clonal_missense": 44.1
+      },
+      "GLIOMA": {
+        "P_ge1_lit_low": 0.2702,
+        "P_ge1_lit_high": 0.793,
+        "P_ge1_mhcflurry": 0.9749,
+        "tmb": 2.5,
+        "n_clonal_missense": 31.5
+      },
+      "OV": {
+        "P_ge1_lit_low": 0.2702,
+        "P_ge1_lit_high": 0.793,
+        "P_ge1_mhcflurry": 0.9749,
+        "tmb": 2.5,
+        "n_clonal_missense": 31.5
+      },
+      "PDAC": {
+        "P_ge1_lit_low": 0.2029,
+        "P_ge1_lit_high": 0.6783,
+        "P_ge1_mhcflurry": 0.9296,
+        "tmb": 1.8,
+        "n_clonal_missense": 22.7
+      },
+      "BRCA": {
+        "P_ge1_lit_low": 0.1826,
+        "P_ge1_lit_high": 0.6351,
+        "P_ge1_mhcflurry": 0.9055,
+        "tmb": 1.6,
+        "n_clonal_missense": 20.2
+      }
+    }
+  },
+  "hotspot_shared_coverage_RUNG11": {
+    "PDAC": 0.049,
+    "CRC": 0.0766,
+    "NSCLC": 0.0315,
+    "BRCA": 0.0744,
+    "MELANOMA": 0.2041,
+    "GLIOMA": 0.0,
+    "HCC": 0.0453,
+    "OV": 0.0038
+  },
+  "INTERPRETATION_MAP": {
+    "shared_vs_personalised": "hotspot coverage (RUNG-11) = SHARED off-the-shelf targets (bounded). P_ge1 here = PER-PATIENT addressability with PERSONALISED neoantigen ID + a per-patient effector. The gap is the shared-vs-personalised cost.",
+    "seed_sufficiency": ">=1 CLONAL clean handle is enough to SEED the RUNG-13 wave (efficacy decoupled from per-cell recognition); high-TMB cancers -> nearly every patient seedable.",
+    "tcr_residual": "presentation != immunogenicity; per-handle TCR existence is the wet-lab residual (RUNG-12), un-pre-validatable for private mutations."
+  },
+  "DECISIVE": "Deployable clean clonal neoantigens per mutation: literature band [0.01,0.05], MHCflurry-calibrated 0.117 (strong-binder, per-register WT-clean test, 6-allele patient). PER-PATIENT P(>=1 clean clonal neoantigen to SEED the wave), shown as range [lit-low .. lit-high]: CRC_MSI 99%-100%, MELANOMA 81%-100%, NSCLC 64%-99%, BLADDER 64%-99%, GASTRIC 53%-98%, HNSC 47%-96%, HCC 40%-92%, CRC_MSS 36%-89%, GLIOMA 27%-79%, OV 27%-79%, PDAC 20%-68%, BRCA 18%-64%. Robustly SOLVED per-patient (>=90% even at the CONSERVATIVE 1% yield): ['CRC_MSI']; hard (<50% even at 5% yield): none. This is PERSONALISED addressability (the patient has a clean clonal handle to SEED the RUNG-13 wave, which then spreads) -- NOT an off-the-shelf drug, which stays bounded to the shared HOTSPOT ceiling (RUNG-11: melanoma 20%, PDAC 26%). The shared-vs-personalised gap is the cost. TCR/immunogenicity per handle = the wet-lab residual (RUNG-12); presentation != killing.",
+  "calibration_note": "MHCflurry-calibrated deployable rate (0.117) sits ABOVE the literature band [0.01,0.05] because the simulation scores raw MHC binding only -- it omits the proteasomal-cleavage + TAP-transport + processing filters that real immunopeptidomics applies (which remove most predicted binders). So the HEADLINE uses the literature band; MHCflurry is the optimistic upper bound.",
+  "CEILING": "PREDICTED presentation (MHCflurry), not immunopeptidomics/immunogenicity -> calibration is an UPPER bound (no processing filter); headline uses the conservative literature yield band. TMB + clonal_frac are population estimates (literature ranges). Simulated missense spectrum approximates real. P_ge1 = per-patient addressability requiring PERSONALISED neoantigen ID + effector, NOT an off-the-shelf drug. Bounds addressability, not efficacy; coupling/TCR = wet-lab residual."
+}
