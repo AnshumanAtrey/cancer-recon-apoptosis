@@ -77,7 +77,7 @@ Single surface windows leak (proven). Inside windows are richer/more specific. P
 
 ---
 
-- [ ] **AUTONOMOUS MUTATION-SENSING circuit** (the corrected direction RUNG-23 points to). The negative says
+- [~] **AUTONOMOUS MUTATION-SENSING circuit** ✅ BUILT RUNG-25 (`scripts/51`, `notebooks/mutation_sensor_colab.ipynb`, selftest 9/9) — Colab CPU + ViennaRNA, run pending. The corrected direction RUNG-23 points to. The negative says
       expression-program AND-gates leak → an autonomous MHC-free self-destruct must sense the MUTATION itself
       (toehold switch / CRISPR-based mutant-mRNA sensor), AND-gating two clonal driver mutations → apoptosis.
       Combines the ONLY clean signal (mutation) with MHC-independence (covers the dark core). `Test:` model the
