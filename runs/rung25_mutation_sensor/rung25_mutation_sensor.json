@@ -1,0 +1,82 @@
+{
+  "tag": "rung25_mutation_sensor",
+  "question": "Can a synthetic sensor discriminate a tumour point-mutation from WT (one base) well enough that an AND of two clonal mutations fires only in cancer (MHC-free autonomous self-destruct)?",
+  "backend": "ViennaRNA duplex \u0394G",
+  "sensor_len": 21,
+  "RT_kcal_mol": 0.616,
+  "discrimination_per_substitution": {
+    "A>C": {
+      "mean_ddg": 6.448,
+      "median_false_fire": 2.223e-05
+    },
+    "A>G": {
+      "mean_ddg": 6.44,
+      "median_false_fire": 2.223e-05
+    },
+    "A>U": {
+      "mean_ddg": 4.702,
+      "median_false_fire": 0.0004857
+    },
+    "C>A": {
+      "mean_ddg": 4.382,
+      "median_false_fire": 0.0007905
+    },
+    "C>G": {
+      "mean_ddg": 6.45,
+      "median_false_fire": 3.075e-05
+    },
+    "C>U": {
+      "mean_ddg": 4.368,
+      "median_false_fire": 0.0009298
+    },
+    "G>A": {
+      "mean_ddg": 0.297,
+      "median_false_fire": 0.6145
+    },
+    "G>C": {
+      "mean_ddg": 3.913,
+      "median_false_fire": 0.001513
+    },
+    "G>U": {
+      "mean_ddg": 4.377,
+      "median_false_fire": 0.0007905
+    },
+    "U>A": {
+      "mean_ddg": 4.037,
+      "median_false_fire": 0.001513
+    },
+    "U>C": {
+      "mean_ddg": 2.322,
+      "median_false_fire": 0.02812
+    },
+    "U>G": {
+      "mean_ddg": 6.503,
+      "median_false_fire": 2.223e-05
+    }
+  },
+  "mismatch_position_sweep_ddg": {
+    "mismatch_at_50pct": 0.247,
+    "mismatch_at_30pct": 0.323,
+    "mismatch_at_10pct": 0.277
+  },
+  "kras_g12d_worked_example": {
+    "name": "KRAS_G12D",
+    "note": "c.35G>A, GGT(Gly12)->GAT(Asp); canonical CDS codons 8-15",
+    "wt": "GUAGUUGGAGCUGGUGGCGUAGGC",
+    "mut": "GUAGUUGGAGCUGAUGGCGUAGGC",
+    "mut_pos": 12,
+    "ddg": 0.6,
+    "dg_mut": -49.1,
+    "dg_wt": -48.5,
+    "false_fire_rate": 0.3776
+  },
+  "single_sensor_median_false_fire": 0.0007905,
+  "AND_gate_two_clonal_mutations_false_fire": 6.249e-07,
+  "kras_AND_second_clonal_false_fire": 0.0002985,
+  "HEADLINE": "Single-base sensing: median \u0394\u0394G discriminates (central mismatch best, 0.247 vs 0.277 kcal/mol terminal). Single-sensor normal-cell false-fire ~7.9e-04; AND of TWO clonal mutations drives it to ~6.2e-07 \u2192 tumour-exclusive autonomous trigger feasible if \u22652 clonal mutations are sensed.",
+  "INTERPRETATION_MAP": {
+    "AND false-fire << single, \u2192 ~0": "two independent allele-specific sensors give a tumour-exclusive MHC-free AND-gate -> the corrected RUNG-23 direction is FEASIBLE in principle.",
+    "single false-fire already high (poor \u0394\u0394G)": "single-base sensing too leaky -> need toehold amplification / a 3rd input, or this route is bounded."
+  },
+  "CEILING": "ViennaRNA \u0394G is a thermodynamic PROXY (kinetics / RNA accessibility / genome off-targets NOT modelled); AND=product assumes independent sensor failures; non-KRAS contexts are GENERIC (exact driver flanking = verified-sequence follow-up). Feasibility bound, not a built circuit."
+}

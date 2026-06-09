@@ -1,0 +1,34 @@
+# cancer-recog-apoptosis — run log
+# step          : rung25_mutation_sensor
+# utc           : 20260609T164444Z
+# commit_short  : 6d8d784
+# commit_full   : 6d8d784e1360e7637d52bb4f92cf2f2f2b9ea080
+# branch        : main
+# python        : 3.12.13
+# platform      : Linux-6.6.122+-x86_64-with-glibc2.35
+#================================================================
+
+$ /usr/bin/python3 -u scripts/51_mutation_sensor.py selftest
+  [PASS] rc is reverse-complement
+  [PASS] make_window: wt/mut differ at exactly center
+  [PASS] perfect match to mutant more stable than WT (ΔΔG>0)
+  [PASS] false_fire in (0,1)
+  [PASS] central mismatch ΔΔG >= terminal
+  [PASS] AND false-fire = product (0.1*0.1=0.01)
+  [PASS] AND << single
+  [PASS] KRAS-G12D windows differ by 1 base
+  [PASS] KRAS-G12D discriminable under proxy (ΔΔG>0)
+
+  selftest: 9/9 passed
+[exit 0]
+
+$ pip ViennaRNA
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.4/13.4 MB 77.1 MB/s eta 0:00:00
+[exit 0]
+
+$ /usr/bin/python3 -u scripts/51_mutation_sensor.py run
+[rung25] wrote /content/cancer-recog-apoptosis/runs/rung25_mutation_sensor/rung25_mutation_sensor.json  (0.7s)
+  KRAS-G12D ΔΔG=0.6 false_fire=3.8e-01
+  single median false-fire 7.9e-04 -> AND(2) 6.2e-07
+[rung25] wrote /content/cancer-recog-apoptosis/runs/rung25_mutation_sensor/rung25_mutation_sensor.png
+[exit 0]

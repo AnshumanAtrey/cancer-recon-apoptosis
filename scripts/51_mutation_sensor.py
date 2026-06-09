@@ -110,6 +110,13 @@ def and_gate_false_fire(ff_a, ff_b):
     return ff_a * ff_b
 
 
+def is_wobble(a, b):
+    """Does substitution a>b leave a stable G·U WOBBLE in the sensor·WT duplex (sensor base = comp(b), WT base
+    = a)? A wobble pairs nearly as well as a match → the sensor CAN'T discriminate → poor allele-specificity.
+    (G>A and U>C are the wobble cases; KRAS-G12D is G>A = the worst.)"""
+    return {COMP[b], a} == {"G", "U"}
+
+
 def make_window(rng, length, center_sub):
     """Random RNA window with a defined center base; return (wt, mut) differing only at center by center_sub."""
     seq = [BASES[i] for i in rng.integers(0, 4, length)]
@@ -147,24 +154,33 @@ def main_run():
         per_sub[f"{a}>{b}"] = {"mean_ddg": round(float(np.mean(ddgs)), 3),
                                "median_false_fire": _sig(float(np.median(ffs)))}
 
-    # 2) mismatch POSITION sweep (central discriminates best) — one representative substitution
+    # 2) mismatch POSITION sweep — use a NON-WOBBLE substitution (A>C) so the position effect is visible,
+    #    not masked by a wobble (the v1 bug used G>A = wobble -> flat/uninformative).
     pos_sweep = {}
     for frac in (0.5, 0.3, 0.1):
         ddgs = []
         for _ in range(N_CTX):
             seq = [BASES[i] for i in rng.integers(0, 4, SENSOR_LEN)]
             c = int(frac * (SENSOR_LEN - 1))
-            seq[c] = "G"; wt = "".join(seq); seq[c] = "A"; mut = "".join(seq)
+            seq[c] = "A"; wt = "".join(seq); seq[c] = "C"; mut = "".join(seq)   # A>C: non-wobble (G·A mismatch)
             ddgs.append(discrimination(wt, mut, backend)["ddg"])
         pos_sweep[f"mismatch_at_{int(frac*100)}pct"] = round(float(np.mean(ddgs)), 3)
 
     # 3) worked real example: KRAS-G12D
     kras = discrimination(KRAS_G12D["wt"], KRAS_G12D["mut"], backend)
 
-    # 4) AND-gate specificity: median single false-fire -> AND of two (independent clonal mutations)
-    med_ff = float(np.median([per_sub[k]["median_false_fire"] for k in per_sub]))
-    and_ff = and_gate_false_fire(med_ff, med_ff)
-    kras_and = and_gate_false_fire(kras["false_fire_rate"], med_ff)
+    # 4) split GOOD (non-wobble) vs WOBBLE substitutions — the sensor can't discriminate a G·U wobble
+    wobble = [f"{a}>{b}" for (a, b) in SUBSTITUTIONS if is_wobble(a, b)]
+    good = [k for k in per_sub if k not in wobble]
+    med_ff_all = float(np.median([per_sub[k]["median_false_fire"] for k in per_sub]))
+    med_ff_good = float(np.median([per_sub[k]["median_false_fire"] for k in good]))
+    best = min(per_sub, key=lambda k: per_sub[k]["median_false_fire"])
+    worst = max(per_sub, key=lambda k: per_sub[k]["median_false_fire"])
+    # AND-of-2: realistic = two GOOD (non-wobble) sensors; KRAS-G12D (wobble) ANDed with a good 2nd sensor
+    med_ff = med_ff_good
+    and_ff = and_gate_false_fire(med_ff_good, med_ff_good)
+    kras_and = and_gate_false_fire(kras["false_fire_rate"], med_ff_good)
+    kras_is_wobble = is_wobble("G", "A")
 
     result = {
         "tag": "rung25_mutation_sensor",
@@ -174,18 +190,27 @@ def main_run():
         "discrimination_per_substitution": per_sub,
         "mismatch_position_sweep_ddg": pos_sweep,
         "kras_g12d_worked_example": {**KRAS_G12D, **kras},
-        "single_sensor_median_false_fire": _sig(med_ff),
-        "AND_gate_two_clonal_mutations_false_fire": _sig(and_ff),
-        "kras_AND_second_clonal_false_fire": _sig(kras_and),
-        "HEADLINE": (f"Single-base sensing: median ΔΔG discriminates (central mismatch best, "
-                     f"{pos_sweep.get('mismatch_at_50pct')} vs {pos_sweep.get('mismatch_at_10pct')} kcal/mol terminal). "
-                     f"Single-sensor normal-cell false-fire ~{med_ff:.1e}; AND of TWO clonal mutations drives it to "
-                     f"~{and_ff:.1e} → tumour-exclusive autonomous trigger feasible if ≥2 clonal mutations are sensed."),
+        "wobble_substitutions_poorly_discriminated": wobble,
+        "good_nonwobble_median_false_fire": _sig(med_ff_good),
+        "all_substitutions_median_false_fire": _sig(med_ff_all),
+        "best_substitution": best, "worst_substitution": worst,
+        "kras_g12d_is_wobble": kras_is_wobble,
+        "single_sensor_median_false_fire_GOOD": _sig(med_ff),
+        "AND_gate_two_GOOD_clonal_mutations_false_fire": _sig(and_ff),
+        "kras_AND_second_GOOD_clonal_false_fire": _sig(kras_and),
+        "HEADLINE": (f"Single-base RNA sensing is SUBSTITUTION-DEPENDENT: good for the {len(good)}/12 NON-wobble "
+                     f"types (ΔΔG ~4-6.5, false-fire ~1e-5..1e-3) but FAILS for the {len(wobble)} G·U-WOBBLE types "
+                     f"{wobble} (sensor·WT is a stable wobble → can't discriminate; worst={worst}). "
+                     f"KRAS-G12D is G>A = WOBBLE → poorly sensed at the RNA level (false-fire {kras['false_fire_rate']}). "
+                     f"AND of TWO GOOD (non-wobble) clonal mutations → false-fire ~{_sig(and_ff)} = tumour-exclusive; "
+                     f"but KRAS-G12D + a good 2nd → only ~{_sig(kras_and)} (NOT exclusive). VERDICT: autonomous "
+                     f"mutation-sensing is FEASIBLE with a design constraint — at the RNA level pick NON-wobble "
+                     f"substitutions; for wobble drivers (KRAS-G12D) sense at the DNA level (CRISPR, no wobble)."),
         "INTERPRETATION_MAP": {
-            "AND false-fire << single, → ~0": "two independent allele-specific sensors give a tumour-exclusive "
-                                              "MHC-free AND-gate -> the corrected RUNG-23 direction is FEASIBLE in principle.",
-            "single false-fire already high (poor ΔΔG)": "single-base sensing too leaky -> need toehold "
-                                                         "amplification / a 3rd input, or this route is bounded.",
+            "good substitutions: AND-of-2 → ~1e-6": "two non-wobble allele-specific sensors give a tumour-exclusive "
+                                                    "MHC-free AND-gate -> the corrected RUNG-23 direction is FEASIBLE.",
+            "wobble substitutions (G>A,U>C incl KRAS-G12D)": "RNA sensor can't discriminate a G·U wobble -> sense at "
+                                                            "the DNA level (CRISPR) or use a 3rd input; do NOT rely on RNA toehold for these.",
         },
         "CEILING": "ViennaRNA ΔG is a thermodynamic PROXY (kinetics / RNA accessibility / genome off-targets NOT "
                    "modelled); AND=product assumes independent sensor failures; non-KRAS contexts are GENERIC "
