@@ -45,6 +45,15 @@ Single surface windows leak (proven). Inside windows are richer/more specific. P
 
 ## P0 — do next (runnable now)
 
+- [~] **DESIGN THE KEY — de novo mutant-specific binder (RUNG-26, the 4-HOUR GPU SWING).** ⚡ Colab GPU.
+      `scripts/52_binder_design.py` (selftest 11/11), `notebooks/binder_design_colab.ipynb`. Generate a de novo
+      mini-binder that grips the CLEAN neoantigen MUTANT pMHC (IDH1-R132H/HLA-A*01:01) and NOT the WT — hotspot
+      forced onto the mutated residue (His@pep-pos-4). BindCraft (AF2-halluc + ProteinMPNN + filters) → fold
+      winners vs WT-pMHC for discrimination → rank. Rule-5 safety: SMOKE-test 1 design before the 4-h batch;
+      time-boxed + resumable. The molecular-invention frontier — designs the actual recognition molecule the
+      whole arc pointed to. (GPU-tool glue = the fragile part; smoke gate catches it before burning the session.)
+
+
 - [x] **AUTONOMOUS INTRACELLULAR AND-GATE** ✅ RUNG-23 v2 CONFIRMED NEGATIVE (trustworthy): depth-gate lifts coverage (GLYCOLYSIS 69%) but metabolic programs genuinely leak into kidney/endothelium; clean programs cover ~0. v1 artifact (post-mitotic leak) fixed. → expression leaks; mutation is the only clean signal. The groundbreaking swing, Shriya's original concept. ☁️ Colab Census.
       `scripts/49_autonomous_andgate.py` (selftest 10/10), `notebooks/autonomous_andgate_colab.ipynb`. A synthetic
       gene circuit *inside* the cell — signal A AND signal B → self-destruct, NO MHC — for the MHC-dark core the
