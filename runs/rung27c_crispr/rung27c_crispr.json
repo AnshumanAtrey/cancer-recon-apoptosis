@@ -1,0 +1,329 @@
+{
+  "tag": "rung27c_crispr_rescue",
+  "question": "Does DNA-level allele-specific CRISPR actually rescue the G>A-wobble drivers the RNA toehold can't sense (RUNG-27b's asserted dna_sensable)? Scan real CDS for PAM-creating SNVs + seed guides.",
+  "cas": "SpCas9 (NGG), 20-nt guide, seed = PAM-proximal 10 nt",
+  "context": "CDS-local (Ensembl MANE)",
+  "n_drivers": 16,
+  "n_wobble": 7,
+  "n_wobble_crispr_rescued": 5,
+  "wobble_rescued": [
+    "KRAS_G12D",
+    "KRAS_G13D",
+    "IDH1_R132H",
+    "PIK3CA_E545K",
+    "TP53_R248Q"
+  ],
+  "wobble_NOT_rescued_by_SpCas9_NGG": [
+    "TP53_R175H",
+    "TP53_R273H"
+  ],
+  "pam_creating_drivers": [
+    "EGFR_L858R"
+  ],
+  "n_all_crispr_addressable": 10,
+  "per_driver": {
+    "KRAS_G12D": {
+      "gene": "KRAS",
+      "aa_change": "G12D",
+      "rna_sub_dna": "G>A",
+      "rna_wobble": true,
+      "crispr_addressable": true,
+      "best_mechanism": "SEED",
+      "guide_20nt": "CTTGTGGTAGTTGGAGCTGA",
+      "strand": "+",
+      "seed_pos_from_PAM": 1,
+      "pam_mut_vs_wt": [
+        "TGG",
+        "TGG"
+      ],
+      "all_mechanisms": [
+        "SEED"
+      ]
+    },
+    "KRAS_G12V": {
+      "gene": "KRAS",
+      "aa_change": "G12V",
+      "rna_sub_dna": "G>T",
+      "rna_wobble": false,
+      "crispr_addressable": true,
+      "best_mechanism": "SEED",
+      "guide_20nt": "CTTGTGGTAGTTGGAGCTGT",
+      "strand": "+",
+      "seed_pos_from_PAM": 1,
+      "pam_mut_vs_wt": [
+        "TGG",
+        "TGG"
+      ],
+      "all_mechanisms": [
+        "SEED"
+      ]
+    },
+    "KRAS_G12C": {
+      "gene": "KRAS",
+      "aa_change": "G12C",
+      "rna_sub_dna": "G>T",
+      "rna_wobble": false,
+      "crispr_addressable": true,
+      "best_mechanism": "SEED",
+      "guide_20nt": "CTTGTGGTAGTTGGAGCTTG",
+      "strand": "+",
+      "seed_pos_from_PAM": 2,
+      "pam_mut_vs_wt": [
+        "TGG",
+        "TGG"
+      ],
+      "all_mechanisms": [
+        "SEED"
+      ]
+    },
+    "KRAS_G13D": {
+      "gene": "KRAS",
+      "aa_change": "G13D",
+      "rna_sub_dna": "G>A",
+      "rna_wobble": true,
+      "crispr_addressable": true,
+      "best_mechanism": "SEED",
+      "guide_20nt": "GTAGTTGGAGCTGGTGACGT",
+      "strand": "+",
+      "seed_pos_from_PAM": 4,
+      "pam_mut_vs_wt": [
+        "AGG",
+        "AGG"
+      ],
+      "all_mechanisms": [
+        "SEED"
+      ]
+    },
+    "NRAS_Q61R": {
+      "gene": "NRAS",
+      "aa_change": "Q61R",
+      "rna_sub_dna": "A>G",
+      "rna_wobble": false,
+      "crispr_addressable": false,
+      "best_mechanism": "NONE",
+      "guide_20nt": null,
+      "strand": null,
+      "seed_pos_from_PAM": null,
+      "pam_mut_vs_wt": [
+        null,
+        null
+      ],
+      "all_mechanisms": []
+    },
+    "NRAS_Q61K": {
+      "gene": "NRAS",
+      "aa_change": "Q61K",
+      "rna_sub_dna": "C>A",
+      "rna_wobble": false,
+      "crispr_addressable": false,
+      "best_mechanism": "NONE",
+      "guide_20nt": null,
+      "strand": null,
+      "seed_pos_from_PAM": null,
+      "pam_mut_vs_wt": [
+        null,
+        null
+      ],
+      "all_mechanisms": []
+    },
+    "BRAF_V600E": {
+      "gene": "BRAF",
+      "aa_change": "V600E",
+      "rna_sub_dna": "T>A",
+      "rna_wobble": false,
+      "crispr_addressable": false,
+      "best_mechanism": "MID",
+      "guide_20nt": "TAGCTACAGAGAAATCTCGA",
+      "strand": "+",
+      "seed_pos_from_PAM": 11,
+      "pam_mut_vs_wt": [
+        "TGG",
+        "TGG"
+      ],
+      "all_mechanisms": [
+        "DISTAL",
+        "MID"
+      ]
+    },
+    "IDH1_R132H": {
+      "gene": "IDH1",
+      "aa_change": "R132H",
+      "rna_sub_dna": "G>A",
+      "rna_wobble": true,
+      "crispr_addressable": true,
+      "best_mechanism": "SEED",
+      "guide_20nt": "ATCATAGGTCATCATGCTTA",
+      "strand": "+",
+      "seed_pos_from_PAM": 10,
+      "pam_mut_vs_wt": [
+        "TGG",
+        "TGG"
+      ],
+      "all_mechanisms": [
+        "DISTAL",
+        "MID",
+        "SEED"
+      ]
+    },
+    "IDH1_R132C": {
+      "gene": "IDH1",
+      "aa_change": "R132C",
+      "rna_sub_dna": "C>T",
+      "rna_wobble": false,
+      "crispr_addressable": false,
+      "best_mechanism": "MID",
+      "guide_20nt": "ATCATAGGTTGTCATGCTTA",
+      "strand": "+",
+      "seed_pos_from_PAM": 11,
+      "pam_mut_vs_wt": [
+        "TGG",
+        "TGG"
+      ],
+      "all_mechanisms": [
+        "DISTAL",
+        "MID"
+      ]
+    },
+    "PIK3CA_E545K": {
+      "gene": "PIK3CA",
+      "aa_change": "E545K",
+      "rna_sub_dna": "G>A",
+      "rna_wobble": true,
+      "crispr_addressable": true,
+      "best_mechanism": "SEED",
+      "guide_20nt": "TCTCTCTGAAATCACTAAGC",
+      "strand": "+",
+      "seed_pos_from_PAM": 4,
+      "pam_mut_vs_wt": [
+        "AGG",
+        "AGG"
+      ],
+      "all_mechanisms": [
+        "DISTAL",
+        "SEED"
+      ]
+    },
+    "PIK3CA_H1047R": {
+      "gene": "PIK3CA",
+      "aa_change": "H1047R",
+      "rna_sub_dna": "A>G",
+      "rna_wobble": false,
+      "crispr_addressable": true,
+      "best_mechanism": "SEED",
+      "guide_20nt": "CAAATGAATGATGCACGTCA",
+      "strand": "+",
+      "seed_pos_from_PAM": 4,
+      "pam_mut_vs_wt": [
+        "TGG",
+        "TGG"
+      ],
+      "all_mechanisms": [
+        "MID",
+        "SEED"
+      ]
+    },
+    "EGFR_L858R": {
+      "gene": "EGFR",
+      "aa_change": "L858R",
+      "rna_sub_dna": "T>G",
+      "rna_wobble": false,
+      "crispr_addressable": true,
+      "best_mechanism": "PAM_CREATED",
+      "guide_20nt": "TCAAGATCACAGATTTTGGG",
+      "strand": "+",
+      "seed_pos_from_PAM": 0,
+      "pam_mut_vs_wt": [
+        "CGG",
+        "CTG"
+      ],
+      "all_mechanisms": [
+        "DISTAL",
+        "MID",
+        "PAM_CREATED"
+      ]
+    },
+    "TP53_R175H": {
+      "gene": "TP53",
+      "aa_change": "R175H",
+      "rna_sub_dna": "G>A",
+      "rna_wobble": true,
+      "crispr_addressable": false,
+      "best_mechanism": "NONE",
+      "guide_20nt": null,
+      "strand": null,
+      "seed_pos_from_PAM": null,
+      "pam_mut_vs_wt": [
+        null,
+        null
+      ],
+      "all_mechanisms": []
+    },
+    "TP53_R248Q": {
+      "gene": "TP53",
+      "aa_change": "R248Q",
+      "rna_sub_dna": "G>A",
+      "rna_wobble": true,
+      "crispr_addressable": true,
+      "best_mechanism": "SEED",
+      "guide_20nt": "GCATGGGCGGCATGAACCAG",
+      "strand": "+",
+      "seed_pos_from_PAM": 2,
+      "pam_mut_vs_wt": [
+        "AGG",
+        "AGG"
+      ],
+      "all_mechanisms": [
+        "DISTAL",
+        "SEED"
+      ]
+    },
+    "TP53_R273H": {
+      "gene": "TP53",
+      "aa_change": "R273H",
+      "rna_sub_dna": "G>A",
+      "rna_wobble": true,
+      "crispr_addressable": false,
+      "best_mechanism": "DISTAL",
+      "guide_20nt": "GTGCATGTTTGTGCCTGTCC",
+      "strand": "+",
+      "seed_pos_from_PAM": 16,
+      "pam_mut_vs_wt": [
+        "TGG",
+        "TGG"
+      ],
+      "all_mechanisms": [
+        "DISTAL"
+      ]
+    },
+    "TP53_R248W": {
+      "gene": "TP53",
+      "aa_change": "R248W",
+      "rna_sub_dna": "C>T",
+      "rna_wobble": false,
+      "crispr_addressable": true,
+      "best_mechanism": "SEED",
+      "guide_20nt": "GCATGGGCGGCATGAACTGG",
+      "strand": "+",
+      "seed_pos_from_PAM": 3,
+      "pam_mut_vs_wt": [
+        "AGG",
+        "AGG"
+      ],
+      "all_mechanisms": [
+        "DISTAL",
+        "SEED"
+      ]
+    }
+  },
+  "HEADLINE": "Of the 7 G>A-wobble drivers the RNA toehold can't sense, 5/7 ARE CRISPR-addressable by SpCas9 (NGG) allele-specific guides \u2014 1 via a PAM-CREATING SNV (mutant makes an NGG the WT lacks = gold-standard allele specificity) and the rest via a PAM-proximal SEED mismatch. NOT rescued by NGG (need NG/Cas12a or another Cas): ['TP53_R175H', 'TP53_R273H'] This CONVERTS RUNG-27b's asserted DNA-rescue into a designed, sequence-verified set of allele-specific guides \u2014 the wobble drivers (incl. KRAS-G12D, IDH1-R132H, TP53 hotspots) are reachable at the DNA level with real guides, not just by assumption.",
+  "INTERPRETATION_MAP": {
+    "PAM_CREATED": "mutation creates an NGG the WT lacks -> guide+PAM hits mutant ONLY (perfect allele specificity).",
+    "SEED": "shared PAM, SNV in PAM-proximal 10 nt -> WT has a seed mismatch -> Cas9 activity collapses on WT.",
+    "NOT rescued by NGG": "no NGG PAM-creating/seed option in CDS-local context -> try SpCas9-NG / Cas12a, or the genomic (intron-aware) context may add PAMs (the refinement)."
+  },
+  "CEILING": [
+    "CDS-local context (introns within +-20bp of exon-edge hotspots not modelled); PAM_CREATED robust, SEED needs genomic confirmation.",
+    "PAM + seed-position are NECESSARY not sufficient -> real on/off-target cutting = wet-lab residual.",
+    "SpCas9 NGG only in this pass; NG/Cas12a/other-PAM Cas would raise addressability (noted, not scanned)."
+  ]
+}
