@@ -37,6 +37,9 @@ hf_cache/
 data/cellxgene/
 *.h5ad
 
+# RUNG-27a — raw public DBs (VDJdb ~41MB + IEDB ~105MB; re-downloadable). Track the grounding RESULT only.
+data/grounding/
+
 # Step 3 — raw GTEx/HPA downloads (large; re-fetchable). Track the audit CSV result only.
 data/specificity/*.gct.gz
 data/specificity/*.tsv.zip
